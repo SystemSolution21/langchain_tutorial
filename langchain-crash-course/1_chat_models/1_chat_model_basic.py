@@ -1,3 +1,7 @@
+# Chat Model Documents: https://python.langchain.com/v0.2/docs/integrations/chat/
+# OpenAI Chat Model Documents: https://python.langchain.com/v0.2/docs/integrations/chat/openai/
+
+
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 
