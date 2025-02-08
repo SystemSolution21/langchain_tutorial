@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from langchain_core.messages.base import BaseMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.schema import AIMessage, HumanMessage, SystemMessage
 
@@ -25,7 +26,7 @@ while True:
     chat_history.append(HumanMessage(content=query))  # Add user message
 
     # Invoke model using chat history
-    result = gemini_model.invoke(input=chat_history)
+    result: BaseMessage = gemini_model.invoke(input=chat_history)
     response = result.content
     chat_history.append(AIMessage(content=response))  # Add AI message
     print(f"AI: {response}")

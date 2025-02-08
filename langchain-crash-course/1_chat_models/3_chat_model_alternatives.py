@@ -1,3 +1,4 @@
+from typing import Any
 from langchain_core.messages.base import BaseMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_anthropic import ChatAnthropic
@@ -5,10 +6,11 @@ from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, SystemMessage
 
+
 # Setup environment variables and messages
 load_dotenv()
 
-messages = [
+messages: list[Any] = [
     SystemMessage(content="Solve the following math problems"),
     HumanMessage(content="divided 81 by 9?"),
 ]
@@ -20,7 +22,7 @@ messages = [
 openai_model = ChatOpenAI(model="gpt-4o-mini")
 
 # Invoke the model with messages
-result = openai_model.invoke(messages)
+result = openai_model.invoke(input=messages)
 print(f"Answer from OpenAI: {result.content}")
 
 
@@ -43,5 +45,5 @@ anthropic_model = ChatAnthropic(
     model_name="Claude-3-5-Sonnet-20241022", timeout=None, stop=None
 )
 
-result: BaseMessage = anthropic_model.invoke(messages)
+result: BaseMessage = anthropic_model.invoke(input=messages)
 print(f"Answer from Anthropic: {result.content}")
