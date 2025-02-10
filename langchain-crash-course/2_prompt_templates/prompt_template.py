@@ -1,0 +1,77 @@
+from langchain_core.messages.base import BaseMessage
+from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompt_values import PromptValue
+from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
+from dotenv import load_dotenv
+
+# Load Environment Variables
+load_dotenv()
+
+# Create OpenAI Chat Model
+openai_model = ChatOpenAI(model="gpt-4o-mini")
+
+# 1. String Prompt Template
+prom_temp: PromptTemplate = PromptTemplate.from_template(
+    template="Tell me a joke about {topic}"
+)
+prompt: PromptValue = prom_temp.invoke(input={"topic": "cats"})
+print("\n-----String Prompt Template-----")
+print(prompt)
+
+# 2. Chat Prompt Template
+template: str = "Tell me a joke about {topic}."
+chat_prom_temp: ChatPromptTemplate = ChatPromptTemplate.from_template(template=template)
+prompt = chat_prom_temp.invoke(input={"topic": "cats"})
+print("\n-----Chat Prompt Template-----")
+print(prompt)
+
+# 3. Chat Prompt Template with placeholders
+template: str = """You are a helpful Assistant.
+Human: Tell me a {adjective} joke about {animal}.
+Assistant:"""
+chat_prom_temp_plac: ChatPromptTemplate = ChatPromptTemplate.from_template(
+    template=template
+)
+prompt = chat_prom_temp_plac.invoke(input={"adjective": "funny", "animal": "cats"})
+print("\n-----Chat Prompt template placeholders-----")
+print(prompt)
+
+# 4. Chat Prompt Template with System and Human messages
+messages: list[tuple[str, str]] = [
+    ("system", "You are a comedian who tells jokes about {topic}."),
+    ("human", "Tell me {joke_count} jokes."),
+]
+chat_prom_temp_mess: ChatPromptTemplate = ChatPromptTemplate.from_messages(
+    messages=messages
+)
+prompt = chat_prom_temp_mess.invoke(input={"topic": "cats", "joke_count": 1})
+print("\n-----Chat Prompt template with System and Human messages-----")
+print(prompt)
+# # Call OPenAI Chat Model
+# openai_response: BaseMessage = openai_model.invoke(input=prompt)
+# print(openai_response.content)
+
+# 5. Create Llama Chat Model
+llama_model = ChatOllama(model="llama3.2:3b", temperature=0.8, num_predict=256)
+messages = [
+    (
+        "system",
+        "Your are helpful translator. Translate the user sentence to {language}.",
+    ),
+    ("human", "{text}"),
+]
+chat_prom_temp_mess: ChatPromptTemplate = ChatPromptTemplate.from_messages(
+    messages=messages
+)
+language: str = "Japanese"
+text: str = "I like programming."
+prompt = chat_prom_temp_mess.invoke(input={"language": language, "text": text})
+print(
+    "\n-----Chat prompt template with system and human messages on Langchain_Ollama model-----"
+)
+print(prompt)
+# Call Llama Chat Model
+llama_response: BaseMessage = llama_model.invoke(input=prompt)
+print(llama_response.content)
