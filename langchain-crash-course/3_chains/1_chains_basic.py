@@ -19,7 +19,8 @@ chat_prom_temp: ChatPromptTemplate = ChatPromptTemplate(
 
 # Create Chain using LangChain Expression Language (LCEL)
 chain = chat_prom_temp | ollama_model | StrOutputParser()
+# chain = chat_prom_temp | ollama_model
 
-response = chain.invoke(input={"topic": "cats", "joke_count": 3})
+response = chain.invoke(input={"topic": "Python Programming", "joke_count": 3})
 
 print(response)
