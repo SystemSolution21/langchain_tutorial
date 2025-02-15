@@ -1,7 +1,9 @@
+from typing import Callable, Any
+from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnableSequence
+from langchain_core.language_models import LanguageModelInput
 from langchain_ollama import ChatOllama
-from dotenv import load_dotenv
 
 # Load Environment Variables
 load_dotenv()
@@ -17,16 +19,24 @@ chat_prom_temp = ChatPromptTemplate(
     ]
 )
 
-# Create RunnableLambda
-format_prompt = RunnableLambda(func=lambda x: chat_prom_temp.format_prompt(**x))
-invoke_model = RunnableLambda(func=lambda x: ollama_model.invoke(input=x.to_messages()))  # type: ignore
-parse_output = RunnableLambda(func=lambda x: x.content)  # type: ignore
+# Create RunnableLambda for prompt format, model invoke and output parse
+format_prompt: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = (
+    RunnableLambda(func=lambda x: chat_prom_temp.format_prompt(**x))
+)
+
+invoke_model: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = RunnableLambda(
+    func=lambda x: ollama_model.invoke(input=x.to_messages())
+)
+
+parse_output: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = RunnableLambda(
+    func=lambda x: x.content
+)
 
 # Create RunnableSequence Chain
 chain = RunnableSequence(first=format_prompt, middle=[invoke_model], last=parse_output)
 
 # Run the Chain
-response = chain.invoke(input={"topic": "cats", "joke_count": 3})
+response: Any = chain.invoke(input={"topic": "cats", "joke_count": 3})
 
 # Output
 print(response)
