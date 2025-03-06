@@ -7,3 +7,5 @@ langchain-crash-course:
 2_prompt_templates
 
 3_chains
+
+4_rag
