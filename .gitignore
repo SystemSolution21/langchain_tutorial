@@ -17,4 +17,4 @@ wheels/
 uv.lock
 
 # database
-db
+db/
