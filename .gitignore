@@ -15,3 +15,6 @@ wheels/
 # UV Lock
 # uv
 uv.lock
+
+# database
+db
