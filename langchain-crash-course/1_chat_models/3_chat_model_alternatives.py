@@ -15,26 +15,13 @@ messages: list[Any] = [
     HumanMessage(content="divided 81 by 9?"),
 ]
 
-
 # ---- LangChain OpenAI Chat Model Example ----
 
 # Create a ChatOpenAI model
 openai_model = ChatOpenAI(model="gpt-4o-mini")
-
 # Invoke the model with messages
 result = openai_model.invoke(input=messages)
 print(f"Answer from OpenAI: {result.content}")
-
-
-# ---- Google Chat Model Example ----
-
-# https://console.cloud.google.com/gen-app-builder/engines
-# https://ai.google.dev/gemini-api/docs/models/gemini
-gemini_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
-
-result: BaseMessage = gemini_model.invoke(input=messages)
-print(f"Answer from Google: {result.content}")
-
 
 # ---- Anthropic Chat Model Example ----
 
@@ -44,6 +31,13 @@ print(f"Answer from Google: {result.content}")
 anthropic_model = ChatAnthropic(
     model_name="Claude-3-5-Sonnet-20241022", timeout=None, stop=None
 )
-
 result: BaseMessage = anthropic_model.invoke(input=messages)
 print(f"Answer from Anthropic: {result.content}")
+
+# ---- Google Chat Model Example ----
+
+# https://console.cloud.google.com/gen-app-builder/engines
+# https://ai.google.dev/gemini-api/docs/models/gemini
+gemini_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+result: BaseMessage = gemini_model.invoke(input=messages)
+print(f"Answer from Google: {result.content}")

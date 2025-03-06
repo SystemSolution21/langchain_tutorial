@@ -1,17 +1,22 @@
-from typing import Callable, Any, Literal
+"""
+This module implements a sentiment analysis chain using LangChain and local LLMs.
+It uses Ollama as the local LLM provider with models like deepseek and llama.
+"""
+
+from typing import Callable, Any
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
 from langchain.schema.runnable import RunnableBranch, RunnableSerializable, Runnable
-from langchain.schema.runnable.utils import Input, Output
 from langchain_ollama import ChatOllama
 from dotenv import load_dotenv
 
 # Load Environment Variables
 load_dotenv()
 
-# Create Chat Models
-# model: ChatOllama = ChatOllama(model="deepseek-r1:14b")
-model: ChatOllama = ChatOllama(model="llama3.2:3b")
+# Create Chat Models using local LLM provider
+model: ChatOllama = ChatOllama(model="deepseek-r1:14b")
+# Alternative model configuration:
+# model: ChatOllama = ChatOllama(model="llama3.2:3b")
 
 # Define chat prompt template for positive feedback
 positive_feedback_template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
@@ -99,8 +104,8 @@ chain = classification_chain | runnable_branches
 # Default: "I'm not sure about the product yet. Can you tell me more about its features and benefits?"
 
 review = (
-    "The product is excellent. I really enjoyed using it and found it very helpful."
+    "The product is terrible. It broke after just one use and the quality is very poor."
 )
-result = chain.invoke(input={"feedback": review})
+result: Runnable[Any, Any] = chain.invoke(input={"feedback": review})
 # Output Result
 print(result)
