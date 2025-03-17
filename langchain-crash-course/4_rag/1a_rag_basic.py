@@ -44,7 +44,7 @@ if not Path.exists(self=persistent_directory):
 
     # Split the documents into chunks
     text_splitter: CharacterTextSplitter = CharacterTextSplitter(
-        chunk_size=1000, chunk_overlap=0
+        chunk_size=500, chunk_overlap=50, separator="\n"
     )
     docs: List[Document] = text_splitter.split_documents(documents=documents)
 
