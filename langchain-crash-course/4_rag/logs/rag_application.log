@@ -1,0 +1,8 @@
+2025-03-18 20:33:01,322 - __main__ - INFO - ==================================================
+2025-03-18 20:33:01,324 - __main__ - INFO - Starting RAG Metadata Application
+2025-03-18 20:33:01,324 - __main__ - INFO - ==================================================
+2025-03-18 20:33:01,324 - __main__ - INFO - Books Directory: C:\Users\rs258\MyAI\LangChain\LangChain_Tutorial\langchain-crash-course\4_rag\books
+2025-03-18 20:33:01,324 - __main__ - INFO - Persistent Directory: C:\Users\rs258\MyAI\LangChain\LangChain_Tutorial\langchain-crash-course\4_rag\db\chroma_db_with_metadata
+2025-03-18 20:33:01,324 - __main__ - INFO - Database directory created/verified successfully
+2025-03-18 20:33:01,324 - __main__ - INFO - Vector store already exists. No need to initialize.
+2025-03-18 20:33:01,324 - __main__ - INFO - Using existing vector store - no initialization needed

@@ -16,3 +16,8 @@ dependencies = [
     "chromadb>=0.6.3",
     "langchain-chroma>=0.2.2",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
