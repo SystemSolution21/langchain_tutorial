@@ -9,7 +9,7 @@ from langchain_ollama import ChatOllama
 load_dotenv()
 
 # Create Chat Ollama Model
-ollama_model = ChatOllama(model="llama3.2:3b")
+model = ChatOllama(model="llama3.2:3b")
 
 # Set Chat Prompt Template
 chat_prom_temp = ChatPromptTemplate(
@@ -25,7 +25,7 @@ format_prompt: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = (
 )
 
 invoke_model: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = RunnableLambda(
-    func=lambda x: ollama_model.invoke(input=x.to_messages())
+    func=lambda x: model.invoke(input=x.to_messages())
 )
 
 parse_output: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = RunnableLambda(

@@ -15,7 +15,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Create Chat Model
-ollama_model = ChatOllama(model="llama3.2:3b")
+model: list[str] = [
+    "llama3.2:3b",
+    "gemma3:4b",
+    "openthinker:7b",
+    "deepseek-r1:14b",
+]
+llm = ChatOllama(model=model[0])
 
 # Create Chat Prompt Template
 chat_prom_temp = ChatPromptTemplate(
@@ -36,8 +42,8 @@ words_counted: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = (
 
 
 # Create combined Chain using LangChain Expression Language
-chain = (
-    chat_prom_temp | ollama_model | StrOutputParser() | uppercase_output | words_counted
+chain: RunnableSerializable[dict[str, str | int], Any] = (
+    chat_prom_temp | llm | StrOutputParser() | uppercase_output | words_counted
 )
 
 # Run Chain
