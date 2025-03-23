@@ -15,7 +15,7 @@ gemini_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 chat_history: List[BaseMessage] = []
 
 # Set system message
-system_message = SystemMessage(content="Your are helpful AI assistant.")
+system_message = SystemMessage(content="You are a helpful AI assistant.")
 chat_history.append(system_message)  # Add system message to chat history
 
 # Chat looping
