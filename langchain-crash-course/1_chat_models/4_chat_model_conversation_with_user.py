@@ -1,7 +1,8 @@
-from dotenv import load_dotenv
+from typing import Any, List, Dict, Union
 from langchain_core.messages.base import BaseMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.schema import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from dotenv import load_dotenv
 
 
 # Load environment variables
@@ -11,7 +12,7 @@ load_dotenv()
 gemini_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 
 # Store chat history
-chat_history: list = []
+chat_history: List[BaseMessage] = []
 
 # Set system message
 system_message = SystemMessage(content="Your are helpful AI assistant.")
@@ -27,9 +28,10 @@ while True:
 
     # Invoke model using chat history
     result: BaseMessage = gemini_model.invoke(input=chat_history)
-    response = result.content
+    response: Union[str, list[str | Dict[str, Any]]] = result.content
     chat_history.append(AIMessage(content=response))  # Add AI message
-    print(f"AI: {response}")
+    print(f"AI: {response}")  # Print the response with a newline
 
-print("-----chat history-----")
-print(chat_history)
+print("\n-----chat history-----")
+for message in chat_history:
+    print(f"{message.type}: {message.content}")
