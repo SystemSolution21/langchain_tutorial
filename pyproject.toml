@@ -20,5 +20,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "firebase-admin>=6.7.0",
     "pytest>=8.3.5",
 ]
