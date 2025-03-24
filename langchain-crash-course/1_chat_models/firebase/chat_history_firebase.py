@@ -48,6 +48,7 @@ def main() -> None:
     """Main function to retrieve and print chat history."""
     conversation_id = "20250323_142913"  # conversation_id from firebase console
     conversation_id = "20250323_143136"  # conversation_id from firebase console
+    conversation_id = "20250324_184412"  # conversation_id from firebase console
     chat_history: List[Dict] = get_chat_history(conversation_id=conversation_id)
     print_chat_history(chat_history=chat_history)
 

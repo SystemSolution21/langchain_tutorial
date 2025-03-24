@@ -2,6 +2,7 @@ from typing import Any, List, Dict, Union
 from google.cloud.firestore_v1.client import Client
 from langchain_core.messages.base import BaseMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama import ChatOllama
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -36,9 +37,14 @@ def save_message_to_firebase(message: BaseMessage, conversation_id: str) -> None
     messages_ref.add(message_data)
 
 
+# # Create chat model
+# model_name: str = "gemini-1.5-flash"
+# model: ChatGoogleGenerativeAI = ChatGoogleGenerativeAI(model=model_name)
+
 # Create chat model
-model_name: str = "gemini-1.5-flash"
-model: ChatGoogleGenerativeAI = ChatGoogleGenerativeAI(model=model_name)
+model: str = "llama3.2:3b"
+llm: ChatOllama = ChatOllama(model=model)
+
 
 # Store chat history
 chat_history: List[BaseMessage] = []
@@ -65,7 +71,7 @@ while True:
     save_message_to_firebase(message=human_message, conversation_id=conversation_id)
 
     # Invoke model using chat history
-    result: BaseMessage = model.invoke(input=chat_history)
+    result: BaseMessage = llm.invoke(input=chat_history)
     response: Union[str, list[str | Dict[str, Any]]] = result.content
 
     # Add and save AI message

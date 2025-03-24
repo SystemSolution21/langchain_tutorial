@@ -18,14 +18,14 @@ prom_temp: PromptTemplate = PromptTemplate.from_template(
 )
 prompt: PromptValue = prom_temp.invoke(input={"topic": "cats"})
 print("\n-----String Prompt Template-----")
-print(prompt)
+print(prompt.to_string())
 
 # 2. Chat Prompt Template
 template: str = "Tell me a joke about {topic}."
 chat_prom_temp: ChatPromptTemplate = ChatPromptTemplate.from_template(template=template)
 prompt = chat_prom_temp.invoke(input={"topic": "cats"})
 print("\n-----Chat Prompt Template-----")
-print(prompt)
+print(prompt.to_string())
 
 # 3. Chat Prompt Template with placeholders
 template: str = """You are a helpful Assistant.
@@ -36,7 +36,7 @@ chat_prom_temp_plac: ChatPromptTemplate = ChatPromptTemplate.from_template(
 )
 prompt = chat_prom_temp_plac.invoke(input={"adjective": "funny", "animal": "cats"})
 print("\n-----Chat Prompt template placeholders-----")
-print(prompt)
+print(prompt.to_string())
 
 # 4. Chat Prompt Template with System and Human messages
 messages: list[tuple[str, str]] = [
@@ -48,13 +48,14 @@ chat_prom_temp_mess: ChatPromptTemplate = ChatPromptTemplate.from_messages(
 )
 prompt = chat_prom_temp_mess.invoke(input={"topic": "cats", "joke_count": 1})
 print("\n-----Chat Prompt template with System and Human messages-----")
-print(prompt)
+print(prompt.to_string())
+
 # # Call OPenAI Chat Model
 # openai_response: BaseMessage = openai_model.invoke(input=prompt)
 # print(openai_response.content)
 
 # 5. Create Llama Chat Model
-llama_model = ChatOllama(model="llama3.2:3b", temperature=0.8, num_predict=256)
+llm = ChatOllama(model="llama3.2:3b", temperature=0.8, num_predict=256)
 messages = [
     (
         "system",
@@ -71,7 +72,8 @@ prompt = chat_prom_temp_mess.invoke(input={"language": language, "text": text})
 print(
     "\n-----Chat prompt template with system and human messages on Langchain_Ollama model-----"
 )
-print(prompt)
+print(prompt.to_string())
+
 # Call Llama Chat Model
-llama_response: BaseMessage = llama_model.invoke(input=prompt)
-print(llama_response.content)
+response: BaseMessage = llm.invoke(input=prompt)
+print(f"AI: {response.content}")

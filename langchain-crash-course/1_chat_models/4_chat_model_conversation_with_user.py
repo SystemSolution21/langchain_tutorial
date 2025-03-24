@@ -1,6 +1,7 @@
 from typing import Any, List, Dict, Union
 from langchain_core.messages.base import BaseMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama import ChatOllama
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from dotenv import load_dotenv
 
@@ -8,8 +9,14 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Create gemini chat model
-gemini_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+# # Create chat model
+# # model: str = "gemini-1.5-flash"
+# llm = ChatGoogleGenerativeAI(model=model)
+
+# Create chat model
+model: str = "llama3.2:3b"
+llm = ChatOllama(model=model)
+
 
 # Store chat history
 chat_history: List[BaseMessage] = []
@@ -25,9 +32,9 @@ while True:
         break
 
     chat_history.append(HumanMessage(content=query))  # Add user message
-
-    # Invoke model using chat history
-    result: BaseMessage = gemini_model.invoke(input=chat_history)
+    #
+    # Invoke model using chat model: str = "llama3.2:3b"history
+    result: BaseMessage = llm.invoke(input=model)
     response: Union[str, list[str | Dict[str, Any]]] = result.content
     chat_history.append(AIMessage(content=response))  # Add AI message
     print(f"AI: {response}")  # Print the response with a newline
