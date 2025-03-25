@@ -13,11 +13,12 @@ load_dotenv()
 openai_model = ChatOpenAI(model="gpt-4o-mini")
 
 # 1. String Prompt Template
-prom_temp: PromptTemplate = PromptTemplate.from_template(
+prompt_template: PromptTemplate = PromptTemplate.from_template(
     template="Tell me a joke about {topic}"
 )
-prompt: PromptValue = prom_temp.invoke(input={"topic": "cats"})
 print("\n-----String Prompt Template-----")
+print(prompt_template.format(topic="cats"))
+prompt: PromptValue = prompt_template.invoke(input={"topic": "cats"})
 print(prompt.to_string())
 
 # 2. Chat Prompt Template

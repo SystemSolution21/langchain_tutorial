@@ -14,10 +14,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Create Chat Model
-model: ChatOllama = ChatOllama(model="llama3.2:3b")
+model: list[str] = [
+    "llama3.2:3b",  # For simple, quick tasks
+    "gemma3:4b",  # For balanced performance
+    "openthinker:7b",  # For better reasoning with moderate resources
+    "deepseek-r1:14b",  # For complex analysis and best quality
+]
+llm = ChatOllama(model=model[0])
 
 # Set Prompt Template
-prompt_template: ChatPromptTemplate = ChatPromptTemplate(
+chat_prompt_template: ChatPromptTemplate = ChatPromptTemplate(
     messages=[
         ("system", "Your are an expert product reviewer."),
         ("human", "List the main features of the product {product_name}."),
@@ -27,7 +33,7 @@ prompt_template: ChatPromptTemplate = ChatPromptTemplate(
 
 # Define pros analysis step
 def analyze_pros(features) -> PromptValue:
-    prompt_template: ChatPromptTemplate = ChatPromptTemplate(
+    chat_prompt_template: ChatPromptTemplate = ChatPromptTemplate(
         messages=[
             ("system", "Your are an expert product reviewer."),
             (
@@ -36,12 +42,12 @@ def analyze_pros(features) -> PromptValue:
             ),
         ]
     )
-    return prompt_template.format_prompt(features=features)
+    return chat_prompt_template.format_prompt(features=features)
 
 
 # Define cons analysis step
 def analyze_cons(features) -> PromptValue:
-    prompt_template: ChatPromptTemplate = ChatPromptTemplate(
+    chat_prompt_template: ChatPromptTemplate = ChatPromptTemplate(
         messages=[
             ("system", "Your are an expert product reviewer."),
             (
@@ -50,17 +56,17 @@ def analyze_cons(features) -> PromptValue:
             ),
         ]
     )
-    return prompt_template.format_prompt(features=features)
+    return chat_prompt_template.format_prompt(features=features)
 
 
 # Simplify pros branches chain with LangChain Expression Language (LCEL)
 pros_branch_chain: RunnableSerializable[Any, str] = (
-    RunnableLambda(func=lambda x: analyze_pros(features=x)) | model | StrOutputParser()
+    RunnableLambda(func=lambda x: analyze_pros(features=x)) | llm | StrOutputParser()
 )
 
 # Simplify cons branches chain with LangChain Expression Language (LCEL)
 cons_branch_chain: RunnableSerializable[Any, str] = (
-    RunnableLambda(func=lambda x: analyze_cons(features=x)) | model | StrOutputParser()
+    RunnableLambda(func=lambda x: analyze_cons(features=x)) | llm | StrOutputParser()
 )
 
 
@@ -90,9 +96,9 @@ def pros_cons_branch(pros: str, cons: str) -> str:
 
 
 # Create combined chain using LangChain Expression Language (LCEL)
-chain = (
-    prompt_template
-    | model
+chain: RunnableSerializable[dict[str, str], str] = (
+    chat_prompt_template
+    | llm
     | StrOutputParser()
     | RunnableParallel(branches={"pros": pros_branch_chain, "cons": cons_branch_chain})
     | combine_pros_cons_branch

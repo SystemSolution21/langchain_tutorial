@@ -8,8 +8,8 @@ from langchain_ollama import ChatOllama
 # Load Environment Variables
 load_dotenv()
 
-# Create Chat Ollama Model
-model = ChatOllama(model="llama3.2:3b")
+# Create Chat Model
+llm = ChatOllama(model="llama3.2:3b")
 
 # Set Chat Prompt Template
 chat_prom_temp = ChatPromptTemplate(
@@ -24,8 +24,8 @@ format_prompt: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = (
     RunnableLambda(func=lambda x: chat_prom_temp.format_prompt(**x))
 )
 
-invoke_model: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = RunnableLambda(
-    func=lambda x: model.invoke(input=x.to_messages())
+invoke_llm: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = RunnableLambda(
+    func=lambda x: llm.invoke(input=x.to_messages())
 )
 
 parse_output: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = RunnableLambda(
@@ -33,7 +33,7 @@ parse_output: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = Runnabl
 )
 
 # Create RunnableSequence Chain
-chain = RunnableSequence(first=format_prompt, middle=[invoke_model], last=parse_output)
+chain = RunnableSequence(first=format_prompt, middle=[invoke_llm], last=parse_output)
 
 # Run the Chain
 response: Any = chain.invoke(input={"topic": "cats", "joke_count": 3})

@@ -3,7 +3,7 @@ This module implements a sentiment analysis chain using LangChain and local LLMs
 It uses Ollama as the local LLM provider with models like deepseek and llama.
 """
 
-from typing import Callable, Any
+from typing import Callable, Any, List
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
 from langchain.schema.runnable import RunnableBranch, RunnableSerializable, Runnable
@@ -13,8 +13,17 @@ from dotenv import load_dotenv
 # Load Environment Variables
 load_dotenv()
 
+# Create Chat Model
+model: List[str] = [
+    "llama3.2:3b",  # For simple, quick tasks
+    "gemma3:4b",  # For balanced performance
+    "openthinker:7b",  # For better reasoning with moderate resources
+    "deepseek-r1:14b",  # For complex analysis and best quality
+]
+llm = ChatOllama(model=model[1])
+
 # Create Chat Models using local LLM provider
-model: ChatOllama = ChatOllama(model="deepseek-r1:14b")
+# model: ChatOllama = ChatOllama(model="deepseek-r1:14b")
 # Alternative model configuration:
 # model: ChatOllama = ChatOllama(model="llama3.2:3b")
 
@@ -73,29 +82,29 @@ runnable_branches: RunnableBranch[
 ] = RunnableBranch(
     (
         lambda x: "positive" in x,
-        positive_feedback_template
-        | model
-        | StrOutputParser(),  # Positive feedback chain
+        positive_feedback_template | llm | StrOutputParser(),  # Positive feedback chain
     ),
     (
         lambda x: "negative" in x,
-        negative_feedback_template
-        | model
-        | StrOutputParser(),  # Negative feedback chain
+        negative_feedback_template | llm | StrOutputParser(),  # Negative feedback chain
     ),
     (
         lambda x: "neutral" in x,
-        neutral_feedback_template | model | StrOutputParser(),  # Neutral feedback chain
+        neutral_feedback_template | llm | StrOutputParser(),  # Neutral feedback chain
     ),
-    escalate_feedback_template | model | StrOutputParser(),  # Default
+    escalate_feedback_template | llm | StrOutputParser(),  # Default
 )
 
 
 # Create Classification Chain
-classification_chain = classification_feedback_template | model | StrOutputParser()
+classification_chain: RunnableSerializable[dict[str, str], str] = (
+    classification_feedback_template | llm | StrOutputParser()
+)
 
 # Combine classification and response generation into one chain
-chain = classification_chain | runnable_branches
+chain: RunnableSerializable[dict[str, str], Runnable[Any, Any]] = (
+    classification_chain | runnable_branches
+)
 
 # Run the chain with an example review
 # Good review: "The product is excellent. I really enjoyed using it and found it very helpful."
@@ -103,9 +112,7 @@ chain = classification_chain | runnable_branches
 # Neutral review: "The product is okay. It works as expected but nothing exceptional."
 # Default: "I'm not sure about the product yet. Can you tell me more about its features and benefits?"
 
-review = (
-    "The product is terrible. It broke after just one use and the quality is very poor."
-)
+review = "The product is okay. It works as expected but nothing exceptional."
 result: Runnable[Any, Any] = chain.invoke(input={"feedback": review})
 # Output Result
 print(result)

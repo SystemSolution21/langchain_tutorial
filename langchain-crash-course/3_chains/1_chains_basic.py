@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 # Load Environment Variables
 load_dotenv()
 
-# Create ChatOllama Model
-model = ChatOllama(model="llama3.2:3b", temperature=0.8, num_predict=256)
+# Create Chat Model
+llm = ChatOllama(model="llama3.2:3b", temperature=0.8, num_predict=256)
 
 # Set Chat Prompt Template
 chat_prom_temp: ChatPromptTemplate = ChatPromptTemplate(
@@ -20,9 +20,8 @@ chat_prom_temp: ChatPromptTemplate = ChatPromptTemplate(
 
 # Create Chain using LangChain Expression Language (LCEL)
 chain: RunnableSerializable[dict[str, str | int], str] = (
-    chat_prom_temp | model | StrOutputParser()
+    chat_prom_temp | llm | StrOutputParser()
 )
-# chain = chat_prom_temp | model
 
 response: str = chain.invoke(input={"topic": "Python Programming", "joke_count": 3})
 

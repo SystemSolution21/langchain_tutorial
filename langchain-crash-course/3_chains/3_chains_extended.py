@@ -16,10 +16,10 @@ load_dotenv()
 
 # Create Chat Model
 model: list[str] = [
-    "llama3.2:3b",
-    "gemma3:4b",
-    "openthinker:7b",
-    "deepseek-r1:14b",
+    "llama3.2:3b",  # For simple, quick tasks
+    "gemma3:4b",  # For balanced performance
+    "openthinker:7b",  # For better reasoning with moderate resources
+    "deepseek-r1:14b",  # For complex analysis and best quality
 ]
 llm = ChatOllama(model=model[0])
 
@@ -36,14 +36,13 @@ uppercase_output: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = (
     RunnableLambda(func=lambda x: x.upper())
 )
 
-words_counted: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = (
-    RunnableLambda(func=lambda x: f"Word Count: {len(x.split())}\n{x}")
+words_count: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = RunnableLambda(
+    func=lambda x: f"Word Count: {len(x.split())}\n{x}"
 )
-
 
 # Create combined Chain using LangChain Expression Language
 chain: RunnableSerializable[dict[str, str | int], Any] = (
-    chat_prom_temp | llm | StrOutputParser() | uppercase_output | words_counted
+    chat_prom_temp | llm | StrOutputParser() | uppercase_output | words_count
 )
 
 # Run Chain
