@@ -12,12 +12,11 @@ wheels/
 # Environment Variables
 .env
 
-# UV Lock
-# uv
-uv.lock
-
 # database
 db/
 
 # firebase
 firebase_config.json
+
+# ruff
+.ruff_cache/

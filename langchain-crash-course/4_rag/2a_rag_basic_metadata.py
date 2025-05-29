@@ -4,7 +4,7 @@ from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_core.documents.base import Document
 from langchain_ollama.embeddings import OllamaEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 
 # Define text files directory and persistent directory
 current_dir: Path = Path(__file__).parent.resolve()
@@ -38,7 +38,7 @@ if not Path.exists(self=persistent_directory):
         loader: TextLoader = TextLoader(file_path=file_path, encoding="utf-8")
         docs: List[Document] = loader.load()
         for doc in docs:
-            doc.metadata = {"source": str(object=book_file.name)}
+            doc.metadata = {"source": str(book_file.name)}
             documents.append(doc)
 
     # Split documents into chunks with optimal overlap
@@ -63,7 +63,7 @@ if not Path.exists(self=persistent_directory):
     db: Chroma = Chroma.from_documents(
         documents=chunk_doc,
         embedding=embeddings,
-        persist_directory=str(object=persistent_directory),
+        persist_directory=str(persistent_directory),
     )
     print("--- Chroma vector store initialized successfully ---")
 
