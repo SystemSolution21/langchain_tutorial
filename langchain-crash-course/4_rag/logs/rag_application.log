@@ -1,16 +1,13 @@
-2025-03-18 20:33:01,322 - __main__ - INFO - ==================================================
-2025-03-18 20:33:01,324 - __main__ - INFO - Starting RAG Metadata Application
-2025-03-18 20:33:01,324 - __main__ - INFO - ==================================================
-2025-03-18 20:33:01,324 - __main__ - INFO - Books Directory: C:\Users\rs258\MyAI\LangChain\LangChain_Tutorial\langchain-crash-course\4_rag\books
-2025-03-18 20:33:01,324 - __main__ - INFO - Persistent Directory: C:\Users\rs258\MyAI\LangChain\LangChain_Tutorial\langchain-crash-course\4_rag\db\chroma_db_with_metadata
-2025-03-18 20:33:01,324 - __main__ - INFO - Database directory created/verified successfully
-2025-03-18 20:33:01,324 - __main__ - INFO - Vector store already exists. No need to initialize.
-2025-03-18 20:33:01,324 - __main__ - INFO - Using existing vector store - no initialization needed
-2025-04-29 23:06:23,438 - __main__ - INFO - ==================================================
-2025-04-29 23:06:23,438 - __main__ - INFO - Starting RAG Metadata Application
-2025-04-29 23:06:23,438 - __main__ - INFO - ==================================================
-2025-04-29 23:06:23,438 - __main__ - INFO - Books Directory: C:\Users\rs258\MyAI\LangChain\LangChain_Tutorial\langchain-crash-course\4_rag\books
-2025-04-29 23:06:23,438 - __main__ - INFO - Persistent Directory: C:\Users\rs258\MyAI\LangChain\LangChain_Tutorial\langchain-crash-course\4_rag\db\chroma_db_with_metadata
-2025-04-29 23:06:23,438 - __main__ - INFO - Database directory created/verified successfully
-2025-04-29 23:06:23,438 - __main__ - INFO - Vector store already exists. No need to initialize.
-2025-04-29 23:06:23,438 - __main__ - INFO - Using existing vector store - no initialization needed
+2025-08-19 23:22:11,378 - 3_rag_text_splitting.py - INFO - ==================================================
+2025-08-19 23:22:11,378 - 3_rag_text_splitting.py - INFO - Starting RAG Text Splitting Application
+2025-08-19 23:22:11,378 - 3_rag_text_splitting.py - INFO - ==================================================
+2025-08-19 23:22:11,378 - 3_rag_text_splitting.py - INFO - File Path: C:\Users\rs258\MyAI\LangChain\LangChain_Tutorial\langchain-crash-course\4_rag\books\romeo_and_juliet.txt
+2025-08-19 23:22:12,444 - 3_rag_text_splitting.py - INFO - 
+--- Character Text Splitter ---
+2025-08-19 23:22:12,452 - 3_rag_text_splitting.py - INFO - Creating vector store 'chroma_db_character'...
+2025-08-19 23:22:50,938 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_character' created successfully.
+2025-08-19 23:25:37,222 - 3_rag_text_splitting.py - INFO - ==================================================
+2025-08-19 23:25:37,222 - 3_rag_text_splitting.py - INFO - Starting RAG Text Splitting Application
+2025-08-19 23:25:37,230 - 3_rag_text_splitting.py - INFO - ==================================================
+2025-08-19 23:25:37,231 - 3_rag_text_splitting.py - INFO - File Path: C:\Users\rs258\MyAI\LangChain\LangChain_Tutorial\langchain-crash-course\4_rag\books\rome_and_juliet.txt
+2025-08-19 23:25:37,231 - 3_rag_text_splitting.py - ERROR - The file C:\Users\rs258\MyAI\LangChain\LangChain_Tutorial\langchain-crash-course\4_rag\books\rome_and_juliet.txt does not exist
