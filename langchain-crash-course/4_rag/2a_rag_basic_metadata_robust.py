@@ -5,12 +5,13 @@ This version includes better error handling, type safety, and code organization.
 
 from logging import Logger
 from pathlib import Path
-from typing import Any, List, Optional, Tuple
-from langchain_community.document_loaders import TextLoader
+from typing import List, Optional, Tuple
+
 from langchain.text_splitter import CharacterTextSplitter
+from langchain_community.document_loaders import TextLoader
+from langchain_community.vectorstores import Chroma
 from langchain_core.documents.base import Document
 from langchain_ollama.embeddings import OllamaEmbeddings
-from langchain_community.vectorstores import Chroma
 from utils.logger import RAGLogger
 
 # Get logger for this module

@@ -1,10 +1,11 @@
 from pathlib import Path
 from typing import Any, List
-from langchain_community.document_loaders import TextLoader
+
 from langchain.text_splitter import CharacterTextSplitter
+from langchain_chroma import Chroma
+from langchain_community.document_loaders import TextLoader
 from langchain_core.documents.base import Document
 from langchain_ollama.embeddings import OllamaEmbeddings
-from langchain_chroma import Chroma
 
 # Define text files directory and persistent directory
 current_dir: Path = Path(__file__).parent.resolve()
@@ -35,8 +36,8 @@ if not Path.exists(self=persistent_directory):
     documents: List[Any] = []
     for book_file in books_files:
         file_path: Path = books_dir / book_file
-        loader: TextLoader = TextLoader(file_path=file_path, encoding="utf-8")
-        docs: List[Document] = loader.load()
+        text_loader: TextLoader = TextLoader(file_path=file_path, encoding="utf-8")
+        docs: List[Document] = text_loader.load()
         for doc in docs:
             doc.metadata = {"source": str(book_file.name)}
             documents.append(doc)
