@@ -1,24 +1,38 @@
-Langchain Tutorial
+# Langchain Tutorial
 
-langchain-crash-course:
+## langchain-crash-course
 
-1_chat_models
+### 1_chat_models
 
-2_prompt_templates
+- 1_chat_model_basic.py
+- 2_chat_model_basic_conversation.py
+- 3_chat_model_alternatives.py
+- 4_chat_model_conversation_with_user.py
 
-3_chains
+### 2_prompt_templates
 
-4_rag
+- prompt_template.py
 
-Ollama Models:
-simple, quick tasks
-llama3.2:3b
+### 3_chains
 
-balanced performance
-gemma3:4b
+- 1_chains_basic.py
+- 2_chains_runnable_sequence.py
+- 3_chains_extended.py
+- 4_chains_parallel.py
+- 5_chains_branching.py
 
-better reasoning with moderate resources
-openthinker:7b
+### 4_rag
 
-complex analysis and best quality
-deepseek-r1:14b
+- 1a_rag_basic.py
+- 1b_rag_basic_query.py
+- 2a_rag_basic_metadata.py
+- 2a_rag_basic_metadata_robust.py
+- 2b_rag_basic_metadata.py
+
+### Ollama Models
+
+- llama3.2:3b Simple, quick tasks
+
+- gemma3:4b Balanced performance
+
+- deepseek-r1:14b Complex analysis and best quality
