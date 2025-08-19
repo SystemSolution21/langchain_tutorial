@@ -1,8 +1,9 @@
 from pathlib import Path
-from langchain_ollama import OllamaEmbeddings
+
 from langchain_chroma import Chroma
-from langchain_core.vectorstores.base import VectorStoreRetriever
 from langchain_core.documents.base import Document
+from langchain_core.vectorstores.base import VectorStoreRetriever
+from langchain_ollama import OllamaEmbeddings
 
 # Set up paths for the persistent directory
 current_dir: Path = Path(__file__).parent.resolve()
@@ -34,7 +35,7 @@ relevant_docs: list[Document] = retriever.invoke(input=query)
 
 # Display the retrieved documents with MetaData
 for i, doc in enumerate(iterable=relevant_docs, start=1):
-    print(f"\n--- Relevant Documents ---")
+    print("\n--- Relevant Documents ---")
     print(f"Document {i}:\n{doc.page_content}\n")
     if doc.metadata:
-        print(f'Source: {doc.metadata.get("source", "Unknown")}')
+        print(f"Source: {doc.metadata.get('source', 'Unknown')}")
