@@ -4,16 +4,14 @@ It processes text documents, splits them into chunks, creates embeddings, and st
 in a Chroma vector database for efficient retrieval.
 """
 
-import os
 from pathlib import Path
 from typing import List
-from langchain_community.document_loaders import TextLoader
+
 from langchain.text_splitter import CharacterTextSplitter
+from langchain_community.document_loaders import TextLoader
+from langchain_community.vectorstores import Chroma
 from langchain_core.documents.base import Document
 from langchain_ollama import OllamaEmbeddings
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
-
 
 # Set up paths
 current_dir: Path = Path(__file__).parent.resolve()
@@ -44,7 +42,7 @@ if not Path.exists(self=persistent_directory):
 
     # Split the documents into chunks
     text_splitter: CharacterTextSplitter = CharacterTextSplitter(
-        chunk_size=500, chunk_overlap=50, separator="\n"
+        chunk_size=1000, chunk_overlap=0, separator="\n"
     )
     docs: List[Document] = text_splitter.split_documents(documents=documents)
 
