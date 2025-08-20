@@ -13,9 +13,10 @@ from langchain.text_splitter import (
     TextSplitter,
     TokenTextSplitter,
 )
+from langchain_chroma import Chroma
 from langchain_community.document_loaders import TextLoader
-from langchain_community.vectorstores import Chroma
 from langchain_core.documents.base import Document
+from langchain_core.vectorstores.base import VectorStoreRetriever
 from langchain_ollama.embeddings import OllamaEmbeddings
 
 # Import logger
@@ -27,6 +28,15 @@ module_path: Path = Path(__file__).resolve()
 # Set logger
 logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
 
+# Define directories and paths
+current_dir: Path = Path(__file__).parent.resolve()
+books_dir: Path = current_dir / "books"
+file_path: Path = books_dir / "romeo_and_juliet.txt"
+db_dir: Path = current_dir / "db"
+
+# Define embeddings model
+embeddings: OllamaEmbeddings = OllamaEmbeddings(model="nomic-embed-text:latest")
+
 # Start logging
 logger.info(msg="=" * 50)
 logger.info(msg="Starting RAG Text Splitting Application")
@@ -36,8 +46,6 @@ logger.info(msg="=" * 50)
 # Create vector store
 def create_vector_store(
     documents: List[Document],
-    embeddings: OllamaEmbeddings,
-    db_dir: Path,
     store_name: str,
 ) -> None:
     persistent_directory: Path = db_dir / store_name
@@ -62,9 +70,7 @@ def create_vector_store(
 
 
 # Character-base splitting
-def character_splitter(
-    documents: list[Document], embeddings: OllamaEmbeddings, db_dir: Path
-) -> None:
+def character_splitter(documents: list[Document]) -> None:
     """
     Splits text into chunks based on a specified number of characters.
 
@@ -87,16 +93,12 @@ def character_splitter(
     char_docs: List[Document] = char_txt_splitter.split_documents(documents=documents)
     create_vector_store(
         documents=char_docs,
-        embeddings=embeddings,
-        db_dir=db_dir,
         store_name="chroma_db_character",
     )
 
 
 # Sentence-based splitting
-def sentence_splitter(
-    documents: list[Document], embeddings: OllamaEmbeddings, db_dir: Path
-) -> None:
+def sentence_splitter(documents: list[Document]) -> None:
     """
     Splits text into chunks based on sentence boundaries.
 
@@ -119,16 +121,12 @@ def sentence_splitter(
     sent_docs: List[Document] = sent_splitter.split_documents(documents=documents)
     create_vector_store(
         documents=sent_docs,
-        embeddings=embeddings,
-        db_dir=db_dir,
         store_name="chroma_db_sentence",
     )
 
 
 # Token-based splitting
-def token_splitter(
-    documents: list[Document], embeddings: OllamaEmbeddings, db_dir: Path
-) -> None:
+def token_splitter(documents: list[Document]) -> None:
     """Splits text into chunks based on tokens (words or sub-words), using tokenizers like GPT-2.
 
     Args:
@@ -150,16 +148,12 @@ def token_splitter(
     token_docs: List[Document] = token_splitter.split_documents(documents=documents)
     create_vector_store(
         documents=token_docs,
-        embeddings=embeddings,
-        db_dir=db_dir,
         store_name="chroma_db_token",
     )
 
 
 # Recursive character-based splitting
-def recursive_character_splitter(
-    documents: list[Document], embeddings: OllamaEmbeddings, db_dir: Path
-) -> None:
+def recursive_character_splitter(documents: list[Document]) -> None:
     """Split text at natural boundaries (sentences, paragraphs) within character limit.
 
     Args:
@@ -183,8 +177,6 @@ def recursive_character_splitter(
     )
     create_vector_store(
         documents=recursive_char_docs,
-        embeddings=embeddings,
-        db_dir=db_dir,
         store_name="chroma_db_recursive_character",
     )
 
@@ -198,9 +190,7 @@ class CustomTextSplitter(TextSplitter):
 
 
 # Custom-based splitter
-def custom_splitter(
-    documents: list[Document], embeddings: OllamaEmbeddings, db_dir: Path
-) -> None:
+def custom_splitter(documents: list[Document]) -> None:
     """Custom text splitter based on specific requirements.
 
     Args:
@@ -218,20 +208,41 @@ def custom_splitter(
     custom_docs: List[Document] = custom_splitter.split_documents(documents=documents)
     create_vector_store(
         documents=custom_docs,
-        embeddings=embeddings,
-        db_dir=db_dir,
         store_name="chroma_db_custom",
     )
 
 
+# Query vector store
+def query_vector_store(store_name: str, query: str) -> None:
+    persistent_directory: Path = db_dir / store_name
+    if not Path.exists(self=persistent_directory):
+        logger.info(
+            msg=f"Vector store '{store_name}' does not exist. No need to query."
+        )
+        return
+
+    try:
+        logger.info(msg=f"Querying vector store '{store_name}'...")
+        db: Chroma = Chroma(
+            persist_directory=str(object=persistent_directory),
+            embedding_function=embeddings,
+        )
+        retriever: VectorStoreRetriever = db.as_retriever(
+            search_type="similarity_score_threshold",
+            search_kwargs={"k": 1, "score_threshold": 0.1},
+        )
+        relevant_docs: list[Document] = retriever.invoke(input=query)
+        for i, doc in enumerate(relevant_docs, start=1):
+            print(f"\n--- Relevant Document {i} ---")
+            print(f"Document:\n{doc.page_content}\n")
+            if doc.metadata:
+                print(f"Source: {doc.metadata.get('source', 'Unknown')}\n")
+    except Exception as e:
+        logger.error(msg=f"Unexpected error querying vector store: {str(object=e)}")
+
+
 def main() -> None:
     try:
-        # Define directories
-        current_dir: Path = Path(__file__).parent.resolve()
-        books_dir: Path = current_dir / "books"
-        file_path: Path = books_dir / "romeo_and_juliet.txt"
-        db_dir: Path = current_dir / "db"
-
         # logging file path
         logger.info(msg=f"File Path: {file_path}")
 
@@ -244,30 +255,57 @@ def main() -> None:
         text_loader: TextLoader = TextLoader(file_path=file_path, encoding="utf-8")
         documents: List[Document] = text_loader.load()
 
-        # Define embeddings model
-        embeddings: OllamaEmbeddings = OllamaEmbeddings(model="nomic-embed-text:latest")
-
     except Exception as e:
-        logger.error(msg=f"Unexpected error: {str(object=e)}")
+        logger.error(msg=f"Failed to load documents: {str(object=e)}")
+        # Exit if we can't load the documents, preventing UnboundLocalError
+        sys.exit(1)
 
-    # # Character-based splitting
-    # character_splitter(documents=documents, embeddings=embeddings, db_dir=db_dir)
+    # Character-based splitting
+    character_splitter(documents=documents)
 
     # Sentence-based splitting
-    sentence_splitter(documents=documents, embeddings=embeddings, db_dir=db_dir)
+    sentence_splitter(documents=documents)
 
-    # # Token-based splitting
-    # token_splitter(documents=documents, embeddings=embeddings, db_dir=db_dir)
+    # Token-based splitting
+    token_splitter(documents=documents)
 
-    # # Recursive character-based splitting
-    # recursive_character_splitter(
-    #     documents=documents, embeddings=embeddings, db_dir=db_dir
-    # )
+    # Recursive character-based splitting
+    recursive_character_splitter(documents=documents)
 
-    # # Custom-based splitting
-    # custom_splitter(documents=documents, embeddings=embeddings, db_dir=db_dir)
+    # Custom-based splitting
+    custom_splitter(documents=documents)
 
 
 # Main entry point
 if __name__ == "__main__":
     main()
+
+    # User query
+    query: str = "How did Juliet die?"
+
+    # Query vector store
+    # Character-based
+    query_vector_store(
+        store_name="chroma_db_character",
+        query=query,
+    )
+    # Sentence-based
+    query_vector_store(
+        store_name="chroma_db_sentence",
+        query=query,
+    )
+    # Token-based
+    query_vector_store(
+        store_name="chroma_db_token",
+        query=query,
+    )
+    # Recursive character-based
+    query_vector_store(
+        store_name="chroma_db_recursive_character",
+        query=query,
+    )
+    # Custom-based
+    query_vector_store(
+        store_name="chroma_db_custom",
+        query=query,
+    )
