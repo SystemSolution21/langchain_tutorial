@@ -1,4 +1,8 @@
 # 3_rag_text_splitting.py
+"""
+This script implements a RAG (Retrieval-Augmented Generation) system using LangChain.
+It processes text documents, splits them into chunks, creates embeddings, and stores them
+in a Chroma vector database for efficient retrieval."""
 
 import sys
 from logging import Logger
@@ -28,6 +32,11 @@ module_path: Path = Path(__file__).resolve()
 # Set logger
 logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
 
+# Start logging
+logger.info(msg="=" * 50)
+logger.info(msg="Starting RAG Text Splitting Application")
+logger.info(msg="=" * 50)
+
 # Define directories and paths
 current_dir: Path = Path(__file__).parent.resolve()
 books_dir: Path = current_dir / "books"
@@ -45,14 +54,8 @@ except Exception as e:
     logger.error(msg=f"Error creating database directory: {str(object=e)}")
     sys.exit(1)
 
-
 # Define embeddings model
 embeddings: OllamaEmbeddings = OllamaEmbeddings(model="nomic-embed-text:latest")
-
-# Start logging
-logger.info(msg="=" * 50)
-logger.info(msg="Starting RAG Text Splitting Application")
-logger.info(msg="=" * 50)
 
 
 # Create vector store
