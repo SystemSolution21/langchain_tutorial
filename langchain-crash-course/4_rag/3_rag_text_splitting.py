@@ -88,8 +88,6 @@ def character_splitter(documents: list[Document]) -> None:
 
     Args:
         documents: List of documents to split
-        embeddings: Embeddings model
-        db_dir: Directory to store the vector database
         store_name: Name of the vector store
         chunk_size: Size of text chunks
         chunk_overlap: Overlap between chunks
@@ -116,8 +114,6 @@ def sentence_splitter(documents: list[Document]) -> None:
 
     Args:
         documents: List of documents to split
-        embeddings: Embeddings model
-        db_dir: Directory to store the vector database
         store_name: Name of the vector store
         chunk_size: Size of text chunks
         chunk_overlap: Overlap between chunks
@@ -143,8 +139,6 @@ def token_splitter(documents: list[Document]) -> None:
 
     Args:
         documents: List of documents to split
-        embeddings: Embeddings model
-        db_dir: Directory to store the vector database
         store_name: Name of the vector store
         chunk_size: Size of text chunks
         chunk_overlap: Overlap between chunks
@@ -170,8 +164,6 @@ def recursive_character_splitter(documents: list[Document]) -> None:
 
     Args:
         documents: List of documents to split
-        embeddings: Embeddings model
-        db_dir: Directory to store the vector database
         store_name: Name of the vector store
         chunk_size: Size of text chunks
         chunk_overlap: Overlap between chunks
@@ -207,8 +199,6 @@ def custom_splitter(documents: list[Document]) -> None:
 
     Args:
         documents: List of documents to split
-        embeddings: Embeddings model
-        db_dir: Directory to store the vector database
         store_name: Name of the vector store
     Returns:
         None
@@ -226,6 +216,14 @@ def custom_splitter(documents: list[Document]) -> None:
 
 # Query vector store
 def query_vector_store(store_name: str, query: str) -> None:
+    """Query the vector store for relevant documents.
+
+    Args:
+        store_name: Name of the vector store
+        query: Query string
+    Returns:
+        None
+    """
     persistent_directory: Path = db_dir / store_name
     if not Path.exists(self=persistent_directory):
         logger.info(
@@ -265,6 +263,7 @@ def query_vector_store(store_name: str, query: str) -> None:
 
 
 def main() -> None:
+    """Main function to set up and initialize the vector store."""
     try:
         # Check file exists
         if not Path.exists(self=file_path):
@@ -300,6 +299,7 @@ def main() -> None:
 
 # Main entry point
 if __name__ == "__main__":
+    # Setup and initialize vector stores
     main()
 
     # User query
