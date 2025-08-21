@@ -1,8 +1,9 @@
-# 3_rag_text_splitting.py
+# 4_rag_multi_model_embeddings.py
 """
 This script implements a RAG (Retrieval-Augmented Generation) system using LangChain.
-It processes text documents, splits them into chunks, creates embeddings, and stores them
-in a Chroma vector database for efficient retrieval."""
+It processes text documents, splits them into chunks, creates embeddings using multiple models,
+and stores them in a Chroma vector database for efficient retrieval.
+"""
 
 # Import standard libraries
 import sys
@@ -24,7 +25,7 @@ from langchain_core.vectorstores.base import VectorStoreRetriever
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
 
-# Import logger
+# Import custom logger
 from utils.logger import RAGLogger
 
 # Load environment variables
