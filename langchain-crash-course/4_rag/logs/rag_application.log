@@ -1,19 +1,27 @@
-2025-08-20 22:54:50,288 - 3_rag_text_splitting.py - INFO - ==================================================
-2025-08-20 22:54:50,288 - 3_rag_text_splitting.py - INFO - Starting RAG Text Splitting Application
-2025-08-20 22:54:50,288 - 3_rag_text_splitting.py - INFO - ==================================================
-2025-08-20 22:54:50,304 - 3_rag_text_splitting.py - INFO - File Path: C:\Users\path-to-your-file\LangChain_Tutorial\langchain-crash-course\4_rag\books\romeo_and_juliet.txt
-2025-08-20 22:54:50,304 - 3_rag_text_splitting.py - INFO - ---- Using character-based splitting ----
-2025-08-20 22:54:50,313 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_character' already exists. No need to initialize.
-2025-08-20 22:54:50,313 - 3_rag_text_splitting.py - INFO - ---- Using sentence-based splitting ----
-2025-08-20 22:55:01,133 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_sentence' already exists. No need to initialize.
-2025-08-20 22:55:01,133 - 3_rag_text_splitting.py - INFO - ---- Using token-based splitting ----
-2025-08-20 22:55:01,437 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_token' already exists. No need to initialize.
-2025-08-20 22:55:01,437 - 3_rag_text_splitting.py - INFO - ---- Using recursive character-based splitting ----
-2025-08-20 22:55:01,440 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_recursive_character' already exists. No need to initialize.
-2025-08-20 22:55:01,440 - 3_rag_text_splitting.py - INFO - ---- Using custom-based splitting ----
-2025-08-20 22:55:01,449 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_custom' already exists. No need to initialize.
-2025-08-20 22:55:01,449 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_character'...
-2025-08-20 22:55:02,199 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_sentence'...
-2025-08-20 22:55:02,367 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_token'...
-2025-08-20 22:55:02,600 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_recursive_character'...
-2025-08-20 22:55:02,770 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_custom'...
+2025-08-21 14:27:53,978 - 3_rag_text_splitting.py - INFO - Books Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\books
+2025-08-21 14:27:53,978 - 3_rag_text_splitting.py - INFO - Database Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\db
+2025-08-21 14:27:53,994 - 3_rag_text_splitting.py - INFO - Database directory created/verified successfully
+2025-08-21 14:27:55,033 - 3_rag_text_splitting.py - INFO - ==================================================
+2025-08-21 14:27:55,033 - 3_rag_text_splitting.py - INFO - Starting RAG Text Splitting Application
+2025-08-21 14:27:55,033 - 3_rag_text_splitting.py - INFO - ==================================================
+2025-08-21 14:27:55,033 - 3_rag_text_splitting.py - INFO - File Path: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\books\romeo_and_juliet.txt
+2025-08-21 14:27:55,033 - 3_rag_text_splitting.py - INFO - ---- Using character-based splitting ----
+2025-08-21 14:27:55,064 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_character' already exists. No need to initialize.
+2025-08-21 14:27:55,064 - 3_rag_text_splitting.py - INFO - ---- Using sentence-based splitting ----
+2025-08-21 14:28:09,178 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_sentence' already exists. No need to initialize.
+2025-08-21 14:28:09,178 - 3_rag_text_splitting.py - INFO - ---- Using token-based splitting ----
+2025-08-21 14:28:09,647 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_token' already exists. No need to initialize.
+2025-08-21 14:28:09,647 - 3_rag_text_splitting.py - INFO - ---- Using recursive character-based splitting ----
+2025-08-21 14:28:09,647 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_recursive_character' already exists. No need to initialize.
+2025-08-21 14:28:09,647 - 3_rag_text_splitting.py - INFO - ---- Using custom-based splitting ----
+2025-08-21 14:28:09,656 - 3_rag_text_splitting.py - INFO - Vector store 'chroma_db_custom' already exists. No need to initialize.
+2025-08-21 14:28:09,656 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_character'...
+2025-08-21 14:28:09,956 - 3_rag_text_splitting.py - INFO - For vector store 'chroma_db_character', found 1 relevant documents
+2025-08-21 14:28:09,956 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_sentence'...
+2025-08-21 14:28:10,139 - 3_rag_text_splitting.py - INFO - For vector store 'chroma_db_sentence', found 1 relevant documents
+2025-08-21 14:28:10,139 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_token'...
+2025-08-21 14:28:10,317 - 3_rag_text_splitting.py - INFO - For vector store 'chroma_db_token', found 1 relevant documents
+2025-08-21 14:28:10,322 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_recursive_character'...
+2025-08-21 14:28:10,514 - 3_rag_text_splitting.py - INFO - For vector store 'chroma_db_recursive_character', found 1 relevant documents
+2025-08-21 14:28:10,514 - 3_rag_text_splitting.py - INFO - Querying vector store 'chroma_db_custom'...
+2025-08-21 14:28:10,722 - 3_rag_text_splitting.py - INFO - For vector store 'chroma_db_custom', found 1 relevant documents

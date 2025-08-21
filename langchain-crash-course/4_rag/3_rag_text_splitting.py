@@ -34,6 +34,18 @@ books_dir: Path = current_dir / "books"
 file_path: Path = books_dir / "romeo_and_juliet.txt"
 db_dir: Path = current_dir / "db"
 
+logger.info(msg=f"Books Directory: {books_dir}")
+logger.info(msg=f"Database Directory: {db_dir}")
+
+# Create db directory if it doesn't exist
+try:
+    db_dir.mkdir(exist_ok=True)
+    logger.info(msg="Database directory created/verified successfully")
+except Exception as e:
+    logger.error(msg=f"Error creating database directory: {str(object=e)}")
+    sys.exit(1)
+
+
 # Define embeddings model
 embeddings: OllamaEmbeddings = OllamaEmbeddings(model="nomic-embed-text:latest")
 
@@ -227,29 +239,40 @@ def query_vector_store(store_name: str, query: str) -> None:
             persist_directory=str(object=persistent_directory),
             embedding_function=embeddings,
         )
+
         retriever: VectorStoreRetriever = db.as_retriever(
             search_type="similarity_score_threshold",
             search_kwargs={"k": 1, "score_threshold": 0.1},
         )
+
         relevant_docs: list[Document] = retriever.invoke(input=query)
+        if relevant_docs:
+            logger.info(
+                msg=f"For vector store '{store_name}', found {len(relevant_docs)} relevant documents"
+            )
+        else:
+            logger.info(msg="No relevant documents found")
+            return
+
         for i, doc in enumerate(relevant_docs, start=1):
             print(f"\n--- Relevant Document {i} ---")
             print(f"Document:\n{doc.page_content}\n")
             if doc.metadata:
                 print(f"Source: {doc.metadata.get('source', 'Unknown')}\n")
+
     except Exception as e:
         logger.error(msg=f"Unexpected error querying vector store: {str(object=e)}")
 
 
 def main() -> None:
     try:
-        # logging file path
-        logger.info(msg=f"File Path: {file_path}")
-
         # Check file exists
         if not Path.exists(self=file_path):
             logger.error(msg=f"The file {file_path} does not exist")
             sys.exit(1)
+
+        # logging file path
+        logger.info(msg=f"File Path: {file_path}")
 
         # Load text content from file
         text_loader: TextLoader = TextLoader(file_path=file_path, encoding="utf-8")
@@ -257,7 +280,6 @@ def main() -> None:
 
     except Exception as e:
         logger.error(msg=f"Failed to load documents: {str(object=e)}")
-        # Exit if we can't load the documents, preventing UnboundLocalError
         sys.exit(1)
 
     # Character-based splitting
