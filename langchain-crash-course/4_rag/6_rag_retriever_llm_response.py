@@ -122,8 +122,11 @@ def llm_response(relevant_docs: list[Document], query: str) -> BaseMessage | Non
     combined_input: str = f"""
         Here are some documents that might help answer the question:
         {query}
+
         Relevant Documents:
+        
         {"".join([doc.page_content for doc in relevant_docs])}
+
         Please provide an answer based only on the provided documents. 
         If the answer is not found in the documents, respond with 'I'm not sure'.
     """
@@ -153,15 +156,16 @@ def main() -> None:
     relevant_docs: list[Document] | None = query_vector_store(
         query=query,
         search_type="similarity",
-        search_kwargs={"k": 1},
+        search_kwargs={"k": 3},
     )
 
+    # Generate LLMs response
     if relevant_docs:
-        # Generate LLMs response
         result: BaseMessage | None = llm_response(
             relevant_docs=relevant_docs, query=query
         )
 
+        # Print the response
         if result:
             logger.info(msg="AI response generated successfully")
             print(f"AI: {result.content}")
