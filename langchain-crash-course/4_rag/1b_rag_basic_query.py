@@ -1,5 +1,13 @@
+# 1b_rag_basic_query.py
+"""
+This script implements a RAG (Retrieval-Augmented Generation) system using LangChain.
+It queries a vector store for relevant documents based on a user's query and prints the results.
+"""
+
+# Import necessary libraries
 from pathlib import Path
 
+# Import langchain modules
 from langchain_chroma import Chroma
 from langchain_core.documents.base import Document
 from langchain_core.vectorstores.base import VectorStoreRetriever

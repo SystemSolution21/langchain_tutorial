@@ -54,3 +54,16 @@
 2025-08-23 16:39:34,628 - 6_rag_retriever_llm_response.py - INFO - Retrieved vector store 'chroma_db_with_metadata', found 3 relevant documents.
 2025-08-23 16:39:34,628 - 6_rag_retriever_llm_response.py - INFO - Generating LLMs response on retrieved relevant documents...
 2025-08-23 16:39:57,697 - 6_rag_retriever_llm_response.py - INFO - AI response generated successfully
+2025-08-23 17:32:16,000 - __main__ - INFO - ==================================================
+2025-08-23 17:32:16,000 - __main__ - INFO - Starting Create RAG With Metadata Application
+2025-08-23 17:32:16,000 - __main__ - INFO - ==================================================
+2025-08-23 17:32:16,013 - __main__ - INFO - Books Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\books
+2025-08-23 17:32:16,031 - __main__ - INFO - Persistent Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\db\chroma_db_with_metadata_langchain
+2025-08-23 17:32:16,031 - __main__ - INFO - Initializing new vector store...
+2025-08-23 17:32:16,031 - __main__ - INFO - Successfully loaded: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\books\langchain.txt
+2025-08-23 17:32:16,031 - __main__ - INFO - Successfully created 4 document chunks
+2025-08-23 17:32:16,031 - __main__ - INFO - Creating embeddings...
+2025-08-23 17:32:17,043 - __main__ - INFO - Embeddings created successfully
+2025-08-23 17:32:17,043 - __main__ - INFO - Initializing Chroma vector store...
+2025-08-23 17:32:18,837 - __main__ - INFO - Vector store initialized successfully
+2025-08-23 17:32:18,837 - __main__ - INFO - Vector store initialization completed successfully

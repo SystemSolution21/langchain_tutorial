@@ -1,12 +1,15 @@
+# 1a_rag_basic.py
 """
 This script implements a basic RAG (Retrieval-Augmented Generation) system using LangChain.
 It processes text documents, splits them into chunks, creates embeddings, and stores them
 in a Chroma vector database for efficient retrieval.
 """
 
+# Import necessary libraries
 from pathlib import Path
 from typing import List
 
+# Import langchain modules
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_community.vectorstores import Chroma

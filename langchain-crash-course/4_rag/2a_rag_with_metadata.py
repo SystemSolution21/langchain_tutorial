@@ -1,8 +1,15 @@
 """
-Robust version of RAG implementation with metadata handling.
-This version includes better error handling, type safety, and code organization.
+This script demonstrates a robust way to create a RAG (Retrieval-Augmented Generation)
+system with metadata and persistent storage. It includes the following steps:
+1.  Loading documents from a specified directory with error handling.
+2.  Splitting the loaded documents into smaller chunks.
+3.  Creating embeddings for the chunks using Ollama.
+4.  Initializing and persisting a Chroma vector store with the chunks and their metadata.
+The script is designed to be idempotent, checking if the vector store already exists
+before attempting to create it.
 """
 
+# Import necessary libraries
 from logging import Logger
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -22,7 +29,7 @@ logger: Logger = RAGLogger.get_logger(module_name=__name__)
 
 # Log application startup
 logger.info(msg="=" * 50)
-logger.info(msg="Starting RAG Metadata Application")
+logger.info(msg="Starting Create RAG With Metadata Application")
 logger.info(msg="=" * 50)
 
 # Define directories
@@ -38,33 +45,35 @@ logger.info(msg=f"Persistent Directory: {persistent_directory}")
 
 # Load documents
 def load_documents(books_dir: Path) -> List[Document]:
-    """
-    Load documents from text files with error handling for each file.
+    """Loads documents from text files in a directory, adding metadata.
+
+    This function iterates through all '.txt' files in the specified directory,
+    loads them as documents, and adds the filename as metadata to each document.
+    It includes error handling for file loading and directory access.
 
     Args:
-        books_dir: Directory containing the text files
+        books_dir (Path): The path to the directory containing the text files.
 
     Returns:
-        List[Document]: List of successfully loaded documents
+        List[Document]: A list of loaded documents, each with 'source' metadata.
     """
     documents: List[Document] = []
     failed_files: List[Tuple[Path, str]] = []
 
     try:
-        books_files: List[Path] = list(Path.glob(self=books_dir, pattern="*.txt"))
+        books_files: List[Path] = list(books_dir.glob(pattern="*.txt"))
         if not books_files:
             logger.warning(msg=f"No '.txt' files found in {books_dir}")
             return documents
 
-        for book_file in books_files:
-            file_path: Path = books_dir / book_file
+        for file_path in books_files:
             try:
                 text_loader: TextLoader = TextLoader(
-                    file_path=file_path, encoding="utf-8"
+                    file_path=str(object=file_path), encoding="utf-8"
                 )
                 docs: List[Document] = text_loader.load()
                 for doc in docs:
-                    doc.metadata = {"source": str(object=book_file.name)}
+                    doc.metadata = {"source": file_path.name}
                     documents.append(doc)
                 logger.info(msg=f"Successfully loaded: {file_path}")
             except Exception as e:
@@ -89,16 +98,19 @@ def load_documents(books_dir: Path) -> List[Document]:
 def create_text_chunks(
     documents: List[Document], chunk_size: int, chunk_overlap: int
 ) -> List[Document]:
-    """
-    Split documents into chunks with error handling.
+    """Splits a list of documents into smaller chunks.
+
+    Uses CharacterTextSplitter to divide the documents based on the specified
+    chunk size and overlap.
 
     Args:
-        documents: List of documents to split
-        chunk_size: Size of text chunks
-        chunk_overlap: Overlap between chunks
+        documents (List[Document]): The list of documents to be split.
+        chunk_size (int): The maximum number of characters in each chunk.
+        chunk_overlap (int): The number of characters to overlap between chunks.
 
     Returns:
-        List[Document]: List of document chunks
+        List[Document]: A list of the resulting document chunks. Returns an
+        empty list if an error occurs.
     """
     try:
         text_splitter: CharacterTextSplitter = CharacterTextSplitter(
@@ -108,7 +120,7 @@ def create_text_chunks(
         logger.info(msg=f"Successfully created {len(chunk_doc)} document chunks")
         return chunk_doc
     except Exception as e:
-        logger.error(msg=f"Error splitting documents: {str(object=e)}")
+        logger.error(msg=f"Error splitting documents: {str(e)}")
         return []
 
 
@@ -117,30 +129,37 @@ def initialize_vector_store(
     persistent_directory: Path,
     chunk_size: int = 1000,
     chunk_overlap: int = 200,
-) -> Optional[Chroma | None]:
-    """
-    Initialize the vector store with document chunks and embeddings.
+) -> Optional[Chroma]:
+    """Initializes and persists a Chroma vector store from documents.
+
+    This function orchestrates the process of loading documents, splitting them
+    into chunks, creating embeddings, and storing them in a Chroma vector store.
+    It checks if a vector store already exists at the persistent directory and
+    skips initialization if it does.
 
     Args:
-        books_dir: Directory containing the text files
-        persistent_directory: Directory to store the vector database
-        chunk_size: Size of text chunks (default: 1000)
-        chunk_overlap: Overlap between chunks (default: 200)
+        books_dir (Path): The directory containing the source text files.
+        persistent_directory (Path): The directory where the Chroma database
+            will be persisted.
+        chunk_size (int, optional): The size of text chunks. Defaults to 1000.
+        chunk_overlap (int, optional): The overlap between text chunks.
+            Defaults to 200.
 
     Returns:
-        Optional[Chroma]: Initialized vector store or None if initialization fails
+        Optional[Chroma]: The created Chroma vector store instance if a new
+        store was initialized, otherwise None.
     """
     try:
         # Check vector store existence
-        if Path.exists(self=persistent_directory):
+        if persistent_directory.exists():
             logger.info(msg="Vector store already exists. No need to initialize.")
             return None
         logger.info(msg="Initializing new vector store...")
 
         # Check books directory existence
-        if not Path.exists(self=books_dir):
+        if not books_dir.exists():
             logger.error(
-                msg=f"The directory {books_dir} does not exist. Please check the path."
+                msg=f"The directory '{books_dir}' does not exist. Please check the path."
             )
             return None
 
@@ -148,7 +167,7 @@ def initialize_vector_store(
         documents: List[Document] = load_documents(books_dir=books_dir)
         if not documents:
             logger.warning(
-                msg="No documents were successfully loaded from directory '{books_dir}'"
+                msg=f"No documents were successfully loaded from directory '{books_dir}'"
             )
             return None
 
@@ -193,28 +212,30 @@ def initialize_vector_store(
 
 
 def main() -> None:
-    """Main function to set up and initialize the vector store."""
+    """Main function to run the RAG vector store initialization process.
+
+    This function calls the necessary functions to set up the vector store.
+    It handles the main logic flow and logs the outcome of the initialization.
+    """
     try:
         # Initialize vector store
-        db: Chroma | None = initialize_vector_store(
+        db: Optional[Chroma] = initialize_vector_store(
             books_dir=books_dir,
             persistent_directory=persistent_directory,
         )
 
         # Check initialization result
-        if db is None and Path.exists(self=persistent_directory):
-            logger.info(msg="Using existing vector store - no initialization needed")
+        if db is None and persistent_directory.exists():
+            logger.info("Using existing vector store - no initialization needed")
         elif db is not None:
-            logger.info(msg="Vector store initialization completed successfully")
+            logger.info("Vector store initialization completed successfully")
         else:
             logger.error(
-                msg="Vector store initialization failed - system may not function correctly"
+                "Vector store initialization failed - system may not function correctly"
             )
 
     except Exception as e:
-        logger.error(
-            msg=f"Unexpected error while set up and initializing vector store: {str(object=e)}"
-        )
+        logger.error(f"An unexpected error occurred in the main execution block: {e}")
 
 
 if __name__ == "__main__":

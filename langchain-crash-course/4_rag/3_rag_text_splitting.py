@@ -4,6 +4,7 @@ This script implements a RAG (Retrieval-Augmented Generation) system using LangC
 It processes text documents, splits them into chunks, creates embeddings, and stores them
 in a Chroma vector database for efficient retrieval."""
 
+# Import standard libraries
 import sys
 from logging import Logger
 from pathlib import Path

@@ -1,6 +1,14 @@
+# 2a_rag_basic_metadata.py
+"""
+This script implements a RAG (Retrieval-Augmented Generation) system using LangChain.
+It processes text documents, splits them into chunks, creates embeddings, and stores them in a Chroma vector store.
+"""
+
+# Import necessary libraries
 from pathlib import Path
 from typing import Any, List
 
+# Import LangChain modules
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import TextLoader

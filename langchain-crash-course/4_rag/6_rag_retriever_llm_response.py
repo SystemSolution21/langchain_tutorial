@@ -1,5 +1,9 @@
 # 6_rag_retriever_llm_response.py
-
+"""
+This script implements a RAG (Retrieval-Augmented Generation) system using LangChain.
+It queries a vector store for relevant documents, generates an LLMs response based on the query and relevant documents,
+and prints the response.
+"""
 
 # Import standard libraries
 from logging import Logger

@@ -1,5 +1,11 @@
 # 5_rag_retriever_search_types.py
-
+"""
+This script implements a RAG (Retrieval-Augmented Generation) system using LangChain.
+It queries a vector store for relevant documents using different search types and prints the results.
+    1. Similarity Search
+    2. Max Marginal Relevance (MMR)
+    3. Similarity Score Threshold
+"""
 
 # Import standard libraries
 from logging import Logger
