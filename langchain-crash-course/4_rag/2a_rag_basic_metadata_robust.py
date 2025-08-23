@@ -25,7 +25,18 @@ logger.info(msg="=" * 50)
 logger.info(msg="Starting RAG Metadata Application")
 logger.info(msg="=" * 50)
 
+# Define directories
+current_dir: Path = Path(__file__).parent.resolve()
+books_dir: Path = current_dir / "books"
+db_dir: Path = current_dir / "db"
+persistent_directory: Path = db_dir / "chroma_db_with_metadata"
 
+# Log directories
+logger.info(msg=f"Books Directory: {books_dir}")
+logger.info(msg=f"Persistent Directory: {persistent_directory}")
+
+
+# Load documents
 def load_documents(books_dir: Path) -> List[Document]:
     """
     Load documents from text files with error handling for each file.
@@ -42,14 +53,16 @@ def load_documents(books_dir: Path) -> List[Document]:
     try:
         books_files: List[Path] = list(Path.glob(self=books_dir, pattern="*.txt"))
         if not books_files:
-            logger.warning(msg=f"No .txt files found in {books_dir}")
+            logger.warning(msg=f"No '.txt' files found in {books_dir}")
             return documents
 
         for book_file in books_files:
             file_path: Path = books_dir / book_file
             try:
-                loader: TextLoader = TextLoader(file_path=file_path, encoding="utf-8")
-                docs: List[Document] = loader.load()
+                text_loader: TextLoader = TextLoader(
+                    file_path=file_path, encoding="utf-8"
+                )
+                docs: List[Document] = text_loader.load()
                 for doc in docs:
                     doc.metadata = {"source": str(object=book_file.name)}
                     documents.append(doc)
@@ -72,6 +85,7 @@ def load_documents(books_dir: Path) -> List[Document]:
     return documents
 
 
+# Create text chunks
 def create_text_chunks(
     documents: List[Document], chunk_size: int, chunk_overlap: int
 ) -> List[Document]:
@@ -103,7 +117,7 @@ def initialize_vector_store(
     persistent_directory: Path,
     chunk_size: int = 1000,
     chunk_overlap: int = 200,
-) -> Optional[Chroma]:
+) -> Optional[Chroma | None]:
     """
     Initialize the vector store with document chunks and embeddings.
 
@@ -117,20 +131,25 @@ def initialize_vector_store(
         Optional[Chroma]: Initialized vector store or None if initialization fails
     """
     try:
+        # Check vector store existence
         if Path.exists(self=persistent_directory):
             logger.info(msg="Vector store already exists. No need to initialize.")
             return None
-
         logger.info(msg="Initializing new vector store...")
 
+        # Check books directory existence
         if not Path.exists(self=books_dir):
-            logger.error(msg=f"The directory {books_dir} does not exist")
+            logger.error(
+                msg=f"The directory {books_dir} does not exist. Please check the path."
+            )
             return None
 
         # Load documents
         documents: List[Document] = load_documents(books_dir=books_dir)
         if not documents:
-            logger.warning(msg="No documents were successfully loaded")
+            logger.warning(
+                msg="No documents were successfully loaded from directory '{books_dir}'"
+            )
             return None
 
         # Create chunks
@@ -138,7 +157,7 @@ def initialize_vector_store(
             documents=documents, chunk_size=chunk_size, chunk_overlap=chunk_overlap
         )
         if not chunk_doc:
-            logger.warning(msg="No document chunks were created")
+            logger.warning(msg="No document chunks were created.")
             return None
 
         # Create embeddings
@@ -176,23 +195,6 @@ def initialize_vector_store(
 def main() -> None:
     """Main function to set up and initialize the vector store."""
     try:
-        # Define directories
-        current_dir: Path = Path(__file__).parent.resolve()
-        books_dir: Path = current_dir / "books"
-        db_dir: Path = current_dir / "db"
-        persistent_directory: Path = db_dir / "chroma_db_with_metadata"
-
-        logger.info(msg=f"Books Directory: {books_dir}")
-        logger.info(msg=f"Persistent Directory: {persistent_directory}")
-
-        # Create db directory if it doesn't exist
-        try:
-            db_dir.mkdir(exist_ok=True)
-            logger.info(msg="Database directory created/verified successfully")
-        except Exception as e:
-            logger.error(msg=f"Error creating database directory: {str(object=e)}")
-            return
-
         # Initialize vector store
         db: Chroma | None = initialize_vector_store(
             books_dir=books_dir,

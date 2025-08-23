@@ -13,13 +13,13 @@ books_dir: Path = current_dir / "books"
 db_dir: Path = current_dir / "db"
 persistent_directory: Path = db_dir / "chroma_db_with_metadata"
 
-print(f"Books Directory: {books_dir}")
-print(f"Persistent Directory: {persistent_directory}")
+print(f"\nBooks Directory: {books_dir}")
+print(f"\nPersistent Directory: {persistent_directory}")
 
 # Documents loading, Text splitting, Embedding text and Create chroma vector store
 # Check chroma vector store exists
 if not Path.exists(self=persistent_directory):
-    print("Persistent directory does not exist. Initializing vector store...")
+    print("\nPersistent directory does not exist. Initializing vector store...")
 
     # Ensure the books directory exists
     if not Path.exists(self=books_dir):

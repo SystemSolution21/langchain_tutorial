@@ -10,11 +10,11 @@ current_dir: Path = Path(__file__).parent.resolve()
 persistent_directory: Path = current_dir / "db" / "chroma_db_with_metadata"
 
 # Define embeddings model
-embeddings: OllamaEmbeddings = OllamaEmbeddings(model="nomic-embed-text:latest")
+ollama_embeddings: OllamaEmbeddings = OllamaEmbeddings(model="nomic-embed-text:latest")
 
 # Load the Chroma vector store from the persistent directory with the embeddings model
 db: Chroma = Chroma(
-    persist_directory=str(persistent_directory), embedding_function=embeddings
+    persist_directory=str(persistent_directory), embedding_function=ollama_embeddings
 )
 
 # Define the user's question

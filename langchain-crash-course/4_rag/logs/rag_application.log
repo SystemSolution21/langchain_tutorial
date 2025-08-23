@@ -47,3 +47,10 @@
 2025-08-21 21:43:20,775 - 5_rag_retriever_search_types.py - INFO - Relevant documents retrieved using search type 'mmr' and search kwargs '{'k': 3, 'fetch_k': 20, 'lambda_mult': 0.5}' from vector store 'chroma_db_with_metadata'
 2025-08-21 21:43:20,777 - 5_rag_retriever_search_types.py - INFO - Querying vector store 'chroma_db_with_metadata'...
 2025-08-21 21:43:20,892 - 5_rag_retriever_search_types.py - INFO - No relevant documents found
+2025-08-23 16:07:57,245 - 6_rag_retriever_llm_response.py - INFO - ==================================================
+2025-08-23 16:07:57,245 - 6_rag_retriever_llm_response.py - INFO - Starting RAG Retriever LLM Response Application
+2025-08-23 16:07:57,245 - 6_rag_retriever_llm_response.py - INFO - ==================================================
+2025-08-23 16:07:59,448 - 6_rag_retriever_llm_response.py - INFO - Querying vector store 'chroma_db_with_metadata'...
+2025-08-23 16:08:00,341 - 6_rag_retriever_llm_response.py - INFO - Retrieved vector store 'chroma_db_with_metadata', found 1 relevant documents.
+2025-08-23 16:08:00,341 - 6_rag_retriever_llm_response.py - INFO - Generating LLMs response on retrieved relevant documents...
+2025-08-23 16:08:21,310 - 6_rag_retriever_llm_response.py - INFO - AI response generated successfully
