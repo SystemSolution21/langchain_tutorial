@@ -7,13 +7,13 @@ langchain-crash-course/
 │ ├── tests/
 │ │ ├── **init**.py
 │ │ ├── conftest.py
-│ │ ├── test_rag_metadata_improved.py
+│ │ ├── test_rag_with_metadata.py
 │ │ ├── test_books/ (created by tests)
 │ │ └── test_db/ (created by tests)
 │ ├── utils/
 │ │ ├── **init**.py
 │ │ └── logger.py
-│ └── 2b_rag_basic_metadata_improved.py
+│ └── rag_with_metadata.py
 
 2.Run the tests using pytest:
 

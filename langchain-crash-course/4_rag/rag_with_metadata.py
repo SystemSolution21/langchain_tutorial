@@ -24,8 +24,11 @@ from langchain_ollama.embeddings import OllamaEmbeddings
 # Import custom logger
 from utils.logger import RAGLogger
 
+# Module path
+module_path: Path = Path(__file__).resolve()
+
 # Set up logger
-logger: Logger = RAGLogger.get_logger(module_name=__name__)
+logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
 
 # Log application startup
 logger.info(msg="=" * 50)

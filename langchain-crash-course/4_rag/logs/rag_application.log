@@ -54,16 +54,40 @@
 2025-08-23 16:39:34,628 - 6_rag_retriever_llm_response.py - INFO - Retrieved vector store 'chroma_db_with_metadata', found 3 relevant documents.
 2025-08-23 16:39:34,628 - 6_rag_retriever_llm_response.py - INFO - Generating LLMs response on retrieved relevant documents...
 2025-08-23 16:39:57,697 - 6_rag_retriever_llm_response.py - INFO - AI response generated successfully
-2025-08-23 17:32:16,000 - __main__ - INFO - ==================================================
-2025-08-23 17:32:16,000 - __main__ - INFO - Starting Create RAG With Metadata Application
-2025-08-23 17:32:16,000 - __main__ - INFO - ==================================================
-2025-08-23 17:32:16,013 - __main__ - INFO - Books Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\books
-2025-08-23 17:32:16,031 - __main__ - INFO - Persistent Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\db\chroma_db_with_metadata_langchain
-2025-08-23 17:32:16,031 - __main__ - INFO - Initializing new vector store...
-2025-08-23 17:32:16,031 - __main__ - INFO - Successfully loaded: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\books\langchain.txt
-2025-08-23 17:32:16,031 - __main__ - INFO - Successfully created 4 document chunks
-2025-08-23 17:32:16,031 - __main__ - INFO - Creating embeddings...
-2025-08-23 17:32:17,043 - __main__ - INFO - Embeddings created successfully
-2025-08-23 17:32:17,043 - __main__ - INFO - Initializing Chroma vector store...
-2025-08-23 17:32:18,837 - __main__ - INFO - Vector store initialized successfully
-2025-08-23 17:32:18,837 - __main__ - INFO - Vector store initialization completed successfully
+2025-08-24 00:57:28,462 - rag_with_metadata.py - INFO - ==================================================
+2025-08-24 00:57:28,462 - rag_with_metadata.py - INFO - Starting Create RAG With Metadata Application
+2025-08-24 00:57:28,462 - rag_with_metadata.py - INFO - ==================================================
+2025-08-24 00:57:28,462 - rag_with_metadata.py - INFO - Books Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\books
+2025-08-24 00:57:28,462 - rag_with_metadata.py - INFO - Persistent Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\db\chroma_db_with_metadata
+2025-08-24 00:57:28,462 - rag_with_metadata.py - INFO - Vector store already exists. No need to initialize.
+2025-08-24 00:57:28,462 - rag_with_metadata.py - INFO - Using existing vector store - no initialization needed
+2025-08-24 01:00:38,908 - rag_with_metadata.py - INFO - ==================================================
+2025-08-24 01:00:38,908 - rag_with_metadata.py - INFO - Starting Create RAG With Metadata Application
+2025-08-24 01:00:38,908 - rag_with_metadata.py - INFO - ==================================================
+2025-08-24 01:00:38,922 - rag_with_metadata.py - INFO - Books Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\books
+2025-08-24 01:00:38,922 - rag_with_metadata.py - INFO - Persistent Directory: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\db\chroma_db_with_metadata
+2025-08-24 01:00:38,938 - rag_with_metadata.py - INFO - Testing document loading...
+2025-08-24 01:00:38,938 - rag_with_metadata.py - INFO - Successfully loaded: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\tests\test_books\empty_book.txt
+2025-08-24 01:00:38,954 - rag_with_metadata.py - INFO - Successfully loaded: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\tests\test_books\test_book.txt
+2025-08-24 01:00:38,954 - rag_with_metadata.py - INFO - Document loading test completed successfully
+2025-08-24 01:00:38,954 - rag_with_metadata.py - INFO - Testing text chunking...
+2025-08-24 01:00:38,954 - rag_with_metadata.py - INFO - Successfully created 5 document chunks
+2025-08-24 01:00:38,954 - rag_with_metadata.py - INFO - Text chunking test completed successfully
+2025-08-24 01:00:38,954 - rag_with_metadata.py - INFO - Testing vector store initialization for a new store (with mocks)...
+2025-08-24 01:00:38,972 - rag_with_metadata.py - INFO - Initializing new vector store...
+2025-08-24 01:00:38,972 - rag_with_metadata.py - INFO - Successfully loaded: C:\Users\path-to-file\LangChain_Tutorial\langchain-crash-course\4_rag\tests\test_books\test_book.txt
+2025-08-24 01:00:38,972 - rag_with_metadata.py - INFO - Successfully created 1 document chunks
+2025-08-24 01:00:38,972 - rag_with_metadata.py - INFO - Creating embeddings...
+2025-08-24 01:00:38,972 - rag_with_metadata.py - INFO - Embeddings created successfully
+2025-08-24 01:00:38,972 - rag_with_metadata.py - INFO - Initializing Chroma vector store...
+2025-08-24 01:00:38,972 - rag_with_metadata.py - INFO - Vector store initialized successfully
+2025-08-24 01:00:38,972 - rag_with_metadata.py - INFO - Vector store initialization test (new store, mocked) completed successfully
+2025-08-24 01:00:38,972 - rag_with_metadata.py - INFO - Testing vector store initialization with existing store...
+2025-08-24 01:00:39,002 - rag_with_metadata.py - INFO - Vector store already exists. No need to initialize.
+2025-08-24 01:00:39,004 - rag_with_metadata.py - INFO - Vector store initialization test (existing store) completed successfully
+2025-08-24 01:00:39,014 - rag_with_metadata.py - INFO - Testing main flow with: init_return=new_store, dir_exists=False
+2025-08-24 01:00:39,014 - rag_with_metadata.py - INFO - Vector store initialization completed successfully
+2025-08-24 01:00:39,024 - rag_with_metadata.py - INFO - Testing main flow with: init_return=None, dir_exists=True
+2025-08-24 01:00:39,025 - rag_with_metadata.py - INFO - Using existing vector store - no initialization needed
+2025-08-24 01:00:39,031 - rag_with_metadata.py - INFO - Testing main flow with: init_return=None, dir_exists=False
+2025-08-24 01:00:39,032 - rag_with_metadata.py - ERROR - Vector store initialization failed - system may not function correctly
