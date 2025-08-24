@@ -103,3 +103,10 @@
 2025-08-24 23:44:33,599 - 7_rag_llm_conversation.py - INFO - AI response generated successfully
 2025-08-24 23:44:33,599 - 7_rag_llm_conversation.py - INFO - Chat history updated successfully
 2025-08-24 23:45:17,573 - 7_rag_llm_conversation.py - INFO - User exited conversation
+2025-08-25 00:07:42,148 - 7_rag_llm_conversation.py - INFO - ==================================================
+2025-08-25 00:07:42,148 - 7_rag_llm_conversation.py - INFO - Starting RAG LLM Conversation Application
+2025-08-25 00:07:42,148 - 7_rag_llm_conversation.py - INFO - ==================================================
+2025-08-25 00:07:44,236 - 7_rag_llm_conversation.py - INFO - Loading vector store 'chroma_db_with_metadata'...
+2025-08-25 00:07:44,386 - 7_rag_llm_conversation.py - INFO - Created retriever from vector store 'chroma_db_with_metadata' successfully.
+2025-08-25 00:08:19,720 - 7_rag_llm_conversation.py - INFO - Processing user query through RAG chain...
+2025-08-25 00:08:20,442 - 7_rag_llm_conversation.py - ERROR - Unexpected error: model "gemma3:4" not found, try pulling it first (status code: 404)

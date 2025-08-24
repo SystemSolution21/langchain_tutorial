@@ -72,7 +72,7 @@ ollama_embeddings = OllamaEmbeddings(
 )
 
 # Define LLM
-llm = ChatOllama(model="gemma3:4b")
+llm = ChatOllama(model="gemma3:4")
 
 # Check vector store existence
 if not persistent_directory.exists():
@@ -207,6 +207,11 @@ def main() -> None:
 
         except (KeyboardInterrupt, EOFError):
             logger.info(msg="Keyboard interrupt or EOF error")
+            print("Exiting...")
+            break
+
+        except Exception as e:
+            logger.error(msg=f"Unexpected error: {e}")
             print("Exiting...")
             break
 
