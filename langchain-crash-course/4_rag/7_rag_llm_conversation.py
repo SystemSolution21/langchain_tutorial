@@ -72,7 +72,7 @@ ollama_embeddings = OllamaEmbeddings(
 )
 
 # Define LLM
-llm = ChatOllama(model="gemma3:4")
+llm = ChatOllama(model="gemma3:4b")
 
 # Check vector store existence
 if not persistent_directory.exists():
