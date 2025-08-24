@@ -91,3 +91,15 @@
 2025-08-24 01:00:39,025 - rag_with_metadata.py - INFO - Using existing vector store - no initialization needed
 2025-08-24 01:00:39,031 - rag_with_metadata.py - INFO - Testing main flow with: init_return=None, dir_exists=False
 2025-08-24 01:00:39,032 - rag_with_metadata.py - ERROR - Vector store initialization failed - system may not function correctly
+2025-08-24 23:42:18,800 - 7_rag_llm_conversation.py - INFO - ==================================================
+2025-08-24 23:42:18,800 - 7_rag_llm_conversation.py - INFO - Starting RAG LLM Conversation Application
+2025-08-24 23:42:18,816 - 7_rag_llm_conversation.py - INFO - ==================================================
+2025-08-24 23:42:20,885 - 7_rag_llm_conversation.py - INFO - Loading vector store 'chroma_db_with_metadata'...
+2025-08-24 23:42:21,043 - 7_rag_llm_conversation.py - INFO - Created retriever from vector store 'chroma_db_with_metadata' successfully.
+2025-08-24 23:42:44,598 - 7_rag_llm_conversation.py - INFO - Processing user query through RAG chain...
+2025-08-24 23:43:05,085 - 7_rag_llm_conversation.py - INFO - AI response generated successfully
+2025-08-24 23:43:05,085 - 7_rag_llm_conversation.py - INFO - Chat history updated successfully
+2025-08-24 23:43:23,721 - 7_rag_llm_conversation.py - INFO - Processing user query through RAG chain...
+2025-08-24 23:44:33,599 - 7_rag_llm_conversation.py - INFO - AI response generated successfully
+2025-08-24 23:44:33,599 - 7_rag_llm_conversation.py - INFO - Chat history updated successfully
+2025-08-24 23:45:17,573 - 7_rag_llm_conversation.py - INFO - User exited conversation

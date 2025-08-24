@@ -1,8 +1,9 @@
-from typing import List, Dict, Any
-from langchain_ollama import ChatOllama
-from langchain_core.prompts import ChatPromptTemplate
+from typing import Dict
+
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnableSerializable, RunnableLambda
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableLambda, RunnableSerializable
+from langchain_ollama import ChatOllama
 
 # Create Chat Model
 model: list[str] = [
@@ -15,7 +16,6 @@ llm = ChatOllama(model=model[0])
 
 
 def generate_restaurant_name_menu_item(cuisine: str) -> Dict[str, str]:
-
     # Chain 1: Restaurant Name Generation
     restaurant_name_prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages(
         messages=[

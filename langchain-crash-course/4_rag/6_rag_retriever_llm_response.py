@@ -123,15 +123,13 @@ def llm_response(relevant_docs: list[Document], query: str) -> BaseMessage | Non
         LLMs response
     """
     # Combine the query and relevant documents
+    joined_docs: str = "\n\n".join([doc.page_content for doc in relevant_docs])
     combined_input: str = f"""
         Here are some documents that might help answer the question:
-        {query}
-
+        Question: {query}
         Relevant Documents:
-        
-        {"".join([doc.page_content for doc in relevant_docs])}
-
-        Please provide an answer based only on the provided documents. 
+        {joined_docs}
+        Please provide an answer based only on the provided documents.
         If the answer is not found in the documents, respond with 'I'm not sure'.
     """
 
