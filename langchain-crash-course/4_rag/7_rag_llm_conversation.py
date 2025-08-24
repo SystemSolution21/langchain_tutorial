@@ -195,14 +195,15 @@ def main() -> None:
                 input={"input": query, "chat_history": chat_history}
             )
 
-            # Display the AI response
-            logger.info(msg="AI response generated successfully")
-            print(f"AI: {result['answer']}")
+            # Display AI response
+            if result:
+                logger.info(msg="AI response generated successfully")
+                print(f"AI: {result['answer']}")
 
-            # Update chat history
-            chat_history.append(HumanMessage(content=query))
-            chat_history.append(AIMessage(content=result["answer"]))
-            logger.info(msg="Chat history updated successfully")
+                # Update chat history
+                chat_history.append(HumanMessage(content=query))
+                chat_history.append(AIMessage(content=result["answer"]))
+                logger.info(msg="Chat history updated successfully")
 
         except (KeyboardInterrupt, EOFError):
             logger.info(msg="Keyboard interrupt or EOF error")
