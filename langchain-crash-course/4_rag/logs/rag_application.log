@@ -110,3 +110,14 @@
 2025-08-25 00:07:44,386 - 7_rag_llm_conversation.py - INFO - Created retriever from vector store 'chroma_db_with_metadata' successfully.
 2025-08-25 00:08:19,720 - 7_rag_llm_conversation.py - INFO - Processing user query through RAG chain...
 2025-08-25 00:08:20,442 - 7_rag_llm_conversation.py - ERROR - Unexpected error: model "gemma3:4" not found, try pulling it first (status code: 404)
+2025-08-26 00:47:51,349 - 8_rag_web_scrape_basic.py - INFO - ==================================================
+2025-08-26 00:47:51,349 - 8_rag_web_scrape_basic.py - INFO - Starting RAG Web Scraping Basic Application
+2025-08-26 00:47:51,349 - 8_rag_web_scrape_basic.py - INFO - ==================================================
+2025-08-26 00:47:52,335 - 8_rag_web_scrape_basic.py - INFO - Loading documents from ['https://www.apple.com/']...
+2025-08-26 00:47:53,023 - 8_rag_web_scrape_basic.py - INFO - Loaded 1 documents from ['https://www.apple.com/'] successfully.
+2025-08-26 00:47:53,031 - 8_rag_web_scrape_basic.py - INFO - Number of document chunks: 9
+2025-08-26 00:47:53,041 - 8_rag_web_scrape_basic.py - INFO - Creating vector store 'chroma_db_web_scrape_basic'...
+2025-08-26 00:47:55,916 - 8_rag_web_scrape_basic.py - INFO - Vector store 'chroma_db_web_scrape_basic' created successfully.
+2025-08-26 00:49:10,150 - 8_rag_web_scrape_basic.py - INFO - Retrieving relevant documents...
+2025-08-26 00:49:10,257 - 8_rag_web_scrape_basic.py - INFO - Relevant documents retrieved successfully
+2025-08-26 00:50:15,136 - 8_rag_web_scrape_basic.py - INFO - Keyboard interrupt or EOF error
