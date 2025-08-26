@@ -605,6 +605,18 @@ wheels = [
 ]
 
 [[package]]
+name = "firecrawl-py"
+version = "0.0.20"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/81/7a/1d9ce1fb9c33d12c812d71a446184a65326772ad5b2d8cd56db5fa6ed1b1/firecrawl_py-0.0.20.tar.gz", hash = "sha256:978347fdd4b2c271b1122ec562aa493ac13f1ad0ae87a1a4c5c19568174b9995", size = 11150 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5b/37/901bb5a0841336fa6876df4052ccb494d108c4c4b51d2d709e7487eda409/firecrawl_py-0.0.20-py3-none-any.whl", hash = "sha256:9275ed41f8bdfd03cecbbf5fbe804c7885a2dc961a0564c5876b3152a14e18ff", size = 9462 },
+]
+
+[[package]]
 name = "flatbuffers"
 version = "25.2.10"
 source = { registry = "https://pypi.org/simple" }
@@ -1496,6 +1508,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "chromadb" },
+    { name = "firecrawl-py" },
     { name = "langchain" },
     { name = "langchain-anthropic" },
     { name = "langchain-chroma" },
@@ -1522,6 +1535,7 @@ dev = [
 requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.13.5" },
     { name = "chromadb", specifier = ">=0.6.3" },
+    { name = "firecrawl-py", specifier = "~=0.0.13" },
     { name = "langchain", specifier = ">=0.3.15" },
     { name = "langchain-anthropic", specifier = ">=0.3.3" },
     { name = "langchain-chroma", specifier = ">=0.2.2" },

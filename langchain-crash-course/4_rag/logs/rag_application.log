@@ -121,3 +121,22 @@
 2025-08-26 00:49:10,150 - 8_rag_web_scrape_basic.py - INFO - Retrieving relevant documents...
 2025-08-26 00:49:10,257 - 8_rag_web_scrape_basic.py - INFO - Relevant documents retrieved successfully
 2025-08-26 00:50:15,136 - 8_rag_web_scrape_basic.py - INFO - Keyboard interrupt or EOF error
+2025-08-26 22:53:38,245 - 8_rag_web_scrape_firecrawl.py - INFO - ==================================================
+2025-08-26 22:53:38,247 - 8_rag_web_scrape_firecrawl.py - INFO - Starting RAG Web Scraping FireCrawl Application
+2025-08-26 22:53:38,248 - 8_rag_web_scrape_firecrawl.py - INFO - ==================================================
+2025-08-26 22:53:53,820 - 8_rag_web_scrape_firecrawl.py - INFO - Querying vector store 'chroma_db_web_scrape_firecrawl'...
+2025-08-26 22:53:53,820 - 8_rag_web_scrape_firecrawl.py - INFO - Crawling website https://www.apple.com/...
+2025-08-26 22:53:56,245 - 8_rag_web_scrape_firecrawl.py - INFO - Successfully crawled website https://www.apple.com/
+2025-08-26 22:53:56,245 - 8_rag_web_scrape_firecrawl.py - INFO - Successfully converted metadata to string.
+2025-08-26 22:53:56,245 - 8_rag_web_scrape_firecrawl.py - INFO - Successfully split documents into chunks: 32
+2025-08-26 22:53:56,245 - 8_rag_web_scrape_firecrawl.py - INFO - Creating vector store 'chroma_db_web_scrape_firecrawl'...
+2025-08-26 22:54:25,390 - 8_rag_web_scrape_firecrawl.py - INFO - Successfully created vector store 'chroma_db_web_scrape_firecrawl'.
+2025-08-26 22:54:25,496 - 8_rag_web_scrape_firecrawl.py - INFO - Relevant documents retrieved successfully.
+2025-08-26 23:23:37,282 - 8_rag_web_scrape_firecrawl.py - INFO - User exited conversation
+2025-08-26 23:23:55,462 - 8_rag_web_scrape_firecrawl.py - INFO - ==================================================
+2025-08-26 23:23:55,462 - 8_rag_web_scrape_firecrawl.py - INFO - Starting RAG Web Scraping FireCrawl Application
+2025-08-26 23:23:55,462 - 8_rag_web_scrape_firecrawl.py - INFO - ==================================================
+2025-08-26 23:24:09,222 - 8_rag_web_scrape_firecrawl.py - INFO - Querying vector store 'chroma_db_web_scrape_firecrawl'...
+2025-08-26 23:24:09,222 - 8_rag_web_scrape_firecrawl.py - INFO - Vector store 'chroma_db_web_scrape_firecrawl' already exists. No need to initialize.
+2025-08-26 23:24:10,098 - 8_rag_web_scrape_firecrawl.py - INFO - Relevant documents retrieved successfully.
+2025-08-26 23:45:35,451 - 8_rag_web_scrape_firecrawl.py - INFO - User exited conversation
