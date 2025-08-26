@@ -1,3 +1,7 @@
+"""
+A basic RAG (Retrieval-Augmented Generation) application that scrapes a website,
+chunks the content, creates a vector store, and allows for similarity searches.
+"""
 # 8_rag_web_scrape_basic.py
 
 # Import standard libraries
@@ -64,6 +68,7 @@ try:
     docs: List[Document] = text_splitter.split_documents(documents=documents)
     logger.info(msg=f"Number of document chunks: {len(docs)}")
     print(f"Sample chunk:\n{docs[0].page_content}\n")
+
 except Exception as e:
     logger.error(msg=f"Error loading documents from {url}: {str(object=e)}")
     logger.critical(msg="Failed to load documents, exiting application.")
@@ -96,8 +101,15 @@ retriever: VectorStoreRetriever = db.as_retriever(
 )
 
 
-# Run RAG LLM conversation
 def main() -> None:
+    """
+    Main function to run the RAG application.
+
+    This function continuously prompts the user for a query, retrieves relevant
+    documents from the vector store, and displays them. The loop can be
+    exited by typing 'exit', or by sending a KeyboardInterrupt (Ctrl+C) or
+    EOF (Ctrl+D).
+    """
     print(
         "\nStart retrieving relevant documents... Type 'exit' to end the conversation."
     )

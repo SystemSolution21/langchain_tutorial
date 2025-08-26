@@ -157,6 +157,7 @@ def initialize_vector_store(
         if persistent_directory.exists():
             logger.info(msg="Vector store already exists. No need to initialize.")
             return None
+
         logger.info(msg="Initializing new vector store...")
 
         # Check books directory existence

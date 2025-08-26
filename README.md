@@ -28,6 +28,14 @@
 - 2a_rag_basic_metadata.py
 - 2a_rag_basic_metadata_robust.py
 - 2b_rag_basic_metadata.py
+- 2b_rag_basic_metadata_robust.py
+- 3_rag_text_splitting.py
+- 4_rag_multi_model_embeddings.py
+- 5_rag_retriever_search_types.py
+- 6_rag_question_answering.py
+- 7_rag_llm_conversation.py
+- 8_rag_web_scrape_basic.py
+- rag_with_metadata.py
 
 ### Ollama Models
 
