@@ -35,6 +35,7 @@
 - 6_rag_question_answering.py
 - 7_rag_llm_conversation.py
 - 8_rag_web_scrape_basic.py
+- 8_rag_web_scrape_firecrawl.py
 - rag_with_metadata.py
 
 ### Ollama Models
