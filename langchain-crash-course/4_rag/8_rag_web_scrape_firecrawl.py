@@ -1,5 +1,10 @@
 # 8_rag_web_scrape_firecrawl.py
 
+"""
+A RAG (Retrieval-Augmented Generation) application that scrapes a website using FireCrawl,
+chunks the content, creates a vector store, and allows for similarity searches.
+"""
+
 # Import standard libraries
 import os
 import sys
@@ -60,6 +65,13 @@ ollama_embeddings = OllamaEmbeddings(
 
 # Create vector store
 def create_vector_store() -> Chroma | None:
+    """Create a vector store from the crawled website.
+
+    Args:
+        None
+    Returns:
+        Chroma | None
+    """
     # Check vector store exists
     if persistent_directory.exists():
         logger.info(
@@ -118,6 +130,13 @@ def create_vector_store() -> Chroma | None:
 
 # Query vector store
 def query_vector_store(query: str) -> None:
+    """Query the vector store for relevant documents.
+
+    Args:
+        query: Query string
+    Returns:
+        None
+    """
     logger.info(msg=f"Querying vector store '{store_name}'...")
     try:
         # Create vector store
@@ -146,6 +165,14 @@ def query_vector_store(query: str) -> None:
 
 
 def main() -> None:
+    """
+    Main function to run the RAG application.
+
+    This function continuously prompts the user for a query, retrieves relevant
+    documents from the vector store, and displays them. The loop can be
+    exited by typing 'exit', or by sending a KeyboardInterrupt (Ctrl+C) or
+    EOF (Ctrl+D).
+    """
     print(
         "\nStart RAG Web Scraping FireCrawl Application... Type 'exit' to end the conversation."
     )
