@@ -29,3 +29,6 @@ jobs:
 
       - name: Print DB_USER
         run: echo "DB_USER  -> ${DB_USER}"
+
+      - name: Print secrets
+        run: echo "TEST_API_KEY -> ${secrets.TEST_API_KEY}"
