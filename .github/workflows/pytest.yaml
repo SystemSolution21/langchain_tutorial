@@ -8,6 +8,8 @@ on:
 jobs:
   pytest:
     runs-on: ubuntu-latest
+    env:
+      DB_USER: "postgres"
 
     steps:
       - uses: actions/checkout@v4
@@ -24,3 +26,6 @@ jobs:
 
       - name: Run pytest
         run: pytest
+
+      - name: Print DB_USER
+        run: echo "DB_USER  -> ${DB_USER}"
