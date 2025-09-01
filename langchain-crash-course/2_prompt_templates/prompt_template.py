@@ -1,16 +1,15 @@
-from langchain_core.messages.base import BaseMessage
-from langchain_core.prompts import PromptTemplate
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.prompt_values import PromptValue
-from langchain_openai import ChatOpenAI
-from langchain_ollama import ChatOllama
 from dotenv import load_dotenv
+from langchain_core.messages.base import BaseMessage
+from langchain_core.prompt_values import PromptValue
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 
 # Load Environment Variables
 load_dotenv()
 
 # Create OpenAI Chat Model
-openai_model = ChatOpenAI(model="gpt-4o-mini")
+openai_model = ChatOpenAI(model="gpt-4.1-nano")
 
 # 1. String Prompt Template
 prompt_template: PromptTemplate = PromptTemplate.from_template(
