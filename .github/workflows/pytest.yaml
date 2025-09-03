@@ -26,4 +26,4 @@ jobs:
         run: pytest
 
       - name: Print secrets
-        run: echo "TEST_API_KEY -> ${secrets.TEST_API_KEY}"
+        run: echo "TEST_API_KEY -> ${{secrets.TEST_API_KEY}}"
