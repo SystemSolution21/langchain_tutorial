@@ -31,6 +31,10 @@ jobs:
       - name: Run pytest
         run: pytest
 
+      - name: Failure log
+        if: failure()
+        run: echo "1つ前のステップは失敗しました!"
+
       - name: Print secrets
         run: echo "TEST_API_KEY -> ${{secrets.TEST_API_KEY}}"
 
