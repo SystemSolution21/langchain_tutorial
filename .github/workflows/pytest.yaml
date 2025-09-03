@@ -8,6 +8,12 @@ on:
 jobs:
   pytest:
     runs-on: ubuntu-latest
+    env:
+      DB_USER: "Postgres"
+      DB_PASSWORD: "postgres"
+      DB_HOST: "localhost"
+      DB_PORT: "5432"
+      DB_NAME: "postgres"
 
     steps:
       - uses: actions/checkout@v4
@@ -27,3 +33,10 @@ jobs:
 
       - name: Print secrets
         run: echo "TEST_API_KEY -> ${{secrets.TEST_API_KEY}}"
+
+      - name: Print DB environment variables
+        run: echo "DB_USER -> ${{env.DB_USER}}
+          DB_PASSWORD -> ${{env.DB_PASSWORD}}
+          DB_HOST -> ${{env.DB_HOST}}
+          DB_PORT -> ${{env.DB_PORT}}
+          DB_NAME -> ${{env.DB_NAME}}"
