@@ -1,25 +1,4 @@
-# agent_tools_basic.py
-"""
-Agent Tools Basic Application
-(Asynchronous Version)
-
-This module demonstrates a basic implementation of a LangChain agent with tools.
-It creates a ReAct (Reason and Action) agent that can use predefined tools to
-answer user questions in an interactive conversation loop.
-
-The agent uses either OpenAI or Ollama as the language model backend and includes
-a simple tool for getting the current time. The implementation follows the ReAct
-pattern where the agent reasons about what action to take, executes the action,
-observes the result, and continues until it can provide a final answer.
-
-Features:
-- Configurable LLM backend (OpenAI or Ollama)
-- ReAct agent pattern implementation
-- Interactive conversation loop
-- Custom tool integration
-- Comprehensive logging
-
-"""
+# agent_react_chat.py
 
 # Import standard libraries
 import asyncio
@@ -30,13 +9,12 @@ from logging import Logger
 from pathlib import Path
 from typing import Any
 
-# For async input
-from aioconsole import ainput
-
 # Import necessary libraries
+from aioconsole import ainput
 from dotenv import load_dotenv
 
 # Import langchain modules
+from langchain import hub
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import Runnable
@@ -46,6 +24,7 @@ from langchain_openai import ChatOpenAI
 
 # Import custom logger
 from utils.logger import RAGLogger
+from wikipedia import summary
 
 # Load environment variables from .env
 load_dotenv()
@@ -83,7 +62,19 @@ logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
 def get_current_time(*args: Any, **kwargs: Any) -> str:
     """Get current time."""
     current_time: str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    logger.info(msg=f"Got current time: {current_time}")
     return current_time
+
+
+async def get_wikipedia_summary(query: str) -> str:
+    """"""
+    try:
+        summary_result: str = await summary(title=query, sentences=3)
+        logger.info(msg=f"Wikipedia summary: {summary_result[:100]}")
+        return summary_result
+    except Exception as e:
+        logger.error(msg=f"Error getting Wikipedia summary: {e}")
+        return f"Error: {e}"
 
 
 # Set tools list to Agent
@@ -91,37 +82,20 @@ tools: list = [
     Tool(
         name="Time",
         func=get_current_time,
-        description="Useful to know the current time.",
+        description="Useful for when you need to know the current time.",
+    ),
+    Tool(
+        name="Wikipedia",
+        func=get_wikipedia_summary,
+        description="Useful for when you need to answer questions about the topic.",
     ),
 ]
 
 # Pull the prompt template from the hub
 # ReAct = Reason and Action
 # https://smith.langchain.com/hub/hwchase17/react
-# prompt: Any = hub.pull(owner_repo_commit="hwchase17/react")
+prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/structured-chat-agent")
 
-# Prompt template as same as hwchase17/react
-prompt_template: str = """ 
-Answer the following questions as best you can. You have access to the following tools:
-
-{tools}
-
-Use the following format:
-
-Question: the input question you must answer
-Thought: you should always think about what to do
-Action: the action to take, should be one of [{tool_names}]
-Action Input: the input to the action
-Observation: the result of the action
-... (this Thought/Action/Action Input/Observation can repeat N times)
-Thought: I now know the final answer
-Final Answer: the final answer to the original input question
-
-Begin!
-
-Question: {input}
-Thought:{agent_scratchpad}
-"""
 
 prompt: PromptTemplate = PromptTemplate.from_template(template=prompt_template)
 
