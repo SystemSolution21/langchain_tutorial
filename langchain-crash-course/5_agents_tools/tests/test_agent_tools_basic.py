@@ -71,10 +71,7 @@ def test_tools_list_contains_current_time(agent_module):
     assert isinstance(tools, list)
     # Find tool by name
     names = [tool.name for tool in tools]
-    assert "Current Time" in names, f"Tool 'Current Time' not found in {names}"
-    # assert "Current" in names, (
-    #     f"Tool 'Current Time' not found in {names}"
-    # )  # pytest fails can also confirm on Github Actions
+    assert "Time" in names, f"Tool 'Time' not found in {names}"
 
 
 def test_module_import_with_missing_llm(monkeypatch):

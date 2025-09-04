@@ -140,3 +140,33 @@
 2025-08-26 23:24:09,222 - 8_rag_web_scrape_firecrawl.py - INFO - Vector store 'chroma_db_web_scrape_firecrawl' already exists. No need to initialize.
 2025-08-26 23:24:10,098 - 8_rag_web_scrape_firecrawl.py - INFO - Relevant documents retrieved successfully.
 2025-08-26 23:45:35,451 - 8_rag_web_scrape_firecrawl.py - INFO - User exited conversation
+2025-09-04 22:29:46,884 - rag_with_metadata.py - INFO - ==================================================
+2025-09-04 22:29:46,893 - rag_with_metadata.py - INFO - Starting Create RAG With Metadata Application
+2025-09-04 22:29:46,893 - rag_with_metadata.py - INFO - ==================================================
+2025-09-04 22:29:46,893 - rag_with_metadata.py - INFO - Books Directory: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\books
+2025-09-04 22:29:46,893 - rag_with_metadata.py - INFO - Persistent Directory: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\db\chroma_db_with_metadata
+2025-09-04 22:29:46,926 - rag_with_metadata.py - INFO - Testing document loading...
+2025-09-04 22:29:46,926 - rag_with_metadata.py - INFO - Successfully loaded: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\tests\test_books\empty_book.txt
+2025-09-04 22:29:46,926 - rag_with_metadata.py - INFO - Successfully loaded: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\tests\test_books\test_book.txt
+2025-09-04 22:29:46,926 - rag_with_metadata.py - INFO - Document loading test completed successfully
+2025-09-04 22:29:46,934 - rag_with_metadata.py - INFO - Testing text chunking...
+2025-09-04 22:29:46,934 - rag_with_metadata.py - INFO - Successfully created 5 document chunks
+2025-09-04 22:29:46,934 - rag_with_metadata.py - INFO - Text chunking test completed successfully
+2025-09-04 22:29:46,943 - rag_with_metadata.py - INFO - Testing vector store initialization for a new store (with mocks)...
+2025-09-04 22:29:46,946 - rag_with_metadata.py - INFO - Initializing new vector store...
+2025-09-04 22:29:46,946 - rag_with_metadata.py - INFO - Successfully loaded: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\tests\test_books\test_book.txt
+2025-09-04 22:29:46,946 - rag_with_metadata.py - INFO - Successfully created 1 document chunks
+2025-09-04 22:29:46,946 - rag_with_metadata.py - INFO - Creating embeddings...
+2025-09-04 22:29:46,946 - rag_with_metadata.py - INFO - Embeddings created successfully
+2025-09-04 22:29:46,946 - rag_with_metadata.py - INFO - Initializing Chroma vector store...
+2025-09-04 22:29:46,946 - rag_with_metadata.py - INFO - Vector store initialized successfully
+2025-09-04 22:29:46,946 - rag_with_metadata.py - INFO - Vector store initialization test (new store, mocked) completed successfully
+2025-09-04 22:29:46,951 - rag_with_metadata.py - INFO - Testing vector store initialization with existing store...
+2025-09-04 22:29:46,951 - rag_with_metadata.py - INFO - Vector store already exists. No need to initialize.
+2025-09-04 22:29:46,951 - rag_with_metadata.py - INFO - Vector store initialization test (existing store) completed successfully
+2025-09-04 22:29:46,959 - rag_with_metadata.py - INFO - Testing main flow with: init_return=new_store, dir_exists=False
+2025-09-04 22:29:46,959 - rag_with_metadata.py - INFO - Vector store initialization completed successfully
+2025-09-04 22:29:46,968 - rag_with_metadata.py - INFO - Testing main flow with: init_return=None, dir_exists=True
+2025-09-04 22:29:46,968 - rag_with_metadata.py - INFO - Using existing vector store - no initialization needed
+2025-09-04 22:29:46,968 - rag_with_metadata.py - INFO - Testing main flow with: init_return=None, dir_exists=False
+2025-09-04 22:29:46,968 - rag_with_metadata.py - ERROR - Vector store initialization failed - system may not function correctly
