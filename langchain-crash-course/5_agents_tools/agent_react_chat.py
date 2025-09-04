@@ -15,14 +15,18 @@ from dotenv import load_dotenv
 
 # Import langchain modules
 from langchain import hub
-from langchain.agents import AgentExecutor, create_react_agent
-from langchain_core.prompts import PromptTemplate
+from langchain.agents import AgentExecutor, create_structured_chat_agent
+from langchain_core.chat_history import (
+    BaseChatMessageHistory,
+    InMemoryChatMessageHistory,
+)
 from langchain_core.runnables import Runnable
+from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import Tool
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 
-# Import custom logger
+# Import custom modules
 from utils.logger import RAGLogger
 from wikipedia import summary
 
@@ -40,7 +44,7 @@ ollama_configured: str | None = ollama_llm
 if not openai_configured and not ollama_configured:
     raise ValueError(
         "Neither OpenAI (OPENAI_API_KEY, OPENAI_LLM) nor Ollama (OLLAMA_LLM) is configured. "
-        "Please check your .env file."
+        "Please check your .env file. Note: Ollama llm model should be locally installed."
     )
     sys.exit(1)
 
@@ -62,15 +66,15 @@ logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
 def get_current_time(*args: Any, **kwargs: Any) -> str:
     """Get current time."""
     current_time: str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    logger.info(msg=f"Got current time: {current_time}")
+    logger.info(msg=f"Getting current time: {current_time}")
     return current_time
 
 
-async def get_wikipedia_summary(query: str) -> str:
-    """"""
+def get_wikipedia_summary(query: str) -> str:
+    """Get a summary from Wikipedia."""
     try:
-        summary_result: str = await summary(title=query, sentences=3)
-        logger.info(msg=f"Wikipedia summary: {summary_result[:100]}")
+        summary_result: str = summary(title=query, sentences=3)
+        logger.info(msg=f"Getting Wikipedia summary: {summary_result[:100]}.....")
         return summary_result
     except Exception as e:
         logger.error(msg=f"Error getting Wikipedia summary: {e}")
@@ -80,7 +84,7 @@ async def get_wikipedia_summary(query: str) -> str:
 # Set tools list to Agent
 tools: list = [
     Tool(
-        name="Time",
+        name="Current Time",
         func=get_current_time,
         description="Useful for when you need to know the current time.",
     ),
@@ -92,33 +96,45 @@ tools: list = [
 ]
 
 # Pull the prompt template from the hub
-# ReAct = Reason and Action
-# https://smith.langchain.com/hub/hwchase17/react
+# https://smith.langchain.com/hub/hwchase17/structured-chat-agent
 prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/structured-chat-agent")
 
+# Set up chat history
+store: dict[str, BaseChatMessageHistory] = {}
 
-prompt: PromptTemplate = PromptTemplate.from_template(template=prompt_template)
 
-# Create an agent
-agent: Runnable[Any, Any] = create_react_agent(
-    tools=tools, llm=llm, prompt=prompt, stop_sequence=True
+def get_session_history(session_id: str) -> BaseChatMessageHistory:
+    """Get chat history for a session."""
+    if session_id not in store:
+        store[session_id] = InMemoryChatMessageHistory()
+    return store[session_id]
+
+
+# Create structured chat agent
+agent: Runnable[Any, Any] = create_structured_chat_agent(
+    tools=tools, llm=llm, prompt=prompt_template
 )
 
 # Create agent executor
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+agent_executor: AgentExecutor = AgentExecutor(
+    agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
+)
+
+# Add chat history to agent executor
+agent_with_chat_history: RunnableWithMessageHistory = RunnableWithMessageHistory(
+    runnable=agent_executor,
+    get_session_history=get_session_history,
+    input_messages_key="input",
+    history_messages_key="chat_history",
+)
 
 
-# Run agent executor
+# Run agent executor with chat history
 async def main() -> None:
-    """
-    Main function to run the agent executor.
-
-    This function continuously prompts the user for a query, runs the agent
-    executor, and displays the response. The loop can be exited by typing
-    'exit', or by sending a KeyboardInterrupt (Ctrl+C) or EOFError (Ctrl+D).
-    """
-    logger.info(msg="Start Agent Tools Basic Application...")
+    logger.info(msg="Start Agent React Chat Application...")
     print("Type 'exit' to end the conversation.")
+
+    session_id: str = "chat_session"
 
     while True:
         try:
@@ -133,9 +149,11 @@ async def main() -> None:
                 print("Exiting...")
                 break
 
-            # Run agent executor
-            response: Any = await agent_executor.ainvoke(input={"input": query})
-            logger.info(msg="Agent response generated successfully")
+            # Run agent executor with chat history
+            response: Any = await agent_with_chat_history.ainvoke(
+                input={"input": query},
+                config={"configurable": {"session_id": session_id}},
+            )
             print(f"Agent: {response['output']}")
 
         except (KeyboardInterrupt, EOFError):
@@ -144,9 +162,9 @@ async def main() -> None:
             break
 
         except Exception as e:
-            logger.error(f"Unexpected error: {e}")
+            logger.error(msg=f"Unexpected error: {e}")
 
 
 # Main entry point
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main=main())
