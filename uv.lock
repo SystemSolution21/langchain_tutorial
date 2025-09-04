@@ -9,6 +9,15 @@ resolution-markers = [
 ]
 
 [[package]]
+name = "aioconsole"
+version = "0.8.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c7/c9/c57e979eea211b10a63783882a826f257713fa7c0d6c9a6eac851e674fb4/aioconsole-0.8.1.tar.gz", hash = "sha256:0535ce743ba468fb21a1ba43c9563032c779534d4ecd923a46dbd350ad91d234", size = 61085 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fa/ea/23e756ec1fea0c685149304dda954b3b3932d6d06afbf42a66a2e6dc2184/aioconsole-0.8.1-py3-none-any.whl", hash = "sha256:e1023685cde35dde909fbf00631ffb2ed1c67fe0b7058ebb0892afbde5f213e5", size = 43324 },
+]
+
+[[package]]
 name = "aiohappyeyeballs"
 version = "2.6.1"
 source = { registry = "https://pypi.org/simple" }
@@ -602,18 +611,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/04/d8/4230b0770a2cd9d4de53bb1f0a17fa204716a9b271bc3be1fb109dfb8b9d/firebase_admin-6.8.0.tar.gz", hash = "sha256:24a9870219cfd6578586357858e00758aea26a39df74c53be5d803f5654d883e", size = 112211 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f6/e4/a4fea0c28787e6fadfdc6bf76f497c8136fdbb915f2942de1070918c1202/firebase_admin-6.8.0-py3-none-any.whl", hash = "sha256:84d5fd82859c4d27b63338c3fe9724667dfe400aa2fd9fef0efffbf6e23bca82", size = 134188 },
-]
-
-[[package]]
-name = "firecrawl-py"
-version = "0.0.20"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/81/7a/1d9ce1fb9c33d12c812d71a446184a65326772ad5b2d8cd56db5fa6ed1b1/firecrawl_py-0.0.20.tar.gz", hash = "sha256:978347fdd4b2c271b1122ec562aa493ac13f1ad0ae87a1a4c5c19568174b9995", size = 11150 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5b/37/901bb5a0841336fa6876df4052ccb494d108c4c4b51d2d709e7487eda409/firecrawl_py-0.0.20-py3-none-any.whl", hash = "sha256:9275ed41f8bdfd03cecbbf5fbe804c7885a2dc961a0564c5876b3152a14e18ff", size = 9462 },
 ]
 
 [[package]]
@@ -1506,9 +1503,9 @@ name = "langchain-tutorial"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "aioconsole" },
     { name = "beautifulsoup4" },
     { name = "chromadb" },
-    { name = "firecrawl-py" },
     { name = "langchain" },
     { name = "langchain-anthropic" },
     { name = "langchain-chroma" },
@@ -1522,6 +1519,7 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "sentence-transformers" },
     { name = "streamlit" },
+    { name = "wikipedia" },
 ]
 
 [package.dev-dependencies]
@@ -1533,9 +1531,9 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "aioconsole", specifier = ">=0.8.1" },
     { name = "beautifulsoup4", specifier = ">=4.13.5" },
     { name = "chromadb", specifier = ">=0.6.3" },
-    { name = "firecrawl-py", specifier = "~=0.0.13" },
     { name = "langchain", specifier = ">=0.3.15" },
     { name = "langchain-anthropic", specifier = ">=0.3.3" },
     { name = "langchain-chroma", specifier = ">=0.2.2" },
@@ -1549,6 +1547,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "sentence-transformers", specifier = ">=5.1.0" },
     { name = "streamlit", specifier = ">=1.43.2" },
+    { name = "wikipedia", specifier = ">=1.4.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -3838,6 +3837,16 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/1b/6c/c65773d6cab416a64d191d6ee8a8b1c68a09970ea6909d16965d26bfed1e/websockets-15.0.1-cp313-cp313-win_amd64.whl", hash = "sha256:e09473f095a819042ecb2ab9465aee615bd9c2028e4ef7d933600a8401c79561", size = 176837 },
     { url = "https://files.pythonhosted.org/packages/fa/a8/5b41e0da817d64113292ab1f8247140aac61cbf6cfd085d6a0fa77f4984f/websockets-15.0.1-py3-none-any.whl", hash = "sha256:f7a866fbc1e97b5c617ee4116daaa09b722101d4a3c170c787450ba409f9736f", size = 169743 },
 ]
+
+[[package]]
+name = "wikipedia"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "beautifulsoup4" },
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/67/35/25e68fbc99e672127cc6fbb14b8ec1ba3dfef035bf1e4c90f78f24a80b7d/wikipedia-1.4.0.tar.gz", hash = "sha256:db0fad1829fdd441b1852306e9856398204dc0786d2996dd2e0c8bb8e26133b2", size = 27748 }
 
 [[package]]
 name = "wrapt"

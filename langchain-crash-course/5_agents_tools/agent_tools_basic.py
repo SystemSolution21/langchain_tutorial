@@ -1,6 +1,7 @@
 # agent_tools_basic.py
 """
 Agent Tools Basic Application
+(Asynchronous Version)
 
 This module demonstrates a basic implementation of a LangChain agent with tools.
 It creates a ReAct (Reason and Action) agent that can use predefined tools to
@@ -21,12 +22,16 @@ Features:
 """
 
 # Import standard libraries
+import asyncio
 import os
 import sys
 from datetime import datetime
 from logging import Logger
 from pathlib import Path
 from typing import Any
+
+# For async input
+from aioconsole import ainput
 
 # Import necessary libraries
 from dotenv import load_dotenv
@@ -84,7 +89,7 @@ def get_current_time(*args: Any, **kwargs: Any) -> str:
 # Set tools list to Agent
 tools: list = [
     Tool(
-        name="Current Time",
+        name="Time",
         func=get_current_time,
         description="Useful to know the current time.",
     ),
@@ -130,7 +135,7 @@ agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
 
 # Run agent executor
-def main() -> None:
+async def main() -> None:
     """
     Main function to run the agent executor.
 
@@ -144,7 +149,7 @@ def main() -> None:
     while True:
         try:
             # User Query
-            query: str = input("You: ").strip()
+            query: str = (await ainput("You: ")).strip()
 
             if not query:
                 continue
@@ -155,7 +160,7 @@ def main() -> None:
                 break
 
             # Run agent executor
-            response: Any = agent_executor.invoke(input={"input": query})
+            response: Any = await agent_executor.ainvoke(input={"input": query})
             logger.info(msg="Agent response generated successfully")
             print(f"Agent: {response['output']}")
 
@@ -170,4 +175,4 @@ def main() -> None:
 
 # Main entry point
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
