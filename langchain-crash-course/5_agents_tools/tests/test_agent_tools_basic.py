@@ -1,9 +1,20 @@
+# test_agent_tools_basic.py
+"""
+Unit tests for the agent_tools_basic.py module.
+
+This test suite verifies the core functionalities of the basic agent
+application, including tool functionality, configuration handling, and
+agent component setup.
+"""
+
+# Import standard libraries
 import importlib
 import os
 import re
 import sys
 from pathlib import Path
 
+# Import pytest
 import pytest
 
 
