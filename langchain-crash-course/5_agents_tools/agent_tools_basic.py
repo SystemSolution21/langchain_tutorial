@@ -30,7 +30,7 @@ from logging import Logger
 from pathlib import Path
 from typing import Any
 
-# For async input
+# Import async console library
 from aioconsole import ainput
 
 # Import necessary libraries
