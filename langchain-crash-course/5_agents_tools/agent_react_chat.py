@@ -1,4 +1,26 @@
 # agent_react_chat.py
+"""
+ReAct Chat Agent Application
+(Asynchronous Version)
+
+This module demonstrates a conversational LangChain agent with memory.
+It creates a structured chat agent that can use predefined tools to
+answer user questions in an interactive conversation loop, maintaining
+the context of the conversation.
+
+The agent uses either OpenAI or Ollama as the language model backend and includes
+tools for getting the current time and fetching summaries from Wikipedia. It
+leverages `RunnableWithMessageHistory` to manage chat history for each session,
+allowing for contextual conversations.
+
+Features:
+- Configurable LLM backend (OpenAI or Ollama)
+- Structured chat agent with ReAct (Reason and Action) logic
+- Conversational memory management
+- Custom tool integration (Time, Wikipedia)
+- Interactive asynchronous conversation loop
+- Comprehensive logging
+"""
 
 # Import standard libraries
 import asyncio
@@ -28,6 +50,8 @@ from langchain_openai import ChatOpenAI
 
 # Import custom modules
 from utils.logger import RAGLogger
+
+# Import Wikipedia library
 from wikipedia import summary
 
 # Load environment variables from .env
@@ -73,7 +97,7 @@ def get_current_time(*args: Any, **kwargs: Any) -> str:
 def get_wikipedia_summary(query: str) -> str:
     """Get a summary from Wikipedia."""
     try:
-        summary_result: str = summary(title=query, sentences=3)
+        summary_result: str = summary(title=query, sentences=10)
         logger.info(msg=f"Getting Wikipedia summary: {summary_result[:100]}.....")
         return summary_result
     except Exception as e:
@@ -145,7 +169,7 @@ async def main() -> None:
                 continue
 
             if query.lower() == "exit":
-                logger.info("User exited conversation")
+                logger.info(msg="User exited conversation")
                 print("Exiting...")
                 break
 
