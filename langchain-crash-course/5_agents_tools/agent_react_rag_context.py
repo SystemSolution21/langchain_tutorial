@@ -38,12 +38,13 @@ logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
 
 # Log application startup
 logger.info(msg="=" * 50)
-logger.info(msg="Starting RAG LLM Conversation Application")
+logger.info(msg="Starting Agent ReAct RAG Context Application")
 logger.info(msg="=" * 50)
 
 # Define directories and paths
-current_dir: Path = Path(__file__).parent.resolve()
-db_dir: Path = current_dir / "db"
+rag_dir: Path = Path(__file__).parents[1] / "4_rag"
+books_dir: Path = rag_dir / "books"
+db_dir: Path = rag_dir / "db"
 store_name: str = "chroma_db_with_metadata"
 persistent_directory: Path = db_dir / store_name
 
