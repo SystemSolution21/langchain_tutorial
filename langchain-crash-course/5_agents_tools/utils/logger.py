@@ -42,7 +42,7 @@ class RAGLogger:
 
         # Create formatters and handlers
         formatter: logging.Formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            "%(asctime)s - %(levelname)s - %(module)s - %(message)s"
         )
 
         # Rotating file handler

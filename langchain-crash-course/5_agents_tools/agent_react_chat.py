@@ -80,7 +80,7 @@ elif ollama_configured:
 
 
 # Module path
-module_path: Path = Path(__file__).resolve().parent
+module_path: Path = Path(__file__).resolve()
 
 # Set logger
 logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
@@ -178,6 +178,7 @@ async def main() -> None:
                 input={"input": query},
                 config={"configurable": {"session_id": session_id}},
             )
+            logger.info(msg=f"Agent: {response['output'][:100]}.....")
             print(f"Agent: {response['output']}")
 
         except (KeyboardInterrupt, EOFError):
