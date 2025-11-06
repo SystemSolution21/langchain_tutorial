@@ -10,6 +10,8 @@ from typing import Any
 from dotenv import load_dotenv
 
 # Import langchain modules
+from langchain import hub
+from langchain.agents import AgentExecutor, create_react_agent
 from langchain.chains import (
     create_history_aware_retriever,
     create_retrieval_chain,
@@ -20,6 +22,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.messages.base import BaseMessage
 from langchain_core.prompts.chat import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.base import Runnable
+from langchain_core.tools import Tool
 from langchain_core.vectorstores.base import VectorStoreRetriever
 from langchain_ollama import ChatOllama
 from langchain_ollama.embeddings import OllamaEmbeddings
@@ -41,9 +44,9 @@ logger.info(msg="=" * 50)
 logger.info(msg="Starting Agent ReAct RAG Context Application")
 logger.info(msg="=" * 50)
 
+# ===== Setup RAG =====
 # Define directories and paths
 rag_dir: Path = Path(__file__).parents[1] / "4_rag"
-books_dir: Path = rag_dir / "books"
 db_dir: Path = rag_dir / "db"
 store_name: str = "chroma_db_with_metadata"
 persistent_directory: Path = db_dir / store_name
@@ -102,7 +105,7 @@ contextualize_q_prompt_template: ChatPromptTemplate = ChatPromptTemplate.from_me
 )
 
 # Create a history-aware retriever
-# this users the LLM to help reformulate the question based on chat history
+# this helps LLM to reformulate the question based on chat history
 history_aware_retriever: VectorStoreRetriever = create_history_aware_retriever(
     llm,
     retriever,
@@ -141,11 +144,38 @@ rag_chain: Runnable[dict[str, Any], Any] = create_retrieval_chain(
     history_aware_retriever, question_answering_chain
 )
 
+# ===== Setup ReAct Agent with RAG =====
+# load ReAct prompt template from hub
+react_prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/react")
 
-# Run RAG LLM conversation
+# create a tool that uses the RAG chain
+tools: list[Tool] = [
+    Tool(
+        name="Answer Question",
+        func=lambda input, **kwargs: rag_chain.invoke(
+            input={"input": input, "chat_history": kwargs.get("chat_history", [])}
+        ),
+        description="Useful for answering questions based on the provided context.",
+    ),
+]
+
+# Create a ReAct agent with the RAG tool
+agent: Runnable[Any, Any] = create_react_agent(
+    tools=tools,
+    llm=llm,
+    prompt=react_prompt_template,
+)
+
+# Create agent executor
+agent_executor: AgentExecutor = AgentExecutor(
+    agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
+)
+
+
+# ===== Run ReAct RAG conversation =====
 def main() -> None:
     """
-    Runs the main conversational loop for the RAG-based chat application.
+    Runs the main conversational loop for the RAG-based ReAct chat application.
 
     This function initializes the chat history and enters an infinite loop to
     continuously accept user input. It processes the user's query through the
@@ -153,7 +183,7 @@ def main() -> None:
     The loop can be exited by typing 'exit', or by sending a
     KeyboardInterrupt (Ctrl+C) or EOFError (Ctrl+D).
     """
-    print("\nStart chatting with AI! Type 'exit' to end the conversation.")
+    print("\nStart RAG-based ReAct chatting! Type 'exit' to end the conversation.")
 
     # Initialize chat history
     chat_history: list[BaseMessage] = []
@@ -164,6 +194,7 @@ def main() -> None:
             query: str = input("You: ").strip()
 
             if not query:
+                print("Please ask a question!.")
                 continue
 
             if query.lower() == "exit":
@@ -171,20 +202,22 @@ def main() -> None:
                 print("Exiting...")
                 break
 
-            # Process user query through RAG chain
-            logger.info(msg="Processing user query through RAG chain...")
-            result: Any = rag_chain.invoke(
+            # Process user query through agent executor
+            logger.info(
+                msg="Processing user query through ReAct Agent with RAG chain..."
+            )
+            response: Any = agent_executor.invoke(
                 input={"input": query, "chat_history": chat_history}
             )
 
             # Display AI response
-            if result:
+            if response:
                 logger.info(msg="AI response generated successfully")
-                print(f"AI: {result['answer']}")
+                print(f"AI: {response['output']}")
 
                 # Update chat history
                 chat_history.append(HumanMessage(content=query))
-                chat_history.append(AIMessage(content=result["answer"]))
+                chat_history.append(AIMessage(content=response["output"]))
                 logger.info(msg="Chat history updated successfully")
 
         except (KeyboardInterrupt, EOFError):
