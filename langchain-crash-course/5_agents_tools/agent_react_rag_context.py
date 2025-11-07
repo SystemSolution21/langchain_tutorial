@@ -10,7 +10,7 @@ from typing import Any
 from dotenv import load_dotenv
 
 # Import langchain modules
-from langchain import hub
+# from langchain import hub
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain.chains import (
     create_history_aware_retriever,
@@ -20,6 +20,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_chroma import Chroma
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.messages.base import BaseMessage
+from langchain_core.prompts import PromptTemplate
 from langchain_core.prompts.chat import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.base import Runnable
 from langchain_core.tools import Tool
@@ -146,7 +147,32 @@ rag_chain: Runnable[dict[str, Any], Any] = create_retrieval_chain(
 
 # ===== Setup ReAct Agent with RAG =====
 # load ReAct prompt template from hub
-react_prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/react")
+# react_prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/react")
+react_prompt_template: str = """
+Answer the following questions as best you can. You have access to the following tools:
+
+{tools}
+
+Use the following format:
+
+Question: the input question you must answer
+Thought: you should always think about what to do
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question
+
+Begin!
+
+Question: {input}
+Thought:{agent_scratchpad}
+"""
+
+prompt_template: PromptTemplate = PromptTemplate.from_template(
+    template=react_prompt_template
+)
 
 # create a tool that uses the RAG chain
 tools: list[Tool] = [
@@ -163,7 +189,7 @@ tools: list[Tool] = [
 agent: Runnable[Any, Any] = create_react_agent(
     tools=tools,
     llm=llm,
-    prompt=react_prompt_template,
+    prompt=prompt_template,
 )
 
 # Create agent executor
