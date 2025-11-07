@@ -45,7 +45,7 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 
 # Import custom logger
-from utils.logger import RAGLogger
+from utils.logger import ReActAgentLogger
 
 # Load environment variables from .env
 load_dotenv()
@@ -76,7 +76,7 @@ elif ollama_configured:
 module_path: Path = Path(__file__).resolve()
 
 # Set logger
-logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
+logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
 
 
 # Define current time tool
@@ -143,7 +143,7 @@ async def main() -> None:
     executor, and displays the response. The loop can be exited by typing
     'exit', or by sending a KeyboardInterrupt (Ctrl+C) or EOFError (Ctrl+D).
     """
-    logger.info(msg="Start Agent Tools Basic Application...")
+    logger.info(msg="========= Start Agent Tools Basic Application ==========")
     print("Type 'exit' to end the conversation.")
 
     while True:

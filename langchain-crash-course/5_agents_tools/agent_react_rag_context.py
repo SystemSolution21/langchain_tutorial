@@ -1,10 +1,23 @@
 # agent_react_rag_context.py
 
 # Import standard libraries
+import asyncio
 import sys
 from logging import Logger
 from pathlib import Path
 from typing import Any
+
+# Import from __init__.py
+from __init__ import (
+    books_dir,
+    ollama_embeddings_model,
+    ollama_llm,
+    persistent_directory,
+    store_name,
+)
+
+# Import async console library
+from aioconsole import ainput
 
 # Import environment variables
 from dotenv import load_dotenv
@@ -27,9 +40,10 @@ from langchain_core.tools import Tool
 from langchain_core.vectorstores.base import VectorStoreRetriever
 from langchain_ollama import ChatOllama
 from langchain_ollama.embeddings import OllamaEmbeddings
+from rag import initialize_vector_store
 
 # Import custom logger
-from utils.logger import RAGLogger
+from utils.logger import ReActAgentLogger
 
 # Load environment variables
 load_dotenv()
@@ -38,53 +52,46 @@ load_dotenv()
 module_path: Path = Path(__file__).resolve()
 
 # Set logger
-logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
+logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
 
 # Log application startup
-logger.info(msg="=" * 50)
-logger.info(msg="Starting Agent ReAct RAG Context Application")
-logger.info(msg="=" * 50)
+logger.info(
+    msg="========= Starting ReAct Agent with RAG Context Application =========="
+)
 
-# ===== Setup RAG =====
-# Define directories and paths
-rag_dir: Path = Path(__file__).parents[1] / "4_rag"
-db_dir: Path = rag_dir / "db"
-store_name: str = "chroma_db_with_metadata"
-persistent_directory: Path = db_dir / store_name
-
+# ==================== Setup RAG ====================
 # Define embeddings models
 ollama_embeddings = OllamaEmbeddings(
-    model="nomic-embed-text:latest",
+    model=str(ollama_embeddings_model),
 )
 
 # Define LLM
-llm = ChatOllama(model="gemma3:4b")
-
-# Check vector store existence
-if not persistent_directory.exists():
-    logger.error(
-        msg=f"Vector store '{store_name}' does not exist. Please check the path."
-    )
-    sys.exit(1)
+llm = ChatOllama(model=str(ollama_llm))
 
 # Load vector store and create retriever
 try:
+    # Initialize vector store if it doesn't exist
+    initialize_vector_store(
+        books_dir=books_dir, persistent_directory=persistent_directory
+    )
+
     logger.info(msg=f"Loading vector store '{store_name}'...")
     # Load the Chroma vector store
     db: Chroma = Chroma(
         persist_directory=str(persistent_directory),
         embedding_function=ollama_embeddings,
     )
-    # Create a retriever
-    retriever: VectorStoreRetriever = db.as_retriever(
-        search_type="similarity",
-        search_kwargs={"k": 3},
-    )
-    logger.info(msg=f"Created retriever from vector store '{store_name}' successfully.")
 
 except Exception as e:
-    logger.error(msg=f"Unexpected error querying vector store '{store_name}': {e}")
+    logger.error(msg=f"Error loading vector store '{store_name}': {e}")
     sys.exit(1)
+
+# Create a retriever
+retriever: VectorStoreRetriever = db.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 3},
+)
+logger.info(msg=f"Created retriever from vector store '{store_name}' successfully.")
 
 # Contextualize question prompt
 # System prompt helps the AI understand that it should reformulate the question
@@ -145,7 +152,7 @@ rag_chain: Runnable[dict[str, Any], Any] = create_retrieval_chain(
     history_aware_retriever, question_answering_chain
 )
 
-# ===== Setup ReAct Agent with RAG =====
+# ==================== Setup ReAct Agent with RAG ====================
 # load ReAct prompt template from hub
 # react_prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/react")
 react_prompt_template: str = """
@@ -198,8 +205,8 @@ agent_executor: AgentExecutor = AgentExecutor(
 )
 
 
-# ===== Run ReAct RAG conversation =====
-def main() -> None:
+# ==================== Run ReAct Agent with RAG context conversation ====================
+async def main() -> None:
     """
     Runs the main conversational loop for the RAG-based ReAct chat application.
 
@@ -209,7 +216,9 @@ def main() -> None:
     The loop can be exited by typing 'exit', or by sending a
     KeyboardInterrupt (Ctrl+C) or EOFError (Ctrl+D).
     """
-    print("\nStart RAG-based ReAct chatting! Type 'exit' to end the conversation.")
+    print(
+        "\nStart ReAct Agent with RAG context chatting! Type 'exit' to end the conversation."
+    )
 
     # Initialize chat history
     chat_history: list[BaseMessage] = []
@@ -217,7 +226,7 @@ def main() -> None:
     while True:
         try:
             # User query
-            query: str = input("You: ").strip()
+            query: str = (await ainput("You: ")).strip()
 
             if not query:
                 print("Please ask a question!.")
@@ -230,9 +239,9 @@ def main() -> None:
 
             # Process user query through agent executor
             logger.info(
-                msg="Processing user query through ReAct Agent with RAG chain..."
+                msg="Processing user query through ReAct Agent with RAG context..."
             )
-            response: Any = agent_executor.invoke(
+            response: Any = await agent_executor.ainvoke(
                 input={"input": query, "chat_history": chat_history}
             )
 
@@ -246,7 +255,7 @@ def main() -> None:
                 chat_history.append(AIMessage(content=response["output"]))
                 logger.info(msg="Chat history updated successfully")
 
-        except (KeyboardInterrupt, EOFError):
+        except (KeyboardInterrupt, EOFError, asyncio.CancelledError):
             logger.info(msg="Keyboard interrupt or EOF error")
             print("Exiting...")
             break
@@ -259,4 +268,4 @@ def main() -> None:
 
 # Main entry point
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

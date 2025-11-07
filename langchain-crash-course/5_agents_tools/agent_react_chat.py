@@ -49,7 +49,7 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 
 # Import custom modules
-from utils.logger import RAGLogger
+from utils.logger import ReActAgentLogger
 
 # Import Wikipedia library
 from wikipedia import summary
@@ -83,7 +83,7 @@ elif ollama_configured:
 module_path: Path = Path(__file__).resolve()
 
 # Set logger
-logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
+logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
 
 
 # Define current time tool
