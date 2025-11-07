@@ -164,7 +164,7 @@ async def main() -> None:
             logger.info(msg=f"Agent: {response['output']}")
             print(f"Agent: {response['output']}")
 
-        except (KeyboardInterrupt, EOFError):
+        except (KeyboardInterrupt, EOFError, asyncio.CancelledError):
             logger.info(msg="Keyboard interrupt or EOF error")
             print("Exiting...")
             break

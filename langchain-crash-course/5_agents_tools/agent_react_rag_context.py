@@ -70,10 +70,18 @@ llm = ChatOllama(model=str(ollama_llm))
 
 # Load vector store and create retriever
 try:
-    # Initialize vector store if it doesn't exist
-    initialize_vector_store(
-        books_dir=books_dir, persistent_directory=persistent_directory
-    )
+    # Check vector store
+    if not persistent_directory.exists():
+        # Initialize vector store
+        db_instance = initialize_vector_store(
+            books_dir=books_dir, persistent_directory=persistent_directory
+        )
+        # initialization failed, the directory might not exist.
+        if db_instance is None and not persistent_directory.exists():
+            logger.error(
+                "Failed to initialize the vector store. Please check the logs for details."
+            )
+            sys.exit(1)
 
     logger.info(msg=f"Loading vector store '{store_name}'...")
     # Load the Chroma vector store

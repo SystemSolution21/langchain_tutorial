@@ -33,13 +33,6 @@ module_path: Path = Path(__file__).resolve()
 # Set up logger
 logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
 
-# Log create rag with metadata
-logger.info(msg="========= Starting Create RAG With Metadata Application ==========")
-
-# Log directories
-logger.info(msg=f"Books Directory: {books_dir}")
-logger.info(msg=f"Persistent Directory: {persistent_directory}")
-
 
 # Load documents
 def load_documents(books_dir: Path) -> List[Document]:
@@ -73,7 +66,7 @@ def load_documents(books_dir: Path) -> List[Document]:
                 for doc in docs:
                     doc.metadata = {"source": file_path.name}
                     documents.append(doc)
-                logger.info(msg=f"Successfully loaded: {file_path}")
+                logger.info(msg=f"Successfully loaded document: {file_path}")
             except Exception as e:
                 error_msg: str = f"Error loading {file_path}: {str(object=e)}"
                 failed_files.append((file_path, str(object=e)))
@@ -147,6 +140,12 @@ def initialize_vector_store(
         Optional[Chroma]: The created Chroma vector store instance if a new
         store was initialized, otherwise None.
     """
+
+    # Log application startup
+    logger.info(msg="======== Starting Create RAG With Metadata Application ========")
+    logger.info(msg=f"Books Directory: {books_dir}")
+    logger.info(msg=f"Persistent Directory: {persistent_directory}")
+
     try:
         # Check vector store existence
         if persistent_directory.exists():
@@ -216,6 +215,7 @@ def main() -> None:
     This function calls the necessary functions to set up the vector store.
     It handles the main logic flow and logs the outcome of the initialization.
     """
+
     try:
         # Initialize vector store
         db: Optional[Chroma] = initialize_vector_store(
@@ -226,9 +226,7 @@ def main() -> None:
         # Check initialization result
         if db is None and persistent_directory.exists():
             logger.info("Vector store already exists. Standalone execution complete.")
-        elif db is not None:
-            logger.info("Vector store initialization completed successfully")
-        else:
+        elif db is None:
             logger.error(
                 "Vector store initialization failed - System may not function correctly!"
             )

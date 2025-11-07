@@ -1,22 +1,59 @@
-2025-09-25 15:26:55,633 - agent_tools_basic.py - INFO - Start Agent Tools Basic Application...
-2025-09-25 15:27:19,931 - agent_tools_basic.py - INFO - Agent response generated successfully
-2025-09-25 15:27:35,672 - agent_tools_basic.py - INFO - User exited conversation
-2025-09-25 15:52:42,338 - agent_react_chat.py - INFO - Start Agent React Chat Application...
-2025-09-25 15:53:17,567 - agent_react_chat.py - INFO - Getting Wikipedia summary: Microsoft Corporation is an American multinational corporation and technology conglomerate headquart.....
-2025-09-25 15:53:29,552 - agent_react_chat.py - INFO - Getting Wikipedia summary: Microsoft Corporation is an American multinational corporation and technology conglomerate headquart.....
-2025-09-25 15:53:50,242 - agent_react_chat.py - INFO - Agent: Microsoft is a massive technology company with a rich history. It was founded in 1975 by Bill Gates .....
-2025-09-25 15:54:34,323 - agent_react_chat.py - ERROR - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
-2025-09-25 15:54:45,004 - agent_react_chat.py - INFO - Agent: Bill Gates is a prominent American business magnate, investor, and philanthropist. He co-founded Mic.....
-2025-09-25 15:55:00,779 - agent_react_chat.py - INFO - User exited conversation
-2025-11-07 16:40:33,066 - INFO - agent_react_rag_context - Keyboard interrupt or EOF error
-2025-11-07 16:40:52,754 - INFO - rag - ========= Starting Create RAG With Metadata Application ==========
-2025-11-07 16:40:52,754 - INFO - rag - Books Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\books
-2025-11-07 16:40:52,754 - INFO - rag - Persistent Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_with_metadata
-2025-11-07 16:40:52,754 - INFO - agent_react_rag_context - ========= Starting ReAct Agent with RAG Context Application ==========
-2025-11-07 16:40:54,831 - INFO - rag - Vector store already exists. No need to initialize.
-2025-11-07 16:40:54,831 - INFO - agent_react_rag_context - Loading vector store 'chroma_db_with_metadata'...
-2025-11-07 16:40:55,023 - INFO - agent_react_rag_context - Created retriever from vector store 'chroma_db_with_metadata' successfully.
-2025-11-07 16:41:45,455 - INFO - agent_react_rag_context - Processing user query through ReAct Agent with RAG context...
-2025-11-07 16:42:51,393 - INFO - agent_react_rag_context - AI response generated successfully
-2025-11-07 16:42:51,395 - INFO - agent_react_rag_context - Chat history updated successfully
-2025-11-07 16:43:10,967 - INFO - agent_react_rag_context - User exited conversation
+2025-11-07 16:53:55,877 - INFO - agent_tools_basic - ========= Start Agent Tools Basic Application ==========
+2025-11-07 16:55:25,273 - INFO - agent_tools_basic - Agent: 2025-11-07 16:55:21
+2025-11-07 16:55:56,756 - INFO - agent_tools_basic - Keyboard interrupt or EOF error
+2025-11-07 17:03:09,943 - INFO - agent_react_chat - ========= Start Agent React Chat Application ==========
+2025-11-07 17:06:11,380 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:06:17,242 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:06:22,305 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:06:27,571 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:06:32,986 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:06:38,767 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:06:43,819 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:06:49,191 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:06:54,262 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:06:59,852 - ERROR - agent_react_chat - Error getting Wikipedia summary: Page id "bill games" does not match any pages. Try another id!
+2025-11-07 17:07:07,572 - INFO - agent_react_chat - Agent: Bill Gates is an American business magnate, investor, and philanthropist. He co-founded Microsoft, o.....
+2025-11-07 17:09:23,226 - INFO - agent_react_chat - User exited conversation
+2025-11-07 18:10:52,135 - INFO - rag - ======== Starting Create RAG With Metadata Application ========
+2025-11-07 18:10:52,150 - INFO - rag - Books Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\books
+2025-11-07 18:10:52,150 - INFO - rag - Persistent Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_with_metadata
+2025-11-07 18:10:52,150 - INFO - rag - Initializing new vector store...
+2025-11-07 18:10:52,150 - INFO - rag - Successfully loaded document: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\books\langchain_demo.txt
+2025-11-07 18:10:52,150 - INFO - rag - Successfully created 4 document chunks
+2025-11-07 18:10:52,150 - INFO - rag - Creating embeddings...
+2025-11-07 18:10:53,229 - INFO - rag - Embeddings created successfully
+2025-11-07 18:10:53,229 - INFO - rag - Initializing Chroma vector store...
+2025-11-07 18:10:55,072 - INFO - rag - Vector store initialized successfully
+2025-11-07 18:12:09,615 - INFO - rag - ======== Starting Create RAG With Metadata Application ========
+2025-11-07 18:12:09,615 - INFO - rag - Books Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\books
+2025-11-07 18:12:09,615 - INFO - rag - Persistent Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_with_metadata
+2025-11-07 18:12:09,615 - INFO - rag - Vector store already exists. No need to initialize.
+2025-11-07 18:12:09,615 - INFO - rag - Vector store already exists. Standalone execution complete.
+2025-11-07 18:25:37,063 - INFO - agent_react_rag_context - ========= Starting ReAct Agent with RAG Context Application ==========
+2025-11-07 18:25:39,092 - INFO - rag - ======== Starting Create RAG With Metadata Application ========
+2025-11-07 18:25:39,092 - INFO - rag - Books Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\books
+2025-11-07 18:25:39,092 - INFO - rag - Persistent Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_with_metadata
+2025-11-07 18:25:39,092 - INFO - rag - Initializing new vector store...
+2025-11-07 18:25:39,092 - ERROR - rag - The directory 'C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\books' does not exist. Please check the path.
+2025-11-07 18:25:39,092 - ERROR - agent_react_rag_context - Failed to initialize the vector store. Please check the logs for details.
+2025-11-07 18:28:30,459 - INFO - agent_react_rag_context - ========= Starting ReAct Agent with RAG Context Application ==========
+2025-11-07 18:28:32,486 - INFO - rag - ======== Starting Create RAG With Metadata Application ========
+2025-11-07 18:28:32,487 - INFO - rag - Books Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\books
+2025-11-07 18:28:32,487 - INFO - rag - Persistent Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_with_metadata
+2025-11-07 18:28:32,488 - INFO - rag - Initializing new vector store...
+2025-11-07 18:28:32,489 - INFO - rag - Successfully loaded document: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\books\langchain_demo.txt
+2025-11-07 18:28:32,489 - INFO - rag - Successfully created 4 document chunks
+2025-11-07 18:28:32,490 - INFO - rag - Creating embeddings...
+2025-11-07 18:28:33,563 - INFO - rag - Embeddings created successfully
+2025-11-07 18:28:33,564 - INFO - rag - Initializing Chroma vector store...
+2025-11-07 18:28:34,978 - INFO - rag - Vector store initialized successfully
+2025-11-07 18:28:34,978 - INFO - agent_react_rag_context - Loading vector store 'chroma_db_with_metadata'...
+2025-11-07 18:28:35,046 - INFO - agent_react_rag_context - Created retriever from vector store 'chroma_db_with_metadata' successfully.
+2025-11-07 18:29:00,819 - INFO - agent_react_rag_context - Processing user query through ReAct Agent with RAG context...
+2025-11-07 18:30:04,321 - INFO - agent_react_rag_context - AI response generated successfully
+2025-11-07 18:30:04,322 - INFO - agent_react_rag_context - Chat history updated successfully
+2025-11-07 18:30:17,985 - INFO - agent_react_rag_context - User exited conversation
+2025-11-07 18:30:30,502 - INFO - agent_react_rag_context - ========= Starting ReAct Agent with RAG Context Application ==========
+2025-11-07 18:30:32,580 - INFO - agent_react_rag_context - Loading vector store 'chroma_db_with_metadata'...
+2025-11-07 18:30:32,761 - INFO - agent_react_rag_context - Created retriever from vector store 'chroma_db_with_metadata' successfully.
+2025-11-07 18:30:41,058 - INFO - agent_react_rag_context - Keyboard interrupt or EOF error
