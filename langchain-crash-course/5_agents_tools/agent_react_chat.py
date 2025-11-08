@@ -49,7 +49,7 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 
 # Import custom modules
-from utils.logger import ReActAgentLogger
+from util.logger import ReActAgentLogger
 
 # Import Wikipedia library
 from wikipedia import summary

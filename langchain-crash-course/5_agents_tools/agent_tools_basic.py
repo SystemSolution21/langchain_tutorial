@@ -45,7 +45,7 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 
 # Import custom logger
-from utils.logger import ReActAgentLogger
+from util.logger import ReActAgentLogger
 
 # Load environment variables from .env
 load_dotenv()

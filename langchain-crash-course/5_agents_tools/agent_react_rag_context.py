@@ -35,7 +35,7 @@ from langchain_ollama.embeddings import OllamaEmbeddings
 from rag import initialize_vector_store
 
 # Import custom logger
-from utils.logger import ReActAgentLogger
+from util.logger import ReActAgentLogger
 
 # ==================== Setup books and database directories===================
 current_dir: Path = Path(__file__).parent.resolve()

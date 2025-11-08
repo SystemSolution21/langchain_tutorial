@@ -24,9 +24,12 @@ def import_module_with_env(env_vars):
     # Backup current env
     backup_env = {k: os.getenv(k) for k in env_vars}
 
+    path_added = False
     # Add parent directory to sys.path to allow for module import
     module_path = str(Path(__file__).parent.parent.resolve())
-    sys.path.insert(0, module_path)
+    if module_path not in sys.path:
+        sys.path.insert(0, module_path)
+        path_added = True
 
     try:
         # Explicitly clear any existing LLM env vars
@@ -42,6 +45,9 @@ def import_module_with_env(env_vars):
             del sys.modules["agent_tools_basic"]
         module = importlib.import_module("agent_tools_basic")
         return module
+    except Exception:
+        # Re-raise the exception after cleanup
+        raise
     finally:
         # Restore original env
         for k, v in backup_env.items():
@@ -50,7 +56,7 @@ def import_module_with_env(env_vars):
             else:
                 os.environ[k] = v
         # Clean up sys.path
-        if sys.path and sys.path[0] == module_path:
+        if path_added and sys.path and sys.path[0] == module_path:
             sys.path.pop(0)
 
 
