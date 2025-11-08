@@ -1,16 +1,21 @@
 # agent_react_rag_context.py
 
 # Import standard libraries
+import asyncio
+import os
 import sys
 from logging import Logger
 from pathlib import Path
 from typing import Any
 
+# Import async console library
+from aioconsole import ainput
+
 # Import environment variables
 from dotenv import load_dotenv
 
 # Import langchain modules
-from langchain import hub
+# from langchain import hub
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain.chains import (
     create_history_aware_retriever,
@@ -20,70 +25,83 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_chroma import Chroma
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.messages.base import BaseMessage
+from langchain_core.prompts import PromptTemplate
 from langchain_core.prompts.chat import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.base import Runnable
 from langchain_core.tools import Tool
 from langchain_core.vectorstores.base import VectorStoreRetriever
 from langchain_ollama import ChatOllama
 from langchain_ollama.embeddings import OllamaEmbeddings
+from rag import initialize_vector_store
 
 # Import custom logger
-from utils.logger import RAGLogger
+from util.logger import ReActAgentLogger
 
-# Load environment variables
-load_dotenv()
-
-# Module path
-module_path: Path = Path(__file__).resolve()
-
-# Set logger
-logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
-
-# Log application startup
-logger.info(msg="=" * 50)
-logger.info(msg="Starting Agent ReAct RAG Context Application")
-logger.info(msg="=" * 50)
-
-# ===== Setup RAG =====
-# Define directories and paths
-rag_dir: Path = Path(__file__).parents[1] / "4_rag"
-db_dir: Path = rag_dir / "db"
+# ==================== Setup books and database directories===================
+current_dir: Path = Path(__file__).parent.resolve()
+books_dir: Path = current_dir / "books"
+db_dir: Path = current_dir / "db"
 store_name: str = "chroma_db_with_metadata"
 persistent_directory: Path = db_dir / store_name
 
+# =================== Setup Logger ====================
+module_path: Path = Path(__file__).resolve()
+logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
+# Log application startup
+logger.info(
+    msg="========= Starting ReAct Agent with RAG Context Application =========="
+)
+
+# ==================== Setup RAG ====================
+# Load environment variables
+load_dotenv()
+
+# Get environment variables
+ollama_llm: str | None = os.getenv(key="OLLAMA_LLM", default="gemma3:4b")
+ollama_embeddings_model: str | None = os.getenv(
+    key="OLLAMA_EMBEDDINGS_MODEL", default="nomic-embed-text:latest"
+)
+
 # Define embeddings models
 ollama_embeddings = OllamaEmbeddings(
-    model="nomic-embed-text:latest",
+    model=str(ollama_embeddings_model),
 )
 
 # Define LLM
-llm = ChatOllama(model="gemma3:4b")
-
-# Check vector store existence
-if not persistent_directory.exists():
-    logger.error(
-        msg=f"Vector store '{store_name}' does not exist. Please check the path."
-    )
-    sys.exit(1)
+llm = ChatOllama(model=str(ollama_llm))
 
 # Load vector store and create retriever
 try:
+    # Check vector store
+    if not persistent_directory.exists():
+        # Initialize vector store
+        db_instance = initialize_vector_store(
+            books_dir=books_dir, persistent_directory=persistent_directory
+        )
+        # initialization failed, the directory might not exist.
+        if db_instance is None and not persistent_directory.exists():
+            logger.error(
+                "Failed to initialize the vector store. Please check the logs for details."
+            )
+            sys.exit(1)
+
     logger.info(msg=f"Loading vector store '{store_name}'...")
     # Load the Chroma vector store
     db: Chroma = Chroma(
         persist_directory=str(persistent_directory),
         embedding_function=ollama_embeddings,
     )
-    # Create a retriever
-    retriever: VectorStoreRetriever = db.as_retriever(
-        search_type="similarity",
-        search_kwargs={"k": 3},
-    )
-    logger.info(msg=f"Created retriever from vector store '{store_name}' successfully.")
 
 except Exception as e:
-    logger.error(msg=f"Unexpected error querying vector store '{store_name}': {e}")
+    logger.error(msg=f"Error loading vector store '{store_name}': {e}")
     sys.exit(1)
+
+# Create a retriever
+retriever: VectorStoreRetriever = db.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 3},
+)
+logger.info(msg=f"Created retriever from vector store '{store_name}' successfully.")
 
 # Contextualize question prompt
 # System prompt helps the AI understand that it should reformulate the question
@@ -144,9 +162,34 @@ rag_chain: Runnable[dict[str, Any], Any] = create_retrieval_chain(
     history_aware_retriever, question_answering_chain
 )
 
-# ===== Setup ReAct Agent with RAG =====
+# ==================== Setup ReAct Agent with RAG ====================
 # load ReAct prompt template from hub
-react_prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/react")
+# react_prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/react")
+react_prompt_template: str = """
+Answer the following questions as best you can. You have access to the following tools:
+
+{tools}
+
+Use the following format:
+
+Question: the input question you must answer
+Thought: you should always think about what to do
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question
+
+Begin!
+
+Question: {input}
+Thought:{agent_scratchpad}
+"""
+
+prompt_template: PromptTemplate = PromptTemplate.from_template(
+    template=react_prompt_template
+)
 
 # create a tool that uses the RAG chain
 tools: list[Tool] = [
@@ -163,7 +206,7 @@ tools: list[Tool] = [
 agent: Runnable[Any, Any] = create_react_agent(
     tools=tools,
     llm=llm,
-    prompt=react_prompt_template,
+    prompt=prompt_template,
 )
 
 # Create agent executor
@@ -172,8 +215,8 @@ agent_executor: AgentExecutor = AgentExecutor(
 )
 
 
-# ===== Run ReAct RAG conversation =====
-def main() -> None:
+# ==================== Run ReAct Agent with RAG context conversation ====================
+async def main() -> None:
     """
     Runs the main conversational loop for the RAG-based ReAct chat application.
 
@@ -183,7 +226,9 @@ def main() -> None:
     The loop can be exited by typing 'exit', or by sending a
     KeyboardInterrupt (Ctrl+C) or EOFError (Ctrl+D).
     """
-    print("\nStart RAG-based ReAct chatting! Type 'exit' to end the conversation.")
+    print(
+        "\nStart ReAct Agent with RAG context chatting! Type 'exit' to end the conversation."
+    )
 
     # Initialize chat history
     chat_history: list[BaseMessage] = []
@@ -191,7 +236,7 @@ def main() -> None:
     while True:
         try:
             # User query
-            query: str = input("You: ").strip()
+            query: str = (await ainput("You: ")).strip()
 
             if not query:
                 print("Please ask a question!.")
@@ -204,9 +249,9 @@ def main() -> None:
 
             # Process user query through agent executor
             logger.info(
-                msg="Processing user query through ReAct Agent with RAG chain..."
+                msg="Processing user query through ReAct Agent with RAG context..."
             )
-            response: Any = agent_executor.invoke(
+            response: Any = await agent_executor.ainvoke(
                 input={"input": query, "chat_history": chat_history}
             )
 
@@ -220,7 +265,7 @@ def main() -> None:
                 chat_history.append(AIMessage(content=response["output"]))
                 logger.info(msg="Chat history updated successfully")
 
-        except (KeyboardInterrupt, EOFError):
+        except (KeyboardInterrupt, EOFError, asyncio.CancelledError):
             logger.info(msg="Keyboard interrupt or EOF error")
             print("Exiting...")
             break
@@ -233,4 +278,4 @@ def main() -> None:
 
 # Main entry point
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

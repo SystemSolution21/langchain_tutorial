@@ -1,8 +1,9 @@
-from typing import Callable, Any
+from typing import Any, Callable
+
 from dotenv import load_dotenv
+from langchain_core.language_models import LanguageModelInput
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnableSequence
-from langchain_core.language_models import LanguageModelInput
 from langchain_ollama import ChatOllama
 
 # Load Environment Variables

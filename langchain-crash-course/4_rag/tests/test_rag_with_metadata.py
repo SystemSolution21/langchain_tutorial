@@ -19,10 +19,6 @@ import pytest
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents.base import Document
 
-# Add the parent directory to sys.path to import the rag_with_metadata module
-# which allows to run pytest from the 'tests' directory
-sys.path.append(Path(__file__).parent.parent.resolve().as_posix())
-
 # Import the modules to test
 from rag_with_metadata import (
     create_text_chunks,
@@ -34,6 +30,18 @@ from utils.logger import RAGLogger
 
 # Setup test logger
 logger: logging.Logger = RAGLogger.get_logger(module_name=__name__)
+
+
+@pytest.fixture
+def rag_module_path_setup():
+    """Fixture to add the rag module path to sys.path for test execution."""
+    rag_module_path = Path(__file__).parent.parent.resolve().as_posix()
+    if rag_module_path not in sys.path:
+        sys.path.insert(0, rag_module_path)
+        yield
+        sys.path.remove(rag_module_path)
+    else:
+        yield
 
 
 @pytest.fixture
@@ -62,7 +70,9 @@ def test_directories() -> Generator[tuple[Path, Path, Path], None, None]:
     shutil.rmtree(test_db_dir, ignore_errors=True)
 
 
-def test_load_documents(test_directories: tuple[Path, Path, Path]) -> None:
+def test_load_documents(
+    test_directories: tuple[Path, Path, Path], rag_module_path_setup
+) -> None:
     """
     Test document loading functionality, including handling of empty files.
     """
@@ -83,7 +93,7 @@ def test_load_documents(test_directories: tuple[Path, Path, Path]) -> None:
     logger.info("Document loading test completed successfully")
 
 
-def test_create_text_chunks() -> None:
+def test_create_text_chunks(rag_module_path_setup) -> None:
     """
     Test text chunking functionality.
     """
@@ -111,6 +121,7 @@ def test_initialize_vector_store_new(
     mock_ollama_embeddings: MagicMock,
     mock_chroma_from_documents: MagicMock,
     test_directories: tuple[Path, Path, Path],
+    rag_module_path_setup,
 ) -> None:
     """
     Test vector store initialization when no store exists, using mocks.
@@ -159,6 +170,7 @@ def test_initialize_vector_store_new(
 
 def test_initialize_vector_store_existing(
     test_directories: tuple[Path, Path, Path],
+    rag_module_path_setup,
 ) -> None:
     """
     Test vector store initialization when store already exists.
@@ -200,6 +212,7 @@ def test_main_flow(
     dir_exists: bool,
     expected_log: str,
     caplog: pytest.LogCaptureFixture,
+    rag_module_path_setup,
 ) -> None:
     """
     Test the main application flow under different conditions.

@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 
-class RAGLogger:
+class ReActAgentLogger:
     """Logger class for RAG applications with file and console output."""
 
     _instance: Optional[logging.Logger] = None
@@ -25,8 +25,8 @@ class RAGLogger:
         Returns:
             logging.Logger: Configured logger instance
         """
-        if RAGLogger._instance is not None:
-            return RAGLogger._instance
+        if ReActAgentLogger._instance is not None:
+            return ReActAgentLogger._instance
 
         # Create logs directory
         current_dir: Path = Path(__file__).parent.parent.resolve()
@@ -63,7 +63,7 @@ class RAGLogger:
         logger.addHandler(hdlr=console_handler)
 
         # Store instance
-        RAGLogger._instance = logger
+        ReActAgentLogger._instance = logger
 
         return logger
 
@@ -78,6 +78,6 @@ class RAGLogger:
         Returns:
             logging.Logger: Configured logger instance
         """
-        if RAGLogger._instance is None:
-            return RAGLogger.setup(module_name=module_name)
-        return RAGLogger._instance
+        if ReActAgentLogger._instance is None:
+            return ReActAgentLogger.setup(module_name=module_name)
+        return ReActAgentLogger._instance

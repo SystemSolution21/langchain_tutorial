@@ -49,7 +49,7 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 
 # Import custom modules
-from utils.logger import RAGLogger
+from util.logger import ReActAgentLogger
 
 # Import Wikipedia library
 from wikipedia import summary
@@ -83,7 +83,7 @@ elif ollama_configured:
 module_path: Path = Path(__file__).resolve()
 
 # Set logger
-logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
+logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
 
 
 # Define current time tool
@@ -155,7 +155,7 @@ agent_with_chat_history: RunnableWithMessageHistory = RunnableWithMessageHistory
 
 # Run agent executor with chat history
 async def main() -> None:
-    logger.info(msg="Start Agent React Chat Application...")
+    logger.info(msg="========= Start Agent React Chat Application ==========")
     print("Type 'exit' to end the conversation.")
 
     session_id: str = "chat_session"
@@ -181,7 +181,7 @@ async def main() -> None:
             logger.info(msg=f"Agent: {response['output'][:100]}.....")
             print(f"Agent: {response['output']}")
 
-        except (KeyboardInterrupt, EOFError):
+        except (KeyboardInterrupt, EOFError, asyncio.CancelledError):
             logger.info(msg="Keyboard interrupt or EOF error")
             print("Exiting...")
             break
