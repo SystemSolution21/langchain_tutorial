@@ -2,19 +2,11 @@
 
 # Import standard libraries
 import asyncio
+import os
 import sys
 from logging import Logger
 from pathlib import Path
 from typing import Any
-
-# Import from __init__.py
-from __init__ import (
-    books_dir,
-    ollama_embeddings_model,
-    ollama_llm,
-    persistent_directory,
-    store_name,
-)
 
 # Import async console library
 from aioconsole import ainput
@@ -45,21 +37,31 @@ from rag import initialize_vector_store
 # Import custom logger
 from utils.logger import ReActAgentLogger
 
-# Load environment variables
-load_dotenv()
+# ==================== Setup books and database directories===================
+current_dir: Path = Path(__file__).parent.resolve()
+books_dir: Path = current_dir / "books"
+db_dir: Path = current_dir / "db"
+store_name: str = "chroma_db_with_metadata"
+persistent_directory: Path = db_dir / store_name
 
-# Module path
+# =================== Setup Logger ====================
 module_path: Path = Path(__file__).resolve()
-
-# Set logger
 logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
-
 # Log application startup
 logger.info(
     msg="========= Starting ReAct Agent with RAG Context Application =========="
 )
 
 # ==================== Setup RAG ====================
+# Load environment variables
+load_dotenv()
+
+# Get environment variables
+ollama_llm: str | None = os.getenv(key="OLLAMA_LLM", default="gemma3:4b")
+ollama_embeddings_model: str | None = os.getenv(
+    key="OLLAMA_EMBEDDINGS_MODEL", default="nomic-embed-text:latest"
+)
+
 # Define embeddings models
 ollama_embeddings = OllamaEmbeddings(
     model=str(ollama_embeddings_model),
