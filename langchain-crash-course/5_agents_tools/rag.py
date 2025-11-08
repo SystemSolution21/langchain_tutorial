@@ -14,9 +14,6 @@ from logging import Logger
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-# Import from __init__.py
-from __init__ import books_dir, persistent_directory
-
 # Import langchain modules
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
@@ -32,6 +29,13 @@ module_path: Path = Path(__file__).resolve()
 
 # Set up logger
 logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
+
+# Define books and database directories paths
+current_dir: Path = Path(__file__).parent.resolve()
+books_dir: Path = current_dir / "books"
+db_dir: Path = current_dir / "db"
+store_name: str = "chroma_db_with_metadata"
+persistent_directory: Path = db_dir / store_name
 
 
 # Load documents
