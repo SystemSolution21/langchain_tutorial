@@ -92,7 +92,7 @@ agent_executor: AgentExecutor = AgentExecutor.from_agent_and_tools(
 # ==================== Run tools calling agent ====================
 async def main() -> None:
     print(
-        "\nStart chatting with Tool Calling Agent AI! Type 'exit' to end the conversation."
+        "\nStart chatting with Constructor Tool Calling Agent AI! Type 'exit' to end the conversation."
     )
 
     # Initialize chat history

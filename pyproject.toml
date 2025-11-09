@@ -22,6 +22,7 @@ dependencies = [
     "beautifulsoup4>=4.13.5",
     "aioconsole>=0.8.1",
     "wikipedia>=1.4.0",
+    "tavily>=1.1.0",
 ]
 
 [dependency-groups]
