@@ -1,8 +1,21 @@
-# tool_basetool.py
+"""
+Demonstrates how to create and use LangChain tools by subclassing BaseTool.
+
+This script defines two custom tools:
+1. SimpleWebSearchTool: A tool that uses the Tavily API to perform a web search.
+2. MultiplyNumbersTool: A simple tool to multiply two numbers.
+
+It then creates a LangChain agent that can use these tools and runs an interactive
+chat session where the user can interact with the agent. This approach provides
+fine-grained control over the tool's implementation.
+"""
 
 # Import standard libraries
 import asyncio
 import os
+import sys
+from logging import Logger
+from pathlib import Path
 from typing import Any, Dict, Type
 
 # Import necessary libraries
@@ -20,21 +33,29 @@ from langchain_ollama import ChatOllama
 from pydantic import BaseModel, Field
 from tavily import TavilyClient
 
+# Import custom logger
+from util.logger import ReActAgentLogger
+
 # Load environment variables
 load_dotenv()
 
+# Module path
+module_path: Path = Path(__file__).resolve()
+
+# Set logger
+logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
 
 # ==================== Define tools====================
 
 
 class SimpleWebSearch(BaseModel):
-    """Input for simple_web_search."""
+    """Input model for the SimpleWebSearchTool, specifying the search query."""
 
     query: str = Field(description="Search query")
 
 
 class MultiplyNumbers(BaseModel):
-    """Input for multiply_numbers."""
+    """Input model for the MultiplyNumbersTool, specifying the two numbers to multiply."""
 
     num1: float = Field(description="First number")
     num2: float = Field(description="Second number")
@@ -48,11 +69,17 @@ class SimpleWebSearchTool(BaseTool):
     args_schema: Type[BaseModel] = SimpleWebSearch
 
     def _run(self, query: str) -> str:
-        """Use the tool."""
-        api_key: str | None = os.getenv(key="TAVILY_API_KEY")
-        client = TavilyClient(api_key=api_key)
-        results: Dict[str, Any] = client.search(query=query)
-        return f"Search results for: {query}\n\n{results}\n"
+        """Executes the web search synchronously."""
+        try:
+            client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+            results: Dict[str, Any] = client.search(query=query)
+            return f"Search results for: {query}\n\n{results}\n"
+        except Exception as e:
+            return f"An error occurred during the Tavily search: {e}"
+
+    async def _arun(self, query: str) -> str:
+        """Executes the web search asynchronously."""
+        return await asyncio.to_thread(self._run, query)
 
 
 class MultiplyNumbersTool(BaseTool):
@@ -63,33 +90,31 @@ class MultiplyNumbersTool(BaseTool):
     args_schema: Type[BaseModel] = MultiplyNumbers
 
     def _run(self, num1: float, num2: float) -> str:
-        """Use the tool."""
+        """Executes the multiplication synchronously."""
         result: float = num1 * num2
         return f"The product of {num1} and {num2} is {result}\n"
 
 
-# ==================== Create tools using BaseTool====================
 tools: list = [
     SimpleWebSearchTool(),  # Simple web search tool
     MultiplyNumbersTool(),  # Multiply numbers tool
 ]
 
-# ==================== Create LLM====================
+# ==================== Create LMM and Agent ====================
 # Create Chat Model
 llm = ChatOllama(model="llama3.2:3b")
 
 # pull prompt template from hub
 prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/openai-tools-agent")
 
-
-# ==================== Create agent====================
+# Create an agent
 agent: Runnable[Any, Any] = create_tool_calling_agent(
     llm=llm,  # llm to use
     tools=tools,  # tools to use
     prompt=prompt_template,  # prompt to use
 )
 
-# ==================== Create agent executor====================
+# Create agent executor
 agent_executor: AgentExecutor = AgentExecutor.from_agent_and_tools(
     agent=agent,  # agent to use
     tools=tools,  # tools to use
@@ -100,9 +125,23 @@ agent_executor: AgentExecutor = AgentExecutor.from_agent_and_tools(
 
 # ==================== Run tools calling agent ====================
 async def main() -> None:
-    print(
-        "\nStart chatting with BaseTool Calling Agent AI! Type 'exit' to end the conversation."
-    )
+    """
+    Runs the main asynchronous loop for the chat application.
+
+    This function initializes the agent, handles API key checks, and manages
+    the interactive chat session with the user, including history management
+    and graceful exit.
+    """
+    # Check TAVILY_API_KEY
+    if not os.getenv("TAVILY_API_KEY"):
+        print(
+            "\n[ERROR] TAVILY_API_KEY not found in environment variables."
+            "\nPlease set the key in your .env file to use the web search tool."
+        )
+        sys.exit(1)  # Exit the application with a non-zero status code
+
+    logger.info(msg="========= Start BaseTool Calling AI Agent Application ==========")
+    print("Type 'exit' to end the conversation.")
 
     # Initialize chat history
     chat_history: list[BaseMessage] = []
@@ -116,6 +155,7 @@ async def main() -> None:
                 continue
 
             if query.lower() == "exit":
+                logger.info(msg="User exited conversation")
                 print("Exiting...")
                 break
 
@@ -126,6 +166,7 @@ async def main() -> None:
 
             # Display AI response
             if response:
+                logger.info(msg=f"AI: {response['output']:100}.....")
                 print(f"AI: {response['output']}")
 
                 # Update chat history
@@ -133,11 +174,12 @@ async def main() -> None:
                 chat_history.append(AIMessage(content=response["output"]))
 
         except (KeyboardInterrupt, EOFError, asyncio.CancelledError):
+            logger.info(msg="Keyboard interrupt or EOF error")
             print("Exiting...")
             break
 
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            logger.error(msg=f"Unexpected error: {e}")
 
 
 if __name__ == "__main__":
