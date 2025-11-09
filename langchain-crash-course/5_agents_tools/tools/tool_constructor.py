@@ -58,10 +58,10 @@ tools: list = [
         description="Useful for reversing a string.",
     ),
     StructuredTool.from_function(
-        func=concatenate_strings,
-        name="Concatenate Strings",
-        description="Useful for concatenating two strings.",
-        args_schema=ConcatenateStringsArgs,
+        func=concatenate_strings,  # function to call
+        name="Concatenate Strings",  # name of the tool
+        description="Useful for concatenating two strings.",  # description of the tool
+        args_schema=ConcatenateStringsArgs,  # args schema for the tool
     ),
 ]
 
@@ -75,14 +75,17 @@ prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/openai-tools-agent"
 
 # ==================== Create agent====================
 agent: Runnable[Any, Any] = create_tool_calling_agent(
-    llm=llm,
-    tools=tools,
-    prompt=prompt_template,
+    llm=llm,  # llm to use
+    tools=tools,  # tools to use
+    prompt=prompt_template,  # prompt to use
 )
 
 # ==================== Create agent executor====================
 agent_executor: AgentExecutor = AgentExecutor.from_agent_and_tools(
-    agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
+    agent=agent,  # agent to use
+    tools=tools,  # tools to use
+    verbose=True,  # prints out the agent's thought process
+    handle_parsing_errors=True,  # gracefully handles errors in parsing the agent output
 )
 
 
