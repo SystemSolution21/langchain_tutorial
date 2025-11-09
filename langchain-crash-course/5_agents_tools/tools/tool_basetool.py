@@ -18,6 +18,9 @@ from logging import Logger
 from pathlib import Path
 from typing import Any, Dict, Type
 
+# Add parent directory to path
+sys.path.append(str(Path(__file__).parent.parent))
+
 # Import necessary libraries
 from aioconsole import ainput
 from dotenv import load_dotenv
