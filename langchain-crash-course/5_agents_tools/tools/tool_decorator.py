@@ -14,7 +14,7 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.messages.base import BaseMessage
 from langchain_core.runnables import Runnable
-from langchain_core.tools import StructuredTool, Tool
+from langchain_core.tools import tool
 from langchain_ollama import ChatOllama
 from pydantic import BaseModel, Field
 
@@ -23,19 +23,16 @@ load_dotenv()  # LangSmith API key required for tracing
 
 
 # ==================== Define tools====================
+@tool
 def greet_user(name: str) -> str:
     """Greet the user."""
     return f"Hello, {name}! Welcome to LangChain."
 
 
+@tool
 def reverse_string(text: str) -> str:
     """Reverses the given string."""
     return text[::-1]
-
-
-def concatenate_strings(text1: str, text2: str) -> str:
-    """Concatenate two strings."""
-    return text1 + text2
 
 
 class ConcatenateStringsArgs(BaseModel):
@@ -45,24 +42,18 @@ class ConcatenateStringsArgs(BaseModel):
     text2: str = Field(description="Second string")
 
 
-# ==================== Create tools using Tool and StructuredTools constructors====================
+# args_schema is for structured tools
+@tool(args_schema=ConcatenateStringsArgs)
+def concatenate_strings(text1: str, text2: str) -> str:
+    """Concatenate two strings."""
+    return text1 + text2
+
+
+# ==================== Create tools ====================
 tools: list = [
-    Tool.from_function(
-        func=greet_user,
-        name="Greet User",
-        description="Useful for greeting the user.",
-    ),
-    Tool.from_function(
-        func=reverse_string,
-        name="Reverse String",
-        description="Useful for reversing a string.",
-    ),
-    StructuredTool.from_function(
-        func=concatenate_strings,  # function to call
-        name="Concatenate Strings",  # name of the tool
-        description="Useful for concatenating two strings.",  # description of the tool
-        args_schema=ConcatenateStringsArgs,  # args schema for the tool
-    ),
+    greet_user,
+    reverse_string,
+    concatenate_strings,
 ]
 
 # ==================== Create LLM====================
@@ -75,24 +66,21 @@ prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/openai-tools-agent"
 
 # ==================== Create agent====================
 agent: Runnable[Any, Any] = create_tool_calling_agent(
-    llm=llm,  # llm to use
-    tools=tools,  # tools to use
-    prompt=prompt_template,  # prompt to use
+    llm=llm,
+    tools=tools,
+    prompt=prompt_template,
 )
 
 # ==================== Create agent executor====================
 agent_executor: AgentExecutor = AgentExecutor.from_agent_and_tools(
-    agent=agent,  # agent to use
-    tools=tools,  # tools to use
-    verbose=True,  # prints out the agent's thought process
-    handle_parsing_errors=True,  # gracefully handles errors in parsing the agent output
+    agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
 )
 
 
 # ==================== Run tools calling agent ====================
 async def main() -> None:
     print(
-        "\nStart chatting with Constructor Tool Calling Agent AI! Type 'exit' to end the conversation."
+        "\nStart chatting with Decorator Tool Calling Agent AI! Type 'exit' to end the conversation."
     )
 
     # Initialize chat history

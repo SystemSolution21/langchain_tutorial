@@ -149,7 +149,7 @@ async def main() -> None:
     while True:
         try:
             # User Query
-            query: str = (await ainput("You: ")).strip()
+            query: str = (await ainput(prompt="You: ")).strip()
 
             if not query:
                 continue
