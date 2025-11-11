@@ -68,7 +68,7 @@ ollama_embeddings = OllamaEmbeddings(
 )
 
 # Define LLM
-llm = ChatOllama(model=str(ollama_llm))
+llm = ChatOllama(model=ollama_llm)
 
 # Load vector store and create retriever
 try:
