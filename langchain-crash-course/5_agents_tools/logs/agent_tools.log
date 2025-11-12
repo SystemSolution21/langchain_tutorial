@@ -57,3 +57,22 @@
 2025-11-07 18:30:32,580 - INFO - agent_react_rag_context - Loading vector store 'chroma_db_with_metadata'...
 2025-11-07 18:30:32,761 - INFO - agent_react_rag_context - Created retriever from vector store 'chroma_db_with_metadata' successfully.
 2025-11-07 18:30:41,058 - INFO - agent_react_rag_context - Keyboard interrupt or EOF error
+2025-11-11 22:54:50,384 - INFO - agent_react_rag_pdf - ========= Starting ReAct Agent with PDF RAG Context Application ==========
+2025-11-11 22:54:52,486 - INFO - rag_pdf - ======== Starting Create PDF RAG With Metadata Application ========
+2025-11-11 22:54:52,486 - INFO - rag_pdf - PDFs Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\pdfs
+2025-11-11 22:54:52,486 - INFO - rag_pdf - Persistent Directory: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_pdf_metadata
+2025-11-11 22:54:52,495 - INFO - rag_pdf - Initializing new vector store...
+2025-11-11 22:54:52,898 - INFO - rag_pdf - Successfully loaded PDF document: C:\Users\path_to_file\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\pdfs\TechVision_Annual_Report_2024.pdf
+2025-11-11 22:54:52,907 - INFO - rag_pdf - Split 5 documents into 8 chunks
+2025-11-11 22:54:53,968 - INFO - rag_pdf - Embeddings created successfully
+2025-11-11 22:54:53,968 - INFO - rag_pdf - Initializing Chroma vector store...
+2025-11-11 22:54:56,552 - INFO - rag_pdf - Vector store initialized successfully
+2025-11-11 22:54:56,552 - INFO - agent_react_rag_pdf - Loading PDF vector store 'chroma_db_pdf_metadata'...
+2025-11-11 22:54:56,604 - INFO - agent_react_rag_pdf - Created retriever from PDF vector store 'chroma_db_pdf_metadata' successfully.
+2025-11-11 22:56:49,828 - INFO - agent_react_rag_pdf - Processing user query through ReAct Agent with PDF RAG context...
+2025-11-11 22:57:31,469 - INFO - agent_react_rag_pdf - AI response generated successfully
+2025-11-11 22:57:31,471 - INFO - agent_react_rag_pdf - Chat history updated successfully
+2025-11-11 23:00:13,265 - INFO - agent_react_rag_pdf - Processing user query through ReAct Agent with PDF RAG context...
+2025-11-11 23:01:27,686 - INFO - agent_react_rag_pdf - AI response generated successfully
+2025-11-11 23:01:27,687 - INFO - agent_react_rag_pdf - Chat history updated successfully
+2025-11-11 23:02:46,224 - INFO - agent_react_rag_pdf - User exited conversation
