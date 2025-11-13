@@ -16,7 +16,87 @@ This repository contains a crash course on Langchain, a framework for developing
 ### Prerequisites
 
 - Python 3.10 or 3.11
-- Poetry
+- Poetry or uv package manager
+
+## Setup Instructions
+
+### 1. Install Dependencies
+
+```bash
+# Using uv (recommended)
+uv sync
+
+# Or using pip
+pip install -e .
+```
+
+### 2. Pre-download AI Models (Recommended)
+
+For production use or offline environments, pre-download the required AI models:
+
+```bash
+python scripts/setup_models.py
+```
+
+This will download:
+
+- **HuggingFace Embeddings**: `BAAI/bge-large-en-v1.5` (~1.34 GB)
+- Used by advanced RAG features in `5_agents_tools/rag_pdf_advanced.py`
+
+**Why pre-download?**
+
+- ✅ Faster first run (no 5-15 minute wait)
+- ✅ Works offline after initial download
+- ✅ Predictable deployment
+- ✅ Avoids network timeouts in restricted environments
+
+**Skip this step if:**
+
+- You're just experimenting (models auto-download on first use)
+- You have fast, reliable internet
+- You don't mind the initial wait
+
+### 3. Configure Environment Variables
+
+Create a `.env` file in the root directory with your API keys:
+
+```bash
+# OpenAI (optional)
+OPENAI_API_KEY=your_openai_key_here
+
+# Google (optional)
+GOOGLE_API_KEY=your_google_key_here
+
+# Anthropic (optional)
+ANTHROPIC_API_KEY=your_anthropic_key_here
+
+# Tavily (for web search, optional)
+TAVILY_API_KEY=your_tavily_key_here
+```
+
+### 4. Install System Dependencies (for Advanced PDF Processing)
+
+**For OCR and image processing:**
+
+**Windows:**
+
+```bash
+# Install Tesseract OCR
+# Download from: https://github.com/UB-Mannheim/tesseract/wiki
+# Add to PATH: C:\Program Files\Tesseract-OCR
+```
+
+**macOS:**
+
+```bash
+brew install tesseract
+```
+
+**Linux:**
+
+```bash
+sudo apt-get install tesseract-ocr
+```
 
 ### 1_chat_models
 

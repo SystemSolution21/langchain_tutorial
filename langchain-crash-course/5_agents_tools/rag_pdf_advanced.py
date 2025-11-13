@@ -25,8 +25,8 @@ import pytesseract
 
 # Import langchain modules
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
+from langchain_community.document_loaders import PyPDFLoader, UnstructuredPDFLoader
 from langchain_core.documents.base import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 from PIL import Image
@@ -61,16 +61,32 @@ def load_pdf_documents_advanced(pdfs_dir: Path) -> List[Document]:
 
         for file_path in pdf_files:
             try:
-                # Fallback to PyPDFLoader if UnstructuredPDFLoader fails
+                # Try UnstructuredPDFLoader first for advanced parsing
                 try:
-                    loader = PyPDFLoader(file_path=str(file_path))
-                    docs: List[Document] = loader.load()
-                    logger.info(f"Loaded with PyPDFLoader: {file_path}")
-                except Exception as fallback_error:
-                    logger.warning(
-                        f"PyPDFLoader also failed for {file_path}: {fallback_error}"
+                    loader = UnstructuredPDFLoader(
+                        file_path=str(file_path),
+                        mode="elements",  # Preserves document structure
+                        strategy="fast",  # Use fast strategy to avoid OCR requirements
                     )
-                    continue
+                    docs: List[Document] = loader.load()
+                    logger.info(f"Loaded with UnstructuredPDFLoader: {file_path}")
+
+                except (ImportError, Exception) as unstructured_error:
+                    # Fallback to PyPDFLoader if UnstructuredPDFLoader fails
+                    logger.warning(
+                        f"UnstructuredPDFLoader failed for {file_path}: {unstructured_error}"
+                    )
+                    logger.info(f"Falling back to PyPDFLoader for {file_path}")
+
+                    try:
+                        loader = PyPDFLoader(file_path=str(file_path))
+                        docs: List[Document] = loader.load()
+                        logger.info(f"Loaded with PyPDFLoader: {file_path}")
+                    except Exception as fallback_error:
+                        logger.error(
+                            f"PyPDFLoader also failed for {file_path}: {fallback_error}"
+                        )
+                        continue
 
                 # Add OCR processing for images
                 ocr_docs: List[Document] = extract_text_with_ocr(
@@ -95,8 +111,8 @@ def load_pdf_documents_advanced(pdfs_dir: Path) -> List[Document]:
                 )
 
             except Exception as e:
-                error_msg: str = f"Error loading {file_path}: {str(object=e)}"
-                failed_files.append((file_path, str(object=e)))
+                error_msg: str = f"Error loading {file_path}: {str(e)}"
+                failed_files.append((file_path, str(e)))
                 logger.error(msg=error_msg)
                 continue
 
@@ -110,7 +126,7 @@ def load_pdf_documents_advanced(pdfs_dir: Path) -> List[Document]:
         )
 
     except Exception as e:
-        logger.error(msg=f"Error accessing directory {pdfs_dir}: {str(object=e)}")
+        logger.error(msg=f"Error accessing directory {pdfs_dir}: {str(e)}")
 
     return documents
 
@@ -257,11 +273,33 @@ def create_advanced_text_chunks(
 
 def create_multimodal_embeddings() -> HuggingFaceEmbeddings:
     """Create embeddings optimized for structured and multimodal content."""
+    model_name = "BAAI/bge-large-en-v1.5"
+
+    # Check if model is already cached
+    cache_dir = Path.home() / ".cache" / "huggingface" / "hub"
+    model_cache_name = f"models--{model_name.replace('/', '--')}"
+
+    model_cached = False
+    if cache_dir.exists():
+        model_cached = any(
+            model_cache_name in p.name for p in cache_dir.iterdir() if p.is_dir()
+        )
+
+    if not model_cached:
+        logger.warning(
+            f"Model '{model_name}' not found in cache. "
+            f"Downloading ~1.34 GB (this may take 5-15 minutes)..."
+        )
+        logger.info("To avoid this delay, run: python scripts/setup_models.py")
+    else:
+        logger.info(f"Loading model '{model_name}' from cache...")
+
     embeddings = HuggingFaceEmbeddings(
-        model_name="BAAI/bge-large-en-v1.5",
+        model_name=model_name,
         model_kwargs={"device": "cpu"},
         encode_kwargs={"normalize_embeddings": True},
     )
+
     logger.info(
         msg="Advanced embeddings created successfully with BAAI/bge-large-en-v1.5 (1024 dimensions)"
     )

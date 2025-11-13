@@ -1,4 +1,13 @@
-# agent_react_rag_pdf.py
+# agent_react_rag_pdf_advanced.py
+"""
+ReAct Agent with RAG PDF Advanced Application
+(Asynchronous Version)
+
+This module demonstrates a conversational LangChain agent with PDF RAG context.
+It creates a structured chat agent that can use predefined tools to answer user
+questions based on PDF documents in an interactive conversation loop, maintaining
+the context of the conversation.
+"""
 
 # Import standard libraries
 import asyncio
@@ -6,7 +15,7 @@ import os
 import sys
 from logging import Logger
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 
 # Import necessary library
 from aioconsole import ainput
@@ -19,7 +28,7 @@ from langchain.chains import (
     create_retrieval_chain,
 )
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.messages.base import BaseMessage
 from langchain_core.prompts import PromptTemplate
@@ -29,6 +38,7 @@ from langchain_core.tools import Tool
 from langchain_core.vectorstores.base import VectorStoreRetriever
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_ollama import ChatOllama
+from pydantic import BaseModel, Field
 
 # Import custom modules
 from rag_pdf_advanced import (
@@ -36,6 +46,8 @@ from rag_pdf_advanced import (
     initialize_advanced_pdf_vector_store,
     update_vector_store,
 )
+from rich.console import Console
+from rich.markdown import Markdown
 from util.logger import ReActAgentLogger
 
 # ==================== Setup PDFs and database directories===================
@@ -50,7 +62,7 @@ module_path: Path = Path(__file__).resolve()
 logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
 # Log application startup
 logger.info(
-    msg="========= Starting ReAct Agent with PDF RAG Context Application =========="
+    msg="========= Starting ReAct Agent with RAG PDF Advanced Application =========="
 )
 
 # ==================== Setup RAG ====================
@@ -160,7 +172,10 @@ qa_system_prompt = """
 You are an assistant for question-answering tasks.
 Use the following pieces of retrieved context to answer the question.
 If you don't know the answer, just say that you don't know.
-Limit your response to a maximum of ten sentences and keep the answer concise.
+Limit your response to less than 100 sentences and keep the answer concise.
+
+When answering, provide specific information from the context and reference the sources.
+The sources will be automatically appended to your answer.
 \n\n
 {context}
 """
@@ -201,6 +216,10 @@ Observation: the result of the action
 Thought: I now know the final answer
 Final Answer: the final answer to the original input question
 
+IMPORTANT: When the tool returns an answer with "📚 Sources:" section, 
+you MUST include the entire sources section in your Final Answer exactly as provided. 
+Do not summarize or remove the source citations.
+
 Begin!
 
 Question: {input}
@@ -211,14 +230,93 @@ prompt_template: PromptTemplate = PromptTemplate.from_template(
     template=react_prompt_template
 )
 
-# create a tool that uses the RAG chain
+
+# ==================== Pydantic Models for Structured Output ====================
+class SourceMetadata(BaseModel):
+    """Metadata for a single source document."""
+
+    file: str = Field(description="Name of the source PDF file")
+    page: str = Field(description="Page number or 'N/A' if not available")
+    type: str = Field(
+        description="Content type: text, table, ocr_images, chart_graph, or structured"
+    )
+
+
+class RAGResponse(BaseModel):
+    """Structured response from RAG system with answer and sources."""
+
+    answer: str = Field(description="The answer to the user's question")
+    sources: List[SourceMetadata] = Field(
+        description="List of source documents used to generate the answer"
+    )
+
+    def format_response(self) -> str:
+        """Format the response with sources for display."""
+        if not self.sources:
+            return self.answer
+
+        # Build formatted response with proper Markdown list
+        response_text = self.answer + "\n\n**📚 Sources:**\n\n"
+        for i, src in enumerate(self.sources, 1):
+            page_info = f"Page {src.page}" if src.page != "N/A" else "N/A"
+            # Use Markdown list format (- or *) for proper indentation
+            response_text += (
+                f"- **[{i}]** `{src.file}` ({page_info}) - *Type: {src.type}*\n"
+            )
+
+        return response_text
+
+
+# RAG responses with source metadata
+def rag_with_sources(input: str, **kwargs) -> str:
+    """
+    Invoke RAG chain and format response with source metadata.
+
+    Args:
+        input: User query
+        **kwargs: Additional arguments including chat_history
+
+    Returns:
+        Dictionary with answer and source information
+    """
+    # Invoke the RAG chain
+    result = rag_chain.invoke(
+        input={"input": input, "chat_history": kwargs.get("chat_history", [])}
+    )
+
+    # Extract answer and context documents
+    answer = result.get("answer", "")
+    context_docs = result.get("context", [])
+
+    # Build source information using Pydantic models
+    sources = []
+    seen_sources = set()
+
+    for doc in context_docs:
+        source = doc.metadata.get("source", "Unknown")
+        page = str(doc.metadata.get("page", "N/A"))
+        content_type = doc.metadata.get("content_type", "text")
+
+        # Create unique identifier for this source
+        source_id = f"{source}::{page}"
+
+        if source_id not in seen_sources:
+            seen_sources.add(source_id)
+            sources.append(SourceMetadata(file=source, page=page, type=content_type))
+
+    # Create structured response
+    rag_response = RAGResponse(answer=answer, sources=sources)
+
+    # Return formatted response
+    return rag_response.format_response()
+
+
+# create a tool that uses the RAG chain with source metadata
 tools: list[Tool] = [
     Tool(
         name="Answer Question",
-        func=lambda input, **kwargs: rag_chain.invoke(
-            input={"input": input, "chat_history": kwargs.get("chat_history", [])}
-        ),
-        description="Useful for answering questions based on PDF documents.",
+        func=rag_with_sources,
+        description="Useful for answering questions based on PDF documents. Returns answer with source citations.",
     ),
 ]
 
@@ -278,7 +376,13 @@ async def main() -> None:
             # Display AI response
             if response:
                 logger.info(msg="AI response generated successfully")
-                print(f"AI: {response['output']}")
+
+                # Create Rich console for Markdown rendering
+                console = Console()
+
+                # Render response with Markdown formatting
+                print("\nAI: ", end="")
+                console.print(Markdown(response["output"]))
 
                 # Update chat history
                 chat_history.append(HumanMessage(content=query))
