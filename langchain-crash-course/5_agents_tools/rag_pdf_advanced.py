@@ -11,6 +11,7 @@ The script is designed to be idempotent and handles complex PDF content.
 
 # Import standard libraries
 import io
+import json
 import re
 from logging import Logger
 from pathlib import Path
@@ -21,15 +22,16 @@ import cv2
 import fitz
 import numpy as np
 import pytesseract
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
-from langchain_core.documents.base import Document
 
 # Import langchain modules
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.vectorstores import Chroma
+from langchain_core.documents.base import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 from PIL import Image
 
-# Import custom logger
+# Import custom modules
 from util.logger import ReActAgentLogger
 
 # Module path
@@ -61,8 +63,6 @@ def load_pdf_documents_advanced(pdfs_dir: Path) -> List[Document]:
             try:
                 # Fallback to PyPDFLoader if UnstructuredPDFLoader fails
                 try:
-                    from langchain_community.document_loaders import PyPDFLoader
-
                     loader = PyPDFLoader(file_path=str(file_path))
                     docs: List[Document] = loader.load()
                     logger.info(f"Loaded with PyPDFLoader: {file_path}")
@@ -258,11 +258,13 @@ def create_advanced_text_chunks(
 def create_multimodal_embeddings() -> HuggingFaceEmbeddings:
     """Create embeddings optimized for structured and multimodal content."""
     embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
-        # Alternative for better table understanding:
-        # model_name="microsoft/table-bert-base"
+        model_name="BAAI/bge-large-en-v1.5",
+        model_kwargs={"device": "cpu"},
+        encode_kwargs={"normalize_embeddings": True},
     )
-    logger.info(msg="Advanced embeddings created successfully")
+    logger.info(
+        msg="Advanced embeddings created successfully with BAAI/bge-large-en-v1.5 (1024 dimensions)"
+    )
     return embeddings
 
 
@@ -271,21 +273,22 @@ def create_table_specific_chunks(documents: List[Document]) -> List[Document]:
     enhanced_chunks = []
 
     for doc in documents:
-        content = doc.page_content
         content_type = doc.metadata.get("content_type", "text")
 
         # Add context based on content type
-        if content_type == "table" or "table" in content.lower():
-            enhanced_content = f"TABLE DATA: {content}"
+        if content_type == "table" or "table" in doc.page_content.lower():
+            enhanced_content = f"TABLE DATA: {doc.page_content}"
         elif content_type == "ocr_images":
-            enhanced_content = f"IMAGE TEXT: {content}"
+            enhanced_content = f"IMAGE TEXT: {doc.page_content}"
         elif content_type == "chart_graph":
             chart_type = doc.metadata.get("chart_type", "unknown")
-            enhanced_content = f"CHART/GRAPH DATA ({chart_type.upper()}): {content}"
-        elif "chart" in content.lower() or "graph" in content.lower():
-            enhanced_content = f"CHART/GRAPH DATA: {content}"
+            enhanced_content = (
+                f"CHART/GRAPH DATA ({chart_type.upper()}): {doc.page_content}"
+            )
+        elif "chart" in doc.page_content.lower() or "graph" in doc.page_content.lower():
+            enhanced_content = f"CHART/GRAPH DATA: {doc.page_content}"
         else:
-            enhanced_content = content
+            enhanced_content = doc.page_content
 
         doc.page_content = enhanced_content
         enhanced_chunks.append(doc)
@@ -362,6 +365,10 @@ def initialize_advanced_pdf_vector_store(
     db: Optional[Chroma] = create_vector_store(
         chunks=chunks, embeddings=embeddings, persistent_directory=persistent_directory
     )
+
+    # Save PDF metadata for future change detection
+    if db is not None:
+        save_pdf_metadata(pdfs_dir=pdfs_dir, persistent_directory=persistent_directory)
 
     return db
 
@@ -613,7 +620,6 @@ def generate_chart_description(img_pil: Image.Image, chart_analysis: dict) -> st
 
     # Extract all text from the image
     ocr_text = pytesseract.image_to_string(img_pil)
-    # text_regions = chart_analysis.get("text_regions", [])
 
     # Build description
     description_parts = []
@@ -681,6 +687,270 @@ def create_chart_specific_chunks(documents: List[Document]) -> List[Document]:
         enhanced_chunks.append(doc)
 
     return enhanced_chunks
+
+
+def get_pdf_metadata_file(persistent_directory: Path) -> Path:
+    """Get the path to the PDF metadata tracking file."""
+    return persistent_directory.parent / f"{persistent_directory.name}_metadata.json"
+
+
+def save_pdf_metadata(pdfs_dir: Path, persistent_directory: Path) -> None:
+    """Save metadata about processed PDFs for change detection."""
+    metadata_file = get_pdf_metadata_file(persistent_directory)
+
+    pdf_files = list(pdfs_dir.glob(pattern="*.pdf"))
+    metadata = {
+        "pdf_files": {
+            str(pdf.name): {
+                "size": pdf.stat().st_size,
+                "modified_time": pdf.stat().st_mtime,
+            }
+            for pdf in pdf_files
+        }
+    }
+
+    metadata_file.parent.mkdir(parents=True, exist_ok=True)
+    with open(metadata_file, "w") as f:
+        json.dump(metadata, f, indent=2)
+
+    logger.info(f"Saved metadata for {len(pdf_files)} PDF files")
+
+
+def load_pdf_metadata(persistent_directory: Path) -> dict:
+    """Load previously saved PDF metadata."""
+    metadata_file = get_pdf_metadata_file(persistent_directory)
+
+    if not metadata_file.exists():
+        return {"pdf_files": {}}
+
+    with open(metadata_file, "r") as f:
+        return json.load(f)
+
+
+def detect_pdf_changes(
+    pdfs_dir: Path, persistent_directory: Path
+) -> Tuple[List[str], List[str]]:
+    """
+    Detect changes in PDF files.
+
+    Returns:
+        Tuple of (added_files, deleted_files)
+    """
+    old_metadata = load_pdf_metadata(persistent_directory)
+    old_files = set(old_metadata.get("pdf_files", {}).keys())
+
+    current_pdf_files = list(pdfs_dir.glob(pattern="*.pdf"))
+    current_files = {pdf.name for pdf in current_pdf_files}
+
+    # Detect additions and deletions
+    added_files = list(current_files - old_files)
+    deleted_files = list(old_files - current_files)
+
+    # Detect modifications (size or time changed)
+    modified_files = []
+    for pdf in current_pdf_files:
+        if pdf.name in old_files:
+            old_info = old_metadata["pdf_files"][pdf.name]
+            current_size = pdf.stat().st_size
+            current_mtime = pdf.stat().st_mtime
+
+            if (
+                old_info["size"] != current_size
+                or abs(old_info["modified_time"] - current_mtime) > 1
+            ):
+                modified_files.append(pdf.name)
+
+    # Treat modified files as additions (need reprocessing)
+    added_files.extend(modified_files)
+
+    return added_files, deleted_files
+
+
+def update_vector_store(
+    pdfs_dir: Path,
+    persistent_directory: Path,
+    embeddings: Optional[HuggingFaceEmbeddings] = None,
+) -> Optional[Chroma]:
+    """
+    Update vector store when PDFs are added, modified, or deleted.
+
+    Args:
+        pdfs_dir: Directory containing PDF files
+        persistent_directory: Directory where vector store is persisted
+        embeddings: Embeddings model to use (creates new if None)
+
+    Returns:
+        Updated Chroma vector store or None if update failed
+    """
+    logger.info("Checking for PDF changes...")
+
+    added_files, deleted_files = detect_pdf_changes(pdfs_dir, persistent_directory)
+
+    if not added_files and not deleted_files:
+        logger.info("No PDF changes detected. Vector store is up to date.")
+        return None
+
+    logger.info(
+        f"Detected changes - Added/Modified: {len(added_files)}, Deleted: {len(deleted_files)}"
+    )
+    if added_files:
+        logger.info(f"Added/Modified files: {added_files}")
+    if deleted_files:
+        logger.info(f"Deleted files: {deleted_files}")
+
+    # Create embeddings if not provided
+    if embeddings is None:
+        embeddings = create_multimodal_embeddings()
+
+    # Load existing vector store
+    try:
+        db = Chroma(
+            persist_directory=str(persistent_directory),
+            embedding_function=embeddings,
+        )
+        logger.info("Loaded existing vector store for update")
+    except Exception as e:
+        logger.error(f"Error loading vector store for update: {e}")
+        return None
+
+    # Handle deleted files
+    if deleted_files:
+        for deleted_file in deleted_files:
+            try:
+                # Delete documents from this source
+                db.delete(where={"source": deleted_file})
+                logger.info(f"Removed documents from deleted file: {deleted_file}")
+            except Exception as e:
+                logger.warning(f"Error removing documents for {deleted_file}: {e}")
+
+    # Handle added/modified files
+    if added_files:
+        new_documents = []
+        for added_file in added_files:
+            file_path = pdfs_dir / added_file
+            if file_path.exists():
+                try:
+                    # Load and process the new/modified PDF
+                    loader = PyPDFLoader(file_path=str(file_path))
+                    docs = loader.load()
+
+                    # Add OCR and chart processing
+                    ocr_docs = extract_text_with_ocr(pdf_path=str(file_path))
+                    chart_docs = extract_charts_and_graphs(str(file_path))
+
+                    all_docs = docs + ocr_docs + chart_docs
+
+                    for doc in all_docs:
+                        doc.metadata.update(
+                            {"source": added_file, "processing_type": "advanced"}
+                        )
+                        new_documents.append(doc)
+
+                    logger.info(f"Processed new/modified file: {added_file}")
+
+                except Exception as e:
+                    logger.error(f"Error processing {added_file}: {e}")
+
+        if new_documents:
+            # Create chunks from new documents
+            chunks = create_advanced_text_chunks(
+                documents=new_documents, chunk_size=1000, chunk_overlap=200
+            )
+
+            # Add to existing vector store
+            try:
+                db.add_documents(documents=chunks)
+                logger.info(f"Added {len(chunks)} new chunks to vector store")
+            except Exception as e:
+                logger.error(f"Error adding new documents to vector store: {e}")
+                return None
+
+    # Save updated metadata
+    save_pdf_metadata(pdfs_dir, persistent_directory)
+
+    logger.info("Vector store update complete")
+    return db
+
+
+def generate_sample_questions(db: Chroma, num_questions: int = 5) -> List[str]:
+    """
+    Generate sample questions based on PDF content.
+
+    Args:
+        db: Chroma vector store
+        num_questions: Number of sample questions to generate
+
+    Returns:
+        List of sample questions
+    """
+    try:
+        # Get a sample of documents from the vector store
+        sample_docs = db.similarity_search("", k=20)
+
+        if not sample_docs:
+            return ["What information is available in the documents?"]
+
+        # Extract key topics and entities from documents
+        keywords = set()
+
+        for doc in sample_docs:
+            # Extract potential topics (capitalized phrases, technical terms)
+            # Look for common patterns in technical documents
+            patterns = [
+                r"\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b",  # Capitalized phrases
+                r"\b(neural network|transformer|attention|embedding|model|algorithm|learning)\b",
+                r"\b(table|chart|figure|graph)\s+\d+",  # References to visuals
+            ]
+
+            for pattern in patterns:
+                matches = re.findall(pattern, doc.page_content)
+                for match in matches:
+                    if isinstance(match, tuple):
+                        match = (
+                            match[0] if match[0] else match[1] if len(match) > 1 else ""
+                        )
+                    if match and len(match) > 3:
+                        keywords.add(match)
+
+        # Generate questions based on extracted keywords
+        questions = []
+        question_templates = [
+            "What is {}?",
+            "Explain about {}",
+            "How does {} work?",
+            "What are the key features of {}?",
+            "Describe the {} architecture",
+        ]
+
+        keyword_list = list(keywords)[
+            : num_questions * 2
+        ]  # Get more keywords than needed
+
+        for i, keyword in enumerate(keyword_list):
+            if len(questions) >= num_questions:
+                break
+            template = question_templates[i % len(question_templates)]
+            questions.append(template.format(keyword))
+
+        # Add some generic questions if we don't have enough
+        generic_questions = [
+            "What are the main topics covered in the documents?",
+            "Summarize the key concepts from the PDFs",
+            "What technical details are provided?",
+        ]
+
+        while len(questions) < num_questions:
+            questions.append(generic_questions[len(questions) % len(generic_questions)])
+
+        return questions[:num_questions]
+
+    except Exception as e:
+        logger.warning(f"Error generating sample questions: {e}")
+        return [
+            "What information is available in the documents?",
+            "Summarize the main topics",
+            "What are the key concepts?",
+        ]
 
 
 def main() -> None:
