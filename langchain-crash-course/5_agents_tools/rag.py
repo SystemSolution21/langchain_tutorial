@@ -22,7 +22,7 @@ from langchain_core.documents.base import Document
 from langchain_ollama.embeddings import OllamaEmbeddings
 
 # Import custom logger
-from utils.logger import ReActAgentLogger
+from util.logger import ReActAgentLogger
 
 # Module path
 module_path: Path = Path(__file__).resolve()
