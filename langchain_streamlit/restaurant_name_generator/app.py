@@ -1,10 +1,9 @@
 import time
-from typing import List, LiteralString, Dict, Generator, Any
-import streamlit as st
+from typing import Any, Dict, Generator, LiteralString
 
 # import generator_custom as generator
-
 import generator_details as generator
+import streamlit as st
 
 st.set_page_config(
     page_title="Restaurant Name Menu Item Generator", page_icon=":fork_and_knife:"

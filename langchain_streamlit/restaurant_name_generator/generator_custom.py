@@ -1,8 +1,9 @@
-from typing import List, Dict, Any
-from langchain_ollama import ChatOllama
-from langchain_core.prompts import ChatPromptTemplate
+from typing import Dict, List
+
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnableSerializable, RunnableLambda
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableLambda, RunnableSerializable
+from langchain_ollama import ChatOllama
 
 # Create Chat Model
 model: list[str] = [
