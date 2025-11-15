@@ -78,16 +78,16 @@
 2025-11-11 23:02:46,224 - INFO - agent_react_rag_pdf - User exited conversation
 2025-11-14 00:46:05,209 - INFO - agent_react_rag_pdf_advanced - ========= Starting ReAct Agent with RAG PDF Advanced Application ==========
 2025-11-14 00:46:17,530 - INFO - rag_pdf_advanced - ======== Starting Advanced PDF RAG With Multimodal Content ========
-2025-11-14 00:46:17,530 - INFO - rag_pdf_advanced - PDFs Directory: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\pdfs
-2025-11-14 00:46:17,530 - INFO - rag_pdf_advanced - Persistent Directory: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_pdf_advanced
+2025-11-14 00:46:17,530 - INFO - rag_pdf_advanced - PDFs Directory: C:\path_to_file\langchain_tutorial\langchain-crash-course\5_agents_tools\pdfs
+2025-11-14 00:46:17,530 - INFO - rag_pdf_advanced - Persistent Directory: C:\path_to_file\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_pdf_advanced
 2025-11-14 00:46:17,530 - INFO - rag_pdf_advanced - Initializing new advanced vector store...
-2025-11-14 00:46:20,880 - INFO - rag_pdf_advanced - Loaded with UnstructuredPDFLoader: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\pdfs\Recurrent_Neural_Network.pdf
-2025-11-14 00:46:31,989 - INFO - rag_pdf_advanced - Successfully loaded PDF with advanced processing: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\pdfs\Recurrent_Neural_Network.pdf (Text: 0, OCR: 2, Charts: 0)
+2025-11-14 00:46:20,880 - INFO - rag_pdf_advanced - Loaded with UnstructuredPDFLoader: C:\path_to_file\langchain_tutorial\langchain-crash-course\5_agents_tools\pdfs\Recurrent_Neural_Network.pdf
+2025-11-14 00:46:31,989 - INFO - rag_pdf_advanced - Successfully loaded PDF with advanced processing: C:\path_to_file\langchain_tutorial\langchain-crash-course\5_agents_tools\pdfs\Recurrent_Neural_Network.pdf (Text: 0, OCR: 2, Charts: 0)
 2025-11-14 00:46:31,989 - INFO - rag_pdf_advanced - Successfully loaded 2 documents from 1 PDF files
 2025-11-14 00:46:31,989 - INFO - rag_pdf_advanced - Split 2 documents into 2 chunks
 2025-11-14 00:46:31,989 - INFO - rag_pdf_advanced - Loading model 'BAAI/bge-large-en-v1.5' from cache...
 2025-11-14 00:46:35,549 - INFO - rag_pdf_advanced - Advanced embeddings created successfully with BAAI/bge-large-en-v1.5 (1024 dimensions)
-2025-11-14 00:46:36,642 - INFO - rag_pdf_advanced - Vector store created and persisted at C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_pdf_advanced with 2 chunks
+2025-11-14 00:46:36,642 - INFO - rag_pdf_advanced - Vector store created and persisted at C:\path_to_file\langchain_tutorial\langchain-crash-course\5_agents_tools\db\chroma_db_pdf_advanced with 2 chunks
 2025-11-14 00:46:36,644 - INFO - rag_pdf_advanced - Saved metadata for 1 PDF files
 2025-11-14 00:46:36,644 - INFO - agent_react_rag_pdf_advanced - Loading PDF vector store 'chroma_db_pdf_advanced'...
 2025-11-14 00:46:36,733 - INFO - agent_react_rag_pdf_advanced - Checking for PDF changes...
