@@ -70,7 +70,7 @@ logger.info(
 load_dotenv()
 
 # Get environment variables
-ollama_llm: str | None = os.getenv(key="OLLAMA_LLM", default="gemma3:4b")
+ollama_llm: str | None = os.getenv(key="OLLAMA_LLM", default="llama3.2:3b")
 
 # Define embeddings models - MUST match the embeddings used in rag_pdf_advanced.py
 # Using BAAI/bge-large-en-v1.5 for better semantic understanding (1024 dimensions)
@@ -106,7 +106,6 @@ try:
     )
 
     # Check for PDF changes and update vector store if needed
-    logger.info(msg="Checking for PDF changes...")
     try:
         updated_db = update_vector_store(
             pdfs_dir=pdfs_dir,
@@ -216,9 +215,20 @@ Observation: the result of the action
 Thought: I now know the final answer
 Final Answer: the final answer to the original input question
 
-IMPORTANT: When the tool returns an answer with "📚 Sources:" section, 
-you MUST include the entire sources section in your Final Answer exactly as provided. 
-Do not summarize or remove the source citations.
+CRITICAL FORMATTING RULES FOR FINAL ANSWER:
+1. Your Final Answer should contain ONLY the answer text followed by sources
+2. When the tool returns "**📚 Sources:**" in the section, preserve it EXACTLY as provided
+3. Separate your answer from sources with TWO blank lines
+4. DO NOT merge sources into your answer text
+5. DO NOT add commentary after sources
+6. Keep markdown formatting intact
+
+Example format:
+Final Answer: [Your answer text here]
+
+📚 Sources:
+- [Source 1]
+- [Source 2]
 
 Begin!
 
