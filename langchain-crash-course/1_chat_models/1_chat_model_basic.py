@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 load_dotenv()
 
 # Create ChatOpenAI model
-model = ChatOpenAI(model="gpt-4o-mini")
+model = ChatOpenAI(model="gpt-4o-nano")
 
 # Invoke model with input prompt
 result = model.invoke(input="Divide 81 by 9")

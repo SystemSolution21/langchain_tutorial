@@ -1,14 +1,16 @@
-from typing import Any, List, Dict, Union
-from google.cloud.firestore_v1.client import Client
-from langchain_core.messages.base import BaseMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_ollama import ChatOllama
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-import firebase_admin
-from firebase_admin import credentials, firestore
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Union
+
+import firebase_admin
 from dotenv import load_dotenv
+from firebase_admin import credentials, firestore
+from google.cloud.firestore_v1.client import Client
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages.base import BaseMessage
+
+# from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama import ChatOllama
 
 # Load environment variables
 load_dotenv()

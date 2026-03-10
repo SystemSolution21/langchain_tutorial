@@ -1,11 +1,11 @@
 from typing import Any
+
+from dotenv import load_dotenv
+from langchain_anthropic import ChatAnthropic
+from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.messages.base import BaseMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, SystemMessage
-from dotenv import load_dotenv
-
 
 # Setup environment variables and messages
 load_dotenv()
@@ -18,7 +18,7 @@ messages: list[Any] = [
 # ---- LangChain OpenAI Chat Model Example ----
 
 # Create a ChatOpenAI model
-openai_model = ChatOpenAI(model="gpt-4o-mini")
+openai_model = ChatOpenAI(model="gpt-4o-nano")
 # Invoke the model with messages
 result = openai_model.invoke(input=messages)
 print(f"Answer from OpenAI: {result.content}")
@@ -38,6 +38,6 @@ print(f"Answer from Anthropic: {result.content}")
 
 # https://console.cloud.google.com/gen-app-builder/engines
 # https://ai.google.dev/gemini-api/docs/models/gemini
-gemini_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+gemini_model = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
 result: BaseMessage = gemini_model.invoke(input=messages)
 print(f"Answer from Google: {result.content}")

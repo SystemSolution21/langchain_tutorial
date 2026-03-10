@@ -55,7 +55,7 @@ print(prompt.to_string())
 # print(openai_response.content)
 
 # 5. Create Llama Chat Model
-llm = ChatOllama(model="llama3.2:3b", temperature=0.8, num_predict=256)
+llm = ChatOllama(model="llama3.2:latest", temperature=0.8, num_predict=256)
 messages = [
     (
         "system",

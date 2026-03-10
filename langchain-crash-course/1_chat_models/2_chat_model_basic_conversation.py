@@ -1,4 +1,5 @@
 from typing import Any, List
+
 from dotenv import load_dotenv
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.messages.base import BaseMessage
@@ -8,7 +9,7 @@ from langchain_openai import ChatOpenAI
 load_dotenv()
 
 # Create ChatOpenAI model
-model = ChatOpenAI(model="gpt-4o-mini")
+model = ChatOpenAI(model="gpt-4o-nano")
 
 """
 Set Messages

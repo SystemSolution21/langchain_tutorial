@@ -1,20 +1,21 @@
-from typing import Any, List, Dict, Union
-from langchain_core.messages.base import BaseMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_ollama import ChatOllama
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-from dotenv import load_dotenv
+from typing import Any, Dict, List, Union
 
+from dotenv import load_dotenv
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages.base import BaseMessage
+
+# from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama import ChatOllama
 
 # Load environment variables
 load_dotenv()
 
 # # Create chat model
-# # model: str = "gemini-1.5-flash"
+# # model: str = "gemini-2.5-flash"
 # llm = ChatGoogleGenerativeAI(model=model)
 
 # Create chat model
-model: str = "llama3.2:3b"
+model: str = "llama3.2:latest"
 llm = ChatOllama(model=model)
 
 
