@@ -1,14 +1,14 @@
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.schema.output_parser import StrOutputParser
-from langchain_ollama import ChatOllama
-from langchain.schema.runnable import RunnableSerializable
 from dotenv import load_dotenv
+from langchain.schema.output_parser import StrOutputParser
+from langchain.schema.runnable import RunnableSerializable
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_ollama import ChatOllama
 
 # Load Environment Variables
 load_dotenv()
 
 # Create Chat Model
-llm = ChatOllama(model="llama3.2:3b", temperature=0.8, num_predict=256)
+llm = ChatOllama(model="llama3.2:latest", temperature=0.8, num_predict=256)
 
 # Set Chat Prompt Template
 chat_prom_temp: ChatPromptTemplate = ChatPromptTemplate(
