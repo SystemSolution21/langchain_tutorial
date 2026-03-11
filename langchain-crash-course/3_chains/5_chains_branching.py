@@ -1,31 +1,29 @@
+# 5_chains_branching.py
+
 """
 This module implements a sentiment analysis chain using LangChain and local LLMs.
-It uses Ollama as the local LLM provider with models like deepseek and llama.
+It uses Ollama as the local LLM provider with models like llama3.2:latest.
 """
 
-from typing import Callable, Any, List
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.schema.output_parser import StrOutputParser
-from langchain.schema.runnable import RunnableBranch, RunnableSerializable, Runnable
-from langchain_ollama import ChatOllama
+# Import standard libraries
+import os
+from typing import Any
+
+# Import third-party libraries
 from dotenv import load_dotenv
+
+# Import langchain modules
+from langchain.schema.output_parser import StrOutputParser
+from langchain.schema.runnable import Runnable, RunnableBranch, RunnableSerializable
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_ollama import ChatOllama
 
 # Load Environment Variables
 load_dotenv()
 
 # Create Chat Model
-model: List[str] = [
-    "llama3.2:3b",  # For simple, quick tasks
-    "gemma3:4b",  # For balanced performance
-    "openthinker:7b",  # For better reasoning with moderate resources
-    "deepseek-r1:14b",  # For complex analysis and best quality
-]
-llm = ChatOllama(model=model[1])
-
-# Create Chat Models using local LLM provider
-# model: ChatOllama = ChatOllama(model="deepseek-r1:14b")
-# Alternative model configuration:
-# model: ChatOllama = ChatOllama(model="llama3.2:3b")
+model: str = os.getenv(key="OLLAMA_LLM", default="llama3.2:latest")
+llm = ChatOllama(model=model)
 
 # Define chat prompt template for positive feedback
 positive_feedback_template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
