@@ -1,26 +1,29 @@
-from typing import Callable, Any, TypedDict, Dict, cast
-from langchain_core.prompt_values import PromptValue
-from langchain_ollama import ChatOllama
-from langchain_core.prompts import ChatPromptTemplate
+# 4_chains_parallel.py
+
+# Import standard libraries
+import os
+from typing import Any, TypedDict, cast
+
+# Import third-party libraries
+from dotenv import load_dotenv
 from langchain.schema.output_parser import StrOutputParser
 from langchain.schema.runnable import (
     RunnableLambda,
     RunnableParallel,
     RunnableSerializable,
 )
-from dotenv import load_dotenv
+
+# Import langchain modules
+from langchain_core.prompt_values import PromptValue
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_ollama import ChatOllama
 
 # Load Environment Variables
 load_dotenv()
 
 # Create Chat Model
-model: list[str] = [
-    "llama3.2:3b",  # For simple, quick tasks
-    "gemma3:4b",  # For balanced performance
-    "openthinker:7b",  # For better reasoning with moderate resources
-    "deepseek-r1:14b",  # For complex analysis and best quality
-]
-llm = ChatOllama(model=model[0])
+model: str = os.getenv(key="OLLAMA_LLM", default="llama3.2:latest")
+llm = ChatOllama(model=model)
 
 # Set Prompt Template
 chat_prompt_template: ChatPromptTemplate = ChatPromptTemplate(
@@ -59,12 +62,12 @@ def analyze_cons(features) -> PromptValue:
     return chat_prompt_template.format_prompt(features=features)
 
 
-# Simplify pros branches chain with LangChain Expression Language (LCEL)
+# Simplify pros branches chain with LangChain Pipeline
 pros_branch_chain: RunnableSerializable[Any, str] = (
     RunnableLambda(func=lambda x: analyze_pros(features=x)) | llm | StrOutputParser()
 )
 
-# Simplify cons branches chain with LangChain Expression Language (LCEL)
+# Simplify cons branches chain with LangChain Pipeline
 cons_branch_chain: RunnableSerializable[Any, str] = (
     RunnableLambda(func=lambda x: analyze_cons(features=x)) | llm | StrOutputParser()
 )
@@ -95,7 +98,7 @@ def pros_cons_branch(pros: str, cons: str) -> str:
     return f"Pros:\n{pros}\n\nCons:\n{cons}"
 
 
-# Create combined chain using LangChain Expression Language (LCEL)
+# Create combined chain using LangChain Expression Language (LCEL) Pipelines
 chain: RunnableSerializable[dict[str, str], str] = (
     chat_prompt_template
     | llm
