@@ -20,3 +20,7 @@ firebase_config.json
 
 # ruff
 .ruff_cache/
+
+# logs
+*.log
+!logs/.gitkeep

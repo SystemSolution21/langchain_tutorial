@@ -6,6 +6,7 @@ and prints the response.
 """
 
 # Import standard libraries
+import os
 from logging import Logger
 from pathlib import Path
 
@@ -51,7 +52,8 @@ ollama_embeddings = OllamaEmbeddings(
 )
 
 # Define LLM
-llm = ChatOllama(model="llama3.2:3b")
+model: str = os.getenv(key="OLLAMA_LLM", default="llama3.2:latest")
+llm = ChatOllama(model=model)
 
 
 # Query vector store
@@ -60,17 +62,8 @@ def query_vector_store(
     search_type: str,
     search_kwargs: dict,
 ) -> list[Document] | None:
-    """Query the vector store for relevant documents.
-
-    Args:
-        query: Query string
-        embeddings_function: Embeddings function to use for querying
-        search_type: Search type to use for querying
-        search_kwargs: Search kwargs to use for querying
-    Returns:
-        list[Document] | None
-    """
-    if not Path.exists(self=persistent_directory):
+    """Query the vector store for relevant documents."""
+    if not persistent_directory.exists():
         logger.info(
             msg=f"Vector store '{store_name}' does not exist. Please check the store name and try again."
         )
@@ -83,6 +76,33 @@ def query_vector_store(
             persist_directory=str(object=persistent_directory),
             embedding_function=ollama_embeddings,
         )
+
+        # Debug: Check all unique sources in the database
+        all_docs = db.get()
+        unique_sources = set(
+            doc.get("source", "Unknown") for doc in all_docs["metadatas"]
+        )
+        logger.info(msg=f"All sources in vector store: {unique_sources}")
+        logger.info(msg=f"Total documents in store: {len(all_docs['ids'])}")
+
+        # Debug: Check similarity scores
+        results_with_scores = db.similarity_search_with_score(query, k=10)
+        logger.info(msg="Top 10 results with scores:")
+        for doc, score in results_with_scores:
+            logger.info(
+                msg=f"Score: {score:.4f}, Source: {doc.metadata.get('source', 'Unknown')}"
+            )
+
+        # Debug: Search with metadata filter
+        results_langchain = db.similarity_search_with_score(
+            query, k=5, filter={"source": "langchain_demo.txt"}
+        )
+        logger.info(msg="LangChain-specific results:")
+        for doc, score in results_langchain:
+            logger.info(
+                msg=f"Score: {score:.4f}, Content preview: {doc.page_content[:100]}"
+            )
+
         retriever: VectorStoreRetriever = db.as_retriever(
             search_type=search_type,
             search_kwargs=search_kwargs,
@@ -151,14 +171,14 @@ def llm_response(relevant_docs: list[Document], query: str) -> BaseMessage | Non
 
 
 def main() -> None:
-    # User query
-    query: str = "How can i learn more about LangChain?"
+    # User query - more specific to get better matches
+    query: str = "What is LangChain framework?"
 
     # Query vector store using similarity search
     relevant_docs: list[Document] | None = query_vector_store(
         query=query,
         search_type="similarity",
-        search_kwargs={"k": 3},
+        search_kwargs={"k": 10},  # Get more results to include LangChain docs
     )
 
     # Generate LLMs response
