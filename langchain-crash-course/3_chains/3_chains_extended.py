@@ -1,27 +1,27 @@
-from typing import Callable, Any
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.schema.output_parser import StrOutputParser
-from langchain_core.runnables import (
-    RunnableLambda,
-    RunnableSequence,
-    RunnableSerializable,
-)
-from langchain.schema.language_model import LanguageModelInput
-from langchain_ollama import ChatOllama
+# 3_chains_extended.py
+
+# Import standard libraries
+import os
+from typing import Any
+
+# Import third-party libraries
 from dotenv import load_dotenv
 
+# Import langchain modules
+from langchain.schema.output_parser import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import (
+    RunnableLambda,
+    RunnableSerializable,
+)
+from langchain_ollama import ChatOllama
 
 # Load Environment Variables
 load_dotenv()
 
 # Create Chat Model
-model: list[str] = [
-    "llama3.2:3b",  # For simple, quick tasks
-    "gemma3:4b",  # For balanced performance
-    "openthinker:7b",  # For better reasoning with moderate resources
-    "deepseek-r1:14b",  # For complex analysis and best quality
-]
-llm = ChatOllama(model=model[0])
+model: str = os.getenv(key="OLLAMA_LLM", default="llama3.2:latest")
+llm = ChatOllama(model=model)
 
 # Create Chat Prompt Template
 chat_prom_temp = ChatPromptTemplate(
@@ -31,16 +31,19 @@ chat_prom_temp = ChatPromptTemplate(
     ]
 )
 
-# Define additional processing steps using RunnableLambda
-uppercase_output: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = (
-    RunnableLambda(func=lambda x: x.upper())
-)
+# Convert output to uppercase
+uppercase_output: RunnableLambda[Any, Any] = RunnableLambda(func=lambda x: x.upper())
 
-words_count: RunnableLambda[Callable[[LanguageModelInput], Any], Any] = RunnableLambda(
-    func=lambda x: f"Word Count: {len(x.split())}\n{x}"
-)
 
-# Create combined Chain using LangChain Expression Language
+def count_words(x: str) -> str:
+    """Count the number of words in a string."""
+    return f"Word Count: {len(x.split())}\n{x}"
+
+
+# Count output words
+words_count: RunnableLambda[Any, Any] = RunnableLambda(func=lambda x: count_words(x))
+
+# Create LangChain Pipeline
 chain: RunnableSerializable[dict[str, str | int], Any] = (
     chat_prom_temp | llm | StrOutputParser() | uppercase_output | words_count
 )
