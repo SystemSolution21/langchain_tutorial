@@ -28,7 +28,7 @@ from util.logger import ReActAgentLogger
 module_path: Path = Path(__file__).resolve()
 
 # Set up logger
-logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
+logger: Logger = ReActAgentLogger.get_logger(module_name=__name__)
 
 # Define PDFs and database directories paths
 current_dir: Path = Path(__file__).parent.resolve()

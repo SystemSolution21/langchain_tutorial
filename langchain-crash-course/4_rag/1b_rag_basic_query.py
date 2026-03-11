@@ -21,7 +21,7 @@ persistent_directory: Path = current_dir / "db" / "chroma_db"
 embeddings: OllamaEmbeddings = OllamaEmbeddings(model="nomic-embed-text:latest")
 
 # Check if the Chroma vector store already exists
-if not Path.exists(self=persistent_directory):
+if not persistent_directory.exists():
     raise FileNotFoundError(
         f"The directory {persistent_directory} does not exist. Please check the path."
     )
@@ -37,7 +37,7 @@ query = "Who is Odysseus' wife?"
 # Retrieve relevant documents based on the query
 retriever: VectorStoreRetriever = db.as_retriever(
     search_type="similarity_score_threshold",
-    search_kwargs={"k": 3, "score_threshold": 0.4},
+    search_kwargs={"k": 3, "score_threshold": 0.2},
 )
 relevant_docs: list[Document] = retriever.invoke(input=query)
 

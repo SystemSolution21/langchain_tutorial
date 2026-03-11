@@ -31,7 +31,7 @@ load_dotenv()
 module_path: Path = Path(__file__).resolve()
 
 # Set logger
-logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
+logger: Logger = RAGLogger.get_logger(module_name=__name__)
 
 # Log application startup
 logger.info(msg="=" * 50)
@@ -49,12 +49,10 @@ ollama_embeddings = OllamaEmbeddings(
     model="nomic-embed-text:latest",
 )
 
-
 # Define web scraper and Load documents from the web
-try:
-    # Setting url to scrape
-    url: list[str] = ["https://www.apple.com/"]
+url: list[str] = ["https://www.apple.com/"]
 
+try:
     # Define web scraper
     web_scraper = WebBaseLoader(web_path=url)
 

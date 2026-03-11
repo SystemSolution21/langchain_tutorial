@@ -44,7 +44,7 @@ if not url:
 module_path: Path = Path(__file__).resolve()
 
 # Set logger
-logger: Logger = RAGLogger.get_logger(module_name=module_path.name)
+logger: Logger = RAGLogger.get_logger(module_name=__name__)
 
 # Log application startup
 logger.info(msg="=" * 50)

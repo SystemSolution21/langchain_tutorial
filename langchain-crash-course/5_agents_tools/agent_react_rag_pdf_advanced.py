@@ -59,7 +59,7 @@ persistent_directory: Path = db_dir / store_name
 
 # =================== Setup Logger ====================
 module_path: Path = Path(__file__).resolve()
-logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
+logger: Logger = ReActAgentLogger.get_logger(module_name=__name__)
 # Log application startup
 logger.info(
     msg="========= Starting ReAct Agent with RAG PDF Advanced Application =========="

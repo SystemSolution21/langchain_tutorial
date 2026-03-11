@@ -25,7 +25,6 @@ Features:
 # Import standard libraries
 import asyncio
 import os
-import sys
 from datetime import datetime
 from logging import Logger
 from pathlib import Path
@@ -70,20 +69,26 @@ if not openai_configured and not ollama_configured:
         "Neither OpenAI (OPENAI_API_KEY, OPENAI_LLM) nor Ollama (OLLAMA_LLM) is configured. "
         "Please check your .env file. Note: Ollama llm model should be locally installed."
     )
-    sys.exit(1)
 
 # Set llm
+llm: ChatOpenAI | ChatOllama
+
 if openai_configured:
     llm = ChatOpenAI(model=str(object=openai_llm), temperature=0)
 elif ollama_configured:
     llm = ChatOllama(model=ollama_llm)
+else:
+    raise ValueError(
+        "Neither OpenAI (OPENAI_API_KEY, OPENAI_LLM) nor Ollama (OLLAMA_LLM) is configured. "
+        "Please check your .env file. Note: Ollama llm model should be locally installed."
+    )
 
 
 # Module path
 module_path: Path = Path(__file__).resolve()
 
 # Set logger
-logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
+logger: Logger = ReActAgentLogger.get_logger(module_name=__name__)
 
 
 # Define current time tool

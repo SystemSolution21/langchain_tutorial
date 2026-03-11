@@ -46,7 +46,7 @@ load_dotenv()
 module_path: Path = Path(__file__).resolve()
 
 # Set logger
-logger: Logger = ReActAgentLogger.get_logger(module_name=module_path.name)
+logger: Logger = ReActAgentLogger.get_logger(module_name=__name__)
 
 # ==================== Define tools====================
 
