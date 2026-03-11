@@ -140,3 +140,62 @@
 2025-08-26 23:24:09,222 - 8_rag_web_scrape_firecrawl.py - INFO - Vector store 'chroma_db_web_scrape_firecrawl' already exists. No need to initialize.
 2025-08-26 23:24:10,098 - 8_rag_web_scrape_firecrawl.py - INFO - Relevant documents retrieved successfully.
 2025-08-26 23:45:35,451 - 8_rag_web_scrape_firecrawl.py - INFO - User exited conversation2025-11-04 21:31:41,119 - rag_with_metadata.py - INFO - ==================================================
+2026-03-11 16:48:16,393 - INFO - 3_rag_text_splitting - ==================================================
+2026-03-11 16:48:16,393 - INFO - 3_rag_text_splitting - Starting RAG Text Splitting Application
+2026-03-11 16:48:16,394 - INFO - 3_rag_text_splitting - ==================================================
+2026-03-11 16:48:16,394 - INFO - 3_rag_text_splitting - Books Directory: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\books
+2026-03-11 16:48:16,396 - INFO - 3_rag_text_splitting - Database Directory: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\db
+2026-03-11 16:48:16,396 - INFO - 3_rag_text_splitting - Database directory created/verified successfully
+2026-03-11 16:48:17,278 - INFO - 3_rag_text_splitting - File Path: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\books\romeo_and_juliet.txt
+2026-03-11 16:48:17,279 - INFO - 3_rag_text_splitting - ---- Using character-based splitting ----
+2026-03-11 16:48:17,279 - INFO - 3_rag_text_splitting - Creating vector store 'chroma_db_character'...
+2026-03-11 16:48:56,916 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_character' created successfully.
+2026-03-11 16:48:56,921 - INFO - 3_rag_text_splitting - ---- Using sentence-based splitting ----
+2026-03-11 16:50:04,538 - INFO - 3_rag_text_splitting - Creating vector store 'chroma_db_sentence'...
+2026-03-11 16:50:50,589 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_sentence' created successfully.
+2026-03-11 16:50:50,595 - INFO - 3_rag_text_splitting - ---- Using token-based splitting ----
+2026-03-11 16:50:56,405 - INFO - 3_rag_text_splitting - Creating vector store 'chroma_db_token'...
+2026-03-11 16:51:34,883 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_token' created successfully.
+2026-03-11 16:51:34,883 - INFO - 3_rag_text_splitting - ---- Using recursive character-based splitting ----
+2026-03-11 16:51:34,902 - INFO - 3_rag_text_splitting - Creating vector store 'chroma_db_recursive_character'...
+2026-03-11 16:52:12,790 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_recursive_character' created successfully.
+2026-03-11 16:52:12,790 - INFO - 3_rag_text_splitting - ---- Using custom-based splitting ----
+2026-03-11 16:52:12,790 - INFO - 3_rag_text_splitting - Creating vector store 'chroma_db_custom'...
+2026-03-11 16:52:56,195 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_custom' created successfully.
+2026-03-11 16:52:56,195 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_character'...
+2026-03-11 16:52:56,295 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_character', found 1 relevant documents
+2026-03-11 16:52:56,295 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_sentence'...
+2026-03-11 16:52:56,383 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_sentence', found 1 relevant documents
+2026-03-11 16:52:56,383 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_token'...
+2026-03-11 16:52:56,504 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_token', found 1 relevant documents
+2026-03-11 16:52:56,512 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_recursive_character'...
+2026-03-11 16:52:56,636 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_recursive_character', found 1 relevant documents
+2026-03-11 16:52:56,636 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_custom'...
+2026-03-11 16:52:56,725 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_custom', found 1 relevant documents
+2026-03-11 16:57:45,443 - INFO - 3_rag_text_splitting - ==================================================
+2026-03-11 16:57:45,443 - INFO - 3_rag_text_splitting - Starting RAG Text Splitting Application
+2026-03-11 16:57:45,443 - INFO - 3_rag_text_splitting - ==================================================
+2026-03-11 16:57:45,443 - INFO - 3_rag_text_splitting - Books Directory: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\books
+2026-03-11 16:57:45,443 - INFO - 3_rag_text_splitting - Database Directory: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\db
+2026-03-11 16:57:45,443 - INFO - 3_rag_text_splitting - Database directory created/verified successfully
+2026-03-11 16:57:46,421 - INFO - 3_rag_text_splitting - File Path: C:\Users\rs258\MyAI\LangChain\langchain_tutorial\langchain-crash-course\4_rag\books\romeo_and_juliet.txt
+2026-03-11 16:57:46,428 - INFO - 3_rag_text_splitting - ---- Using character-based splitting ----
+2026-03-11 16:57:46,435 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_character' already exists. No need to initialize.
+2026-03-11 16:57:46,435 - INFO - 3_rag_text_splitting - ---- Using sentence-based splitting ----
+2026-03-11 16:58:00,874 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_sentence' already exists. No need to initialize.
+2026-03-11 16:58:00,878 - INFO - 3_rag_text_splitting - ---- Using token-based splitting ----
+2026-03-11 16:58:01,263 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_token' already exists. No need to initialize.
+2026-03-11 16:58:01,263 - INFO - 3_rag_text_splitting - ---- Using recursive character-based splitting ----
+2026-03-11 16:58:01,273 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_recursive_character' already exists. No need to initialize.
+2026-03-11 16:58:01,274 - INFO - 3_rag_text_splitting - ---- Using custom-based splitting ----
+2026-03-11 16:58:01,285 - INFO - 3_rag_text_splitting - Vector store 'chroma_db_custom' already exists. No need to initialize.
+2026-03-11 16:58:01,288 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_character'...
+2026-03-11 16:58:02,181 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_character', found 1 relevant documents
+2026-03-11 16:58:02,181 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_sentence'...
+2026-03-11 16:58:02,421 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_sentence', found 1 relevant documents
+2026-03-11 16:58:02,421 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_token'...
+2026-03-11 16:58:02,678 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_token', found 1 relevant documents
+2026-03-11 16:58:02,678 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_recursive_character'...
+2026-03-11 16:58:02,922 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_recursive_character', found 1 relevant documents
+2026-03-11 16:58:02,926 - INFO - 3_rag_text_splitting - Querying vector store 'chroma_db_custom'...
+2026-03-11 16:58:03,219 - INFO - 3_rag_text_splitting - For vector store 'chroma_db_custom', found 1 relevant documents

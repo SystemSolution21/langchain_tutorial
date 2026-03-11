@@ -65,7 +65,7 @@ def create_vector_store(
     store_name: str,
 ) -> None:
     persistent_directory: Path = db_dir / store_name
-    if Path.exists(self=persistent_directory):
+    if persistent_directory.exists():
         logger.info(
             msg=f"Vector store '{store_name}' already exists. No need to initialize."
         )
