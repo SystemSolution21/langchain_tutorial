@@ -2,7 +2,7 @@
 
 ## 1. Create a test directory structure
 
-```
+```project structure
 langchain-crash-course/
 ├── 4_rag/
 │ ├── tests/
