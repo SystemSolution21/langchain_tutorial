@@ -16,7 +16,7 @@ import os
 import sys
 from logging import Logger
 from pathlib import Path
-from typing import Any, Dict, Type
+from typing import Any, Dict
 
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -31,7 +31,7 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.messages.base import BaseMessage
 from langchain_core.runnables import Runnable
-from langchain_core.tools import BaseTool
+from langchain_core.tools import ArgsSchema, BaseTool
 from langchain_ollama import ChatOllama
 from pydantic import BaseModel, Field
 from tavily import TavilyClient
@@ -69,7 +69,7 @@ class SimpleWebSearchTool(BaseTool):
 
     name: str = "Simple_Web_Search"
     description: str = "Useful for searching the web."
-    args_schema: Type[BaseModel] = SimpleWebSearch
+    args_schema: ArgsSchema | None = SimpleWebSearch
 
     def _run(self, query: str) -> str:
         """Executes the web search synchronously."""
@@ -90,7 +90,7 @@ class MultiplyNumbersTool(BaseTool):
 
     name: str = "Multiply_Numbers"
     description: str = "Useful for multiplying two numbers."
-    args_schema: Type[BaseModel] = MultiplyNumbers
+    args_schema: ArgsSchema | None = MultiplyNumbers
 
     def _run(self, num1: float, num2: float) -> str:
         """Executes the multiplication synchronously."""
@@ -105,7 +105,8 @@ tools: list = [
 
 # ==================== Create LMM and Agent ====================
 # Create Chat Model
-llm = ChatOllama(model="llama3.2:3b")
+model: str = os.getenv(key="OLLAMA_LLM", default="llama3.2:latest")
+llm = ChatOllama(model=model)
 
 # pull prompt template from hub
 prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/openai-tools-agent")
@@ -144,17 +145,17 @@ async def main() -> None:
         sys.exit(1)  # Exit the application with a non-zero status code
 
     logger.info(msg="========= Start BaseTool Calling AI Agent Application ==========")
-    print("Type 'exit' to end the conversation.")
 
     # Initialize chat history
     chat_history: list[BaseMessage] = []
 
     while True:
         try:
-            query: str = (await ainput(prompt="You: ")).strip()
+            query: str = (
+                await ainput(prompt="Type 'exit' to end the conversation!\nYou: ")
+            ).strip()
 
             if not query:
-                print("Please ask a question!.")
                 continue
 
             if query.lower() == "exit":

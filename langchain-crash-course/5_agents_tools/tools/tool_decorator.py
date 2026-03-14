@@ -1,7 +1,20 @@
 # tool_constructor.py
+"""
+Demonstrates how to create and use LangChain tools using the @tool decorator.
+
+This script defines three custom tools:
+1. Greet User: A simple tool to greet the user.
+2. Reverse String: A tool to reverse a string.
+3. Concatenate Strings: A tool to concatenate two strings.
+
+It then creates a LangChain agent that can use these tools and runs an interactive
+chat session where the user can interact with the agent. This approach provides
+fine-grained control over the tool's implementation.
+"""
 
 # Import standard libraries
 import asyncio
+import os
 from typing import Any
 
 # Import necessary libraries
@@ -58,7 +71,8 @@ tools: list = [
 
 # ==================== Create LLM====================
 # Create Chat Model
-llm = ChatOllama(model="llama3.2:3b")
+model: str = os.getenv(key="OLLAMA_LLM", default="llama3.2:latest")
+llm = ChatOllama(model=model)
 
 # pull prompt template from hub
 prompt_template: Any = hub.pull(owner_repo_commit="hwchase17/openai-tools-agent")
@@ -79,19 +93,18 @@ agent_executor: AgentExecutor = AgentExecutor.from_agent_and_tools(
 
 # ==================== Run tools calling agent ====================
 async def main() -> None:
-    print(
-        "\nStart chatting with Decorator Tool Calling Agent AI! Type 'exit' to end the conversation."
-    )
+    print("\nStart chatting with Decorator Tool Calling Agent AI!")
 
     # Initialize chat history
     chat_history: list[BaseMessage] = []
 
     while True:
         try:
-            query: str = (await ainput(prompt="You: ")).strip()
+            query: str = (
+                await ainput(prompt="Type 'exit' to end the conversation!\nYou: ")
+            ).strip()
 
             if not query:
-                print("Please ask a question!.")
                 continue
 
             if query.lower() == "exit":
