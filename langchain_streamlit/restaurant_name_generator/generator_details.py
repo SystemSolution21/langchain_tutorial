@@ -1,21 +1,28 @@
+# generator_details.py
+"""
+This script generates a restaurant name and menu items based on the given cuisine.
+It uses LangChain to create a chain of thought process to generate the restaurant name and menu items.
+"""
+
+# Import standard libraries
+import os
 from typing import Dict
 
+# Import langchain libraries
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnableSerializable
 from langchain_ollama import ChatOllama
 
 # Create Chat Model
-model: list[str] = [
-    "llama3.2:3b",
-    "gemma3:4b",
-    "openthinker:7b",
-    "deepseek-r1:14b",
-]
-llm = ChatOllama(model=model[0])
+model: str = os.getenv(key="OLLAMA_LLM", default="llama3.2:latest")
+llm = ChatOllama(model=model)
 
 
 def generate_restaurant_name_menu_item(cuisine: str) -> Dict[str, str]:
+    """
+    Generates a restaurant name and menu items based on the given cuisine.
+    """
     # Chain 1: Restaurant Name Generation
     restaurant_name_prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages(
         messages=[

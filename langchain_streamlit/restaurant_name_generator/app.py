@@ -1,14 +1,23 @@
+# generator_details.py
+"""
+This script generates a restaurant name and menu items based on the given cuisine.
+"""
+
+# Import standard libraries
 import time
 from typing import Any, Dict, Generator, LiteralString
 
-# import generator_custom as generator
+# import custom module
 import generator_details as generator
+
+# Import streamlit
 import streamlit as st
 
+# Set Streamlit page configuration
 st.set_page_config(
-    page_title="Restaurant Name Menu Item Generator", page_icon=":fork_and_knife:"
+    page_title="Restaurant-Name & Menu-Item Generator", page_icon=":fork_and_knife:"
 )
-st.title(body="Restaurant Name Menu Item Generator")
+st.title(body="Restaurant-Name & Menu-Item Generator")
 
 cuisine: LiteralString = st.sidebar.selectbox(
     label="Pick a Cuisine",
