@@ -56,14 +56,14 @@ logger.info(
 load_dotenv()
 
 # Get environment variables
-ollama_llm: str | None = os.getenv(key="OLLAMA_LLM", default="gemma3:4b")
-ollama_embeddings_model: str | None = os.getenv(
+ollama_llm: str = os.getenv(key="OLLAMA_LLM", default="gemma3:4b")
+ollama_embeddings_model: str = os.getenv(
     key="OLLAMA_EMBEDDINGS_MODEL", default="nomic-embed-text:latest"
 )
 
 # Define embeddings models
 ollama_embeddings = OllamaEmbeddings(
-    model=str(ollama_embeddings_model),
+    model=ollama_embeddings_model,
 )
 
 # Define LLM
@@ -202,7 +202,11 @@ agent: Runnable[Any, Any] = create_react_agent(
 
 # Create agent executor
 agent_executor: AgentExecutor = AgentExecutor(
-    agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
+    agent=agent,
+    tools=tools,
+    verbose=True,
+    handle_parsing_errors=True,
+    max_iterations=5,
 )
 
 
