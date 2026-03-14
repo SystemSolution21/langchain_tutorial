@@ -85,7 +85,7 @@ logger: Logger = ReActAgentLogger.get_logger(module_name=__name__)
 
 
 # Define current time tool
-def get_current_time(*args: Any, **kwargs: Any) -> str:
+def get_current_time(input: str = "") -> str:
     """Get current time."""
     current_time: str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     return current_time
@@ -136,7 +136,9 @@ agent: Runnable[Any, Any] = create_react_agent(
 )
 
 # Create agent executor
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+agent_executor = AgentExecutor(
+    agent=agent, tools=tools, verbose=True, max_iterations=10
+)
 
 
 # Run agent executor
