@@ -70,7 +70,7 @@ logger.info(
 load_dotenv()
 
 # Get environment variables
-ollama_llm: str | None = os.getenv(key="OLLAMA_LLM", default="llama3.2:3b")
+ollama_llm: str | None = os.getenv(key="OLLAMA_LLM", default="llama3.2:latest")
 
 # Define embeddings models - MUST match the embeddings used in rag_pdf_advanced.py
 # Using BAAI/bge-large-en-v1.5 for better semantic understanding (1024 dimensions)
@@ -339,7 +339,11 @@ agent: Runnable[Any, Any] = create_react_agent(
 
 # Create agent executor
 agent_executor: AgentExecutor = AgentExecutor(
-    agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
+    agent=agent,
+    tools=tools,
+    verbose=True,
+    handle_parsing_errors=True,
+    max_iterations=5,
 )
 
 
