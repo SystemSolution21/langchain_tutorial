@@ -211,7 +211,11 @@ agent: Runnable[Any, Any] = create_react_agent(
 
 # Create agent executor
 agent_executor: AgentExecutor = AgentExecutor(
-    agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
+    agent=agent,
+    tools=tools,
+    verbose=True,
+    handle_parsing_errors=True,
+    max_iterations=10,
 )
 
 
