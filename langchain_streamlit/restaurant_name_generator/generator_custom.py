@@ -1,21 +1,27 @@
-from typing import Dict, List
+# generator_custom.py
+"""
+This script generates a restaurant name and menu items based on the given cuisine.
+It uses LangChain to create a chain of thought process to generate the restaurant name and menu items.
+"""
 
+# Import standard libraries
+import os
+
+# Import langchain libraries
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnableSerializable
 from langchain_ollama import ChatOllama
 
 # Create Chat Model
-model: list[str] = [
-    "llama3.2:3b",
-    "gemma3:4b",
-    "openthinker:7b",
-    "deepseek-r1:14b",
-]
-llm = ChatOllama(model=model[0])
+model: str = os.getenv(key="OLLAMA_LLM", default="llama3.2:latest")
+llm = ChatOllama(model=model)
 
 
-def generate_restaurant_name_menu_item(cuisine: str) -> Dict[str, str]:
+def generate_restaurant_name_menu_item(cuisine: str) -> dict[str, str]:
+    """
+    Generates a restaurant name and menu items based on the given cuisine.
+    """
     # Chain 1: Restaurant Name Generation
     restaurant_name_prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages(
         messages=[
@@ -30,7 +36,7 @@ def generate_restaurant_name_menu_item(cuisine: str) -> Dict[str, str]:
         ]
     )
 
-    restaurant_name_chain: RunnableSerializable[Dict[str, str], str] = (
+    restaurant_name_chain: RunnableSerializable[dict[str, str], str] = (
         restaurant_name_prompt | llm | StrOutputParser()
     )
 
@@ -39,7 +45,7 @@ def generate_restaurant_name_menu_item(cuisine: str) -> Dict[str, str]:
         messages=[
             (
                 "system",
-                "You are an expert chef. List ONLY 5 signature dishes as a comma-separated list without any additional text or explanation.",
+                "You are an expert chef. list ONLY 5 signature dishes as a comma-separated list without any additional text or explanation.",
             ),
             (
                 "user",
@@ -48,31 +54,31 @@ def generate_restaurant_name_menu_item(cuisine: str) -> Dict[str, str]:
         ]
     )
 
-    menu_item_chain: RunnableSerializable[Dict[str, str], str] = (
+    menu_item_chain: RunnableSerializable[dict[str, str], str] = (
         menu_item_prompt | llm | StrOutputParser()
     )
 
     # Define the chain steps
-    def generate_restaurant_name(input_dict: Dict) -> Dict:
+    def generate_restaurant_name(user_input: dict) -> dict:
         restaurant_name: str = restaurant_name_chain.invoke(
-            input={"cuisine": input_dict["cuisine"]}
+            input={"cuisine": user_input["cuisine"]}
         )
-        return {"cuisine": input_dict["cuisine"], "restaurant_name": restaurant_name}
+        return {"cuisine": user_input["cuisine"], "restaurant_name": restaurant_name}
 
-    def generate_menu_item(input_dict: Dict) -> Dict:
+    def generate_menu_item(user_input: dict) -> dict:
         menu_items = menu_item_chain.invoke(
             {
-                "restaurant_name": input_dict["restaurant_name"],
-                "cuisine": input_dict["cuisine"],
+                "restaurant_name": user_input["restaurant_name"],
+                "cuisine": user_input["cuisine"],
             }
         )
         return {
-            "restaurant_name": input_dict["restaurant_name"],
+            "restaurant_name": user_input["restaurant_name"],
             "menu_items": menu_items,
         }
 
     # Create the final chain
-    chain: RunnableSerializable[str, Dict[str, str]] = (
+    chain: RunnableSerializable[str, dict[str, str]] = (
         RunnableLambda(func=lambda x: {"cuisine": x})
         | RunnableLambda(func=generate_restaurant_name)
         | RunnableLambda(func=generate_menu_item)
@@ -82,12 +88,12 @@ def generate_restaurant_name_menu_item(cuisine: str) -> Dict[str, str]:
 
 
 if __name__ == "__main__":
-    result: Dict[str, str] = generate_restaurant_name_menu_item(cuisine="Japanese")
+    result: dict[str, str] = generate_restaurant_name_menu_item(cuisine="Japanese")
     print("\nRestaurant Name:")
     print("-" * 50)
     print(result["restaurant_name"].strip())
     print("\nMenu Items:")
     print("-" * 50)
-    items: List[str] = [item.strip() for item in result["menu_items"].split(sep=",")]
+    items: list[str] = [item.strip() for item in result["menu_items"].split(sep=",")]
     for item in items:
         print(f"• {item}")
