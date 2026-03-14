@@ -92,7 +92,7 @@ logger: Logger = ReActAgentLogger.get_logger(module_name=__name__)
 
 
 # Define current time tool
-def get_current_time(*args: Any, **kwargs: Any) -> str:
+def get_current_time(input: str = "") -> str:
     """Get current time."""
     current_time: str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     logger.info(msg=f"Getting current time: {current_time}")
@@ -146,7 +146,7 @@ agent: Runnable[Any, Any] = create_structured_chat_agent(
 
 # Create agent executor
 agent_executor: AgentExecutor = AgentExecutor(
-    agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
+    agent=agent, tools=tools, verbose=True, handle_parsing_errors=True, max_iterations=5
 )
 
 # Add chat history to agent executor
