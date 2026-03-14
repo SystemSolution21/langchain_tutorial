@@ -20,6 +20,7 @@ the command line.
 """
 
 # Import standard libraries
+import os
 import sys
 from logging import Logger
 from pathlib import Path
@@ -72,7 +73,8 @@ ollama_embeddings = OllamaEmbeddings(
 )
 
 # Define LLM
-llm = ChatOllama(model="gemma3:4b")
+model: str = os.getenv(key="OLLAMA_LLM", default="gemma3:4b")
+llm = ChatOllama(model=model)
 
 # Check vector store existence
 if not persistent_directory.exists():
@@ -92,7 +94,7 @@ try:
     # Create a retriever
     retriever: VectorStoreRetriever = db.as_retriever(
         search_type="similarity",
-        search_kwargs={"k": 3},
+        search_kwargs={"k": 10},
     )
     logger.info(msg=f"Created retriever from vector store '{store_name}' successfully.")
 
