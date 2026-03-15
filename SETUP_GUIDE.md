@@ -42,14 +42,17 @@ python scripts/setup_models.py
 ```
 
 This downloads:
+
 - HuggingFace Embeddings: `BAAI/bge-large-en-v1.5` (~1.34 GB)
 
 **Benefits:**
+
 - ✅ No 5-15 minute wait on first run
 - ✅ Works offline
 - ✅ Predictable deployment
 
 **Skip if:**
+
 - Just experimenting (auto-downloads on first use)
 - Fast internet available
 
@@ -62,17 +65,20 @@ This downloads:
 #### Install Tesseract OCR
 
 **Windows:**
-1. Download: https://github.com/UB-Mannheim/tesseract/wiki
+
+1. Download: <https://github.com/UB-Mannheim/tesseract/wiki>
 2. Install to: `C:\Program Files\Tesseract-OCR`
 3. Add to PATH
 4. Restart terminal
 
 **macOS:**
+
 ```bash
 brew install tesseract
 ```
 
 **Linux:**
+
 ```bash
 sudo apt-get install tesseract-ocr
 ```
@@ -206,4 +212,3 @@ docker run -it --env-file .env langchain-tutorial
 - **Documentation**: See README files in each directory
 - **Issues**: Check troubleshooting sections
 - **Examples**: All scripts include inline documentation
-

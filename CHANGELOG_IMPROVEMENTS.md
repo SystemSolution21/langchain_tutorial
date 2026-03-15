@@ -5,15 +5,17 @@
 ### 🔧 Fixed Critical Issues
 
 #### 1. **Missing UnstructuredPDFLoader Implementation**
+
 - **File**: `langchain-crash-course/5_agents_tools/rag_pdf_advanced.py`
 - **Issue**: Function claimed to use advanced PDF parsing but only used basic PyPDFLoader
-- **Fix**: 
+- **Fix**:
   - Added proper `UnstructuredPDFLoader` import and usage
   - Configured with `mode="elements"` and `strategy="hi_res"` for optimal parsing
   - Implemented correct fallback logic: UnstructuredPDFLoader → PyPDFLoader
   - Added detailed logging for which loader succeeded
 
 **Before:**
+
 ```python
 # Misleading comment, only used PyPDFLoader
 try:
@@ -22,6 +24,7 @@ try:
 ```
 
 **After:**
+
 ```python
 # Try UnstructuredPDFLoader first for advanced parsing
 try:
@@ -39,10 +42,12 @@ except (ImportError, Exception) as e:
 ```
 
 #### 2. **Inverted Fallback Logic**
+
 - **Issue**: Code structure suggested UnstructuredPDFLoader was tried first, but it wasn't
 - **Fix**: Proper try-except nesting with primary loader first, fallback second
 
 #### 3. **Verbose Error Handling**
+
 - **Issue**: Used `str(object=e)` instead of `str(e)`
 - **Fix**: Simplified to standard Python error string conversion
 
@@ -51,6 +56,7 @@ except (ImportError, Exception) as e:
 ### 🚀 Added Production Features
 
 #### 1. **Model Pre-download Script**
+
 - **File**: `scripts/setup_models.py`
 - **Purpose**: Pre-download HuggingFace embeddings for production/offline use
 - **Features**:
@@ -61,11 +67,13 @@ except (ImportError, Exception) as e:
   - Handles errors gracefully
 
 **Usage:**
+
 ```bash
 python scripts/setup_models.py
 ```
 
 #### 2. **Smart Model Cache Detection**
+
 - **File**: `langchain-crash-course/5_agents_tools/rag_pdf_advanced.py`
 - **Function**: `create_multimodal_embeddings()`
 - **Features**:
@@ -75,6 +83,7 @@ python scripts/setup_models.py
   - Logs whether loading from cache or downloading
 
 **Benefits:**
+
 - Users know what to expect (no surprise 15-minute waits)
 - Clear guidance on how to avoid delays
 - Better production deployment experience
@@ -84,6 +93,7 @@ python scripts/setup_models.py
 ### 📚 Documentation Improvements
 
 #### 1. **Main README.md**
+
 - Added comprehensive setup instructions
 - Documented model pre-download process
 - Explained why pre-downloading is recommended
@@ -91,6 +101,7 @@ python scripts/setup_models.py
 - Included environment variable configuration
 
 #### 2. **Module-Specific README**
+
 - **File**: `langchain-crash-course/5_agents_tools/README.md`
 - **Content**:
   - Complete feature documentation
@@ -101,6 +112,7 @@ python scripts/setup_models.py
   - Step-by-step quick start guide
 
 #### 3. **Setup Guide**
+
 - **File**: `SETUP_GUIDE.md`
 - **Content**:
   - Quick 5-minute setup
@@ -114,7 +126,7 @@ python scripts/setup_models.py
 ### 📊 Impact Summary
 
 | Improvement | Before | After |
-|-------------|--------|-------|
+| ------------- | -------- | ------- |
 | **PDF Parsing** | Basic text only | Tables, layouts, structure |
 | **First Run Time** | Unknown (surprise wait) | Predictable (with warning) |
 | **Offline Support** | No guidance | Clear setup process |
@@ -127,18 +139,21 @@ python scripts/setup_models.py
 ### 🎯 Benefits for Users
 
 #### Developers
+
 - ✅ Clear setup process
 - ✅ No surprise delays
 - ✅ Better error messages
 - ✅ Comprehensive documentation
 
 #### Production/Deployment
+
 - ✅ Pre-download models in build process
 - ✅ Offline capability
 - ✅ Predictable behavior
 - ✅ Docker-ready
 
 #### Advanced Users
+
 - ✅ Proper table extraction
 - ✅ Multi-loader strategy
 - ✅ Fallback mechanisms
@@ -206,6 +221,7 @@ python scripts/setup_models.py
 ## Conclusion
 
 These improvements transform the advanced RAG system from a prototype into a production-ready solution with:
+
 - **Proper advanced PDF parsing** (tables, layouts)
 - **Predictable deployment** (pre-download models)
 - **Excellent documentation** (setup, usage, troubleshooting)
@@ -213,4 +229,3 @@ These improvements transform the advanced RAG system from a prototype into a pro
 - **Clear user guidance** (warnings, suggestions)
 
 The system is now ready for production use with offline capability and comprehensive documentation.
-
